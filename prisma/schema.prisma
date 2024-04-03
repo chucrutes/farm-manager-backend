@@ -1,0 +1,60 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider      = "prisma-client-js"
+  binaryTargets = ["native", "linux-musl-arm64-openssl-3.0.x"]
+}
+
+datasource db {
+  provider = "postgres"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id             String   @id
+  name           String
+  username       String?  @unique
+  email          String   @unique
+  password       String
+  phone          String?
+  email_verified Boolean?
+  created_at     DateTime @default(now())
+  updated_at     DateTime @updatedAt
+  Entry          Entry[]
+
+  @@map("users")
+}
+
+enum Types {
+  INVESTMENT_EXPENSE
+  CATTLE_SALE
+  BUY_CATTLE
+  MEDICINE
+  PESTICIDE
+  FEED
+  STAFF
+  INVESTMENT
+}
+
+enum Categories {
+  EXPENSE
+  PROFIT
+  ASSET
+}
+
+model Entry {
+  id          String     @id
+  user        User       @relation(fields: [user_id], references: [id], onDelete: Cascade)
+  user_id     String
+  description String
+  price       Float
+  quantity    Float
+  total       Float
+  type        Types
+  category    Categories
+  created_at  DateTime   @default(now())
+  updated_at  DateTime   @updatedAt
+
+  @@map("entries")
+}
