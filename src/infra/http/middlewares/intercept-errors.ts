@@ -8,6 +8,8 @@ export const interceptErrors = (
   res: Response,
   _next: NextFunction,
 ) => {
+  console.error(err)
+
   if (err instanceof ZodError) {
     return res.status(StatusCodes.BAD_REQUEST).json({
       status: 'error',

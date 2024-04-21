@@ -21,7 +21,7 @@ export class CreateUser {
     username,
     ...request
   }: CreateUserRequest): Promise<CreateUserResponse> {
-    const userAlreadyExists = await this.usersRepository.exists(email)
+    const userAlreadyExists = await this.usersRepository.findByEmail(email)
 
     if (username) {
       const usernameAlreadyTaken =
@@ -49,12 +49,7 @@ export class CreateUser {
 
     const user = userOrError.value
 
-    /**
-     * If the user has been invited to a workspace or a project,
-     * we need to handle the invites after the user has been created.
-     */
     await this.usersRepository.create(user)
-    await this.usersRepository.handleUserInvites(email, user.id)
 
     return right(user)
   }

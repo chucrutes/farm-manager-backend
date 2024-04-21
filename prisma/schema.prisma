@@ -21,7 +21,6 @@ model User {
   email_verified Boolean?
   created_at     DateTime @default(now())
   updated_at     DateTime @updatedAt
-  Entry          Entry[]
 
   @@map("users")
 }
@@ -43,10 +42,58 @@ enum Categories {
   ASSET
 }
 
+model Farm {
+  id         String   @id
+  name       String
+  created_at DateTime @default(now())
+  updated_at DateTime @updatedAt
+  Entry      Entry[]
+
+  @@map("farms")
+}
+
+enum FarmPlanStatuses {
+  ACTIVE
+  INACTIVE
+}
+
+enum FarmPlans {
+  FREE
+  BASIC
+  PREMIUM
+}
+
+model FarmPlan {
+  farm_id    String
+  status     FarmPlanStatuses
+  plan       FarmPlanStatuses
+  created_at DateTime         @default(now())
+  updated_at DateTime         @updatedAt
+
+  @@id([farm_id])
+  @@map("farm_plans")
+}
+
+enum Roles {
+  OWNER
+  WORKER
+}
+
+model FarmMembers {
+  user_id    String
+  farm_id    String
+  role       Roles
+  created_at DateTime @default(now())
+  updated_at DateTime @updatedAt
+
+  @@id([user_id, farm_id])
+  @@map("farm_members")
+}
+
 model Entry {
   id          String     @id
-  user        User       @relation(fields: [user_id], references: [id], onDelete: Cascade)
-  user_id     String
+  farm        Farm       @relation(fields: [farm_id], references: [id], onDelete: Cascade)
+  farm_id     String
   description String
   price       Float
   quantity    Float

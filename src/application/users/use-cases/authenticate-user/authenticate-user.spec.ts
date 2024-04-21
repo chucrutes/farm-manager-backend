@@ -16,7 +16,7 @@ describe('Authenticate User', () => {
 
   test('should not be able to authenticate with invalid e-mail', async () => {
     const response = await authenticateUser.execute({
-      emailOrUsername: 'invalid@example.com',
+      user: 'invalid@example.com',
       password: '123456'
     })
 
@@ -33,7 +33,7 @@ describe('Authenticate User', () => {
     usersRepository.create(user)
 
     const response = await authenticateUser.execute({
-      emailOrUsername: 'john@doe.com',
+      user: 'john@doe.com',
       password: 'invalid-password'
     })
 

@@ -8,15 +8,17 @@ export class EntryMapper {
   static toDomain(raw: PersistenceEntry) {
     const entryOrError = Entry.create(
       {
-        userId: raw.user_id,
+        farmId: raw.farm_id,
         category: raw.category as Categories,
         type: raw.type as Types,
         description: raw.description,
         price: raw.price,
         quantity: raw.quantity,
-        total: raw.total
+        total: raw.total,
+        createdAt: raw.created_at,
+        updatedAt: raw.updated_at,
       },
-      raw.id
+      raw.id,
     )
 
     if (entryOrError.isLeft()) {
@@ -27,19 +29,19 @@ export class EntryMapper {
   }
 
   static async toPersistence(
-    entry: Entry
+    entry: Entry,
   ): Promise<Omit<PersistenceEntry, 'created_at' | 'updated_at'>> {
     const { id, props } = entry
 
     return {
       id: id,
-      user_id: props.userId,
+      farm_id: props.farmId,
       description: props.description,
       category: props.category,
       type: props.type,
       price: props.price,
       quantity: props.quantity,
-      total: props.total
+      total: props.total,
     }
   }
 }

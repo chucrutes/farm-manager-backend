@@ -9,7 +9,7 @@ type TokenResponse = {
 }
 
 type AuthenticateUserRequest = {
-  emailOrUsername: string
+  user: string
   password: string
 }
 
@@ -22,23 +22,22 @@ export class AuthenticateUser {
   constructor(private usersRepository: IUsersRepository) {}
 
   async execute({
-    emailOrUsername,
+    user,
     password
   }: AuthenticateUserRequest): Promise<AuthenticateUserResponse> {
-    const user =
-      await this.usersRepository.findByEmailOrUsername(emailOrUsername)
+    const userExists = await this.usersRepository.findByEmailOrUsername(user)
 
-    if (!user) {
+    if (!userExists) {
       return left(new InvalidEmailOrPasswordError())
     }
 
-    const isPasswordValid = await compare(password, user.props.password)
+    const isPasswordValid = await compare(password, userExists.props.password)
 
     if (!isPasswordValid) {
       return left(new InvalidEmailOrPasswordError())
     }
 
-    const { token } = JWT.signUser(user)
+    const { token } = JWT.signUser(userExists)
 
     return right({ token })
   }

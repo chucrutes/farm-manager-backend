@@ -13,28 +13,28 @@ describe('Authenticate User (end-to-end)', () => {
         name: 'test',
         email: 'test@test-test.com',
         password: await hash('test1234567', 8),
-        email_verified: true,
-      },
+        email_verified: true
+      }
     })
   })
 
   afterAll(async () => {
     await prismaClient.user.deleteMany({
-      where: { email: { contains: 'test' } },
+      where: { email: { contains: 'test' } }
     })
   })
 
   test('should be able to authenticate', async () => {
     const response = await request(app).post('/api/auth/sign-in').send({
-      emailOrUsername: 'test@test-test.com',
-      password: 'test1234567',
+      user: 'test@test-test.com',
+      password: 'test1234567'
     })
 
     expect(response.status).toBe(200)
     expect(response.body).toEqual(
       expect.objectContaining({
-        token: expect.any(String),
-      }),
+        token: expect.any(String)
+      })
     )
   })
 })

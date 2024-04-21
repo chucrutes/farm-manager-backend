@@ -1,10 +1,15 @@
 import { Controller } from '@/core/infra/controller'
 import { Validator } from '@/core/infra/validator'
 import { AuthenticateUser } from './authenticate-user'
-import { HttpResponse, clientError, ok } from '@/core/infra/http-response'
+import {
+  HttpResponse,
+  clientError,
+  ok,
+  unauthorized
+} from '@/core/infra/http-response'
 
 type AuthenticateUserControllerRequest = {
-  emailOrUsername: string
+  user: string
   password: string
 }
 
@@ -27,7 +32,7 @@ export class AuthenticateUserController implements Controller {
 
     if (result.isLeft()) {
       const error = result.value
-      return clientError(error)
+      return unauthorized(error)
     }
 
     const { token } = result.value
