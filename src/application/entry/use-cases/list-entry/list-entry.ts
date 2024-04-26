@@ -5,13 +5,22 @@ export type ListEntryRequest = {
   userId: string
 }
 
-type ListEntryResponse = Entry[]
+type ListEntryResponse = {
+  entries: Entry[]
+  total?: number | null
+}
 export class ListEntry {
   constructor(private readonly entriesRepository: IEntriesRepository) {}
 
   async execute({ userId }: ListEntryRequest): Promise<ListEntryResponse> {
     const entries = await this.entriesRepository.getAllByUserId(userId)
+    const farmId = await this.entriesRepository.getFarmByUserId(userId)
 
-    return entries
+    let total: number | null = null
+    if (farmId) {
+      total = await this.entriesRepository.totalRevenueByFarm(farmId)
+    }
+
+    return { entries, total }
   }
 }

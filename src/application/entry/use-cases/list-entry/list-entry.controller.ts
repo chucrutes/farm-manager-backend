@@ -26,10 +26,11 @@ export class ListEntryController implements Controller {
     })
 
     return ok({
-      dto: result.map((res) => ({
+      dto: result.entries.map((res) => ({
         ...res.toResponseBody(),
         key: findTypeByType(res.props.type)?.key,
       })),
+      total: result.total,
     })
   }
 }
