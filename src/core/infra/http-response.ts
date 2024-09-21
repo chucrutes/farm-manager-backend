@@ -8,6 +8,7 @@ export type HttpResponse = {
 export type Response = {
   type?: 'info' | 'success' | 'warn' | 'error'
   message: string
+  dto?: object
 }
 
 export function ok<T>(dto?: T, response?: Response): HttpResponse {
@@ -16,8 +17,8 @@ export function ok<T>(dto?: T, response?: Response): HttpResponse {
     body: {
       type: response?.type ?? 'success',
       message: response?.message,
-      ...dto
-    }
+      ...dto,
+    },
   }
 }
 
@@ -26,8 +27,8 @@ export function created(response?: Response): HttpResponse {
     statusCode: StatusCodes.CREATED,
     body: {
       type: response?.type ?? 'success',
-      message: response?.message
-    }
+      message: response?.message,
+    },
   }
 }
 
@@ -36,8 +37,8 @@ export function clientError(response?: Response): HttpResponse {
     statusCode: StatusCodes.BAD_REQUEST,
     body: {
       type: response?.type ?? 'error',
-      message: response?.message
-    }
+      message: response?.message,
+    },
   }
 }
 
@@ -46,8 +47,8 @@ export function unauthorized(response?: Response): HttpResponse {
     statusCode: StatusCodes.UNAUTHORIZED,
     body: {
       type: response?.type ?? 'error',
-      message: response?.message
-    }
+      message: response?.message,
+    },
   }
 }
 
@@ -56,8 +57,8 @@ export function forbidden(response?: Response): HttpResponse {
     statusCode: StatusCodes.FORBIDDEN,
     body: {
       type: response?.type ?? 'error',
-      message: response?.message
-    }
+      message: response?.message,
+    },
   }
 }
 
@@ -66,8 +67,8 @@ export function notFound(response?: Response): HttpResponse {
     statusCode: StatusCodes.NOT_FOUND,
     body: {
       type: response?.type ?? 'error',
-      message: response?.message
-    }
+      message: response?.message,
+    },
   }
 }
 
@@ -76,8 +77,8 @@ export function conflict(response?: Response): HttpResponse {
     statusCode: StatusCodes.CONFLICT,
     body: {
       type: response?.type ?? 'info',
-      message: response?.message
-    }
+      message: response?.message,
+    },
   }
 }
 
@@ -86,8 +87,8 @@ export function tooMany(response?: Response): HttpResponse {
     statusCode: StatusCodes.TOO_MANY_REQUESTS,
     body: {
       type: response?.type ?? 'error',
-      message: response?.message
-    }
+      message: response?.message,
+    },
   }
 }
 
@@ -96,7 +97,7 @@ export function fail(response?: Response) {
     statusCode: StatusCodes.INTERNAL_SERVER_ERROR,
     body: {
       type: response?.type ?? 'error',
-      message: response?.message
-    }
+      message: response?.message,
+    },
   }
 }

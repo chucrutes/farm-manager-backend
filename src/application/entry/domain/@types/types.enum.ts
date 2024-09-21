@@ -29,7 +29,7 @@ export const types: IType[] = [
   {
     name: Types.BUY_CATTLE,
     key: 'buy_cattle',
-    category: Categories.PROFIT,
+    category: Categories.EXPENSE,
   },
   {
     name: Types.MEDICINE,

@@ -12,7 +12,7 @@ const configs = z.object({
   HOSTINGER_EMAIL_HOST: z.string(),
   HOSTINGER_EMAIL_PORT: z.coerce.number(),
   HOSTINGER_EMAIL_USER: z.string(),
-  HOSTINGER_EMAIL_PASSWORD: z.string()
+  HOSTINGER_EMAIL_PASSWORD: z.string(),
 })
 
 export const env = configs.parse(process.env)

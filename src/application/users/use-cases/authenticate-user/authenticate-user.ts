@@ -23,7 +23,7 @@ export class AuthenticateUser {
 
   async execute({
     user,
-    password
+    password,
   }: AuthenticateUserRequest): Promise<AuthenticateUserResponse> {
     const userExists = await this.usersRepository.findByEmailOrUsername(user)
 
@@ -31,7 +31,11 @@ export class AuthenticateUser {
       return left(new InvalidEmailOrPasswordError())
     }
 
+    console.log(userExists)
+
     const isPasswordValid = await compare(password, userExists.props.password)
+
+    console.log(isPasswordValid)
 
     if (!isPasswordValid) {
       return left(new InvalidEmailOrPasswordError())

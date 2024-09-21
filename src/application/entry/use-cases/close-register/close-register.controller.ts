@@ -7,19 +7,19 @@ import {
 } from '@/core/infra/http-response'
 import { Validator } from '@/core/infra/validator'
 import { t } from 'i18next'
-import { CreateEntry, CreateEntryRequest } from './create-entry'
+import { CloseRegister, CloseRegisterRequest } from './close-register'
 
-type CreateEntryControllerRequest = Omit<CreateEntryRequest, 'userId'> & {
+type CloseRegisterControllerRequest = Omit<CloseRegisterRequest, 'userId'> & {
   currentUserId: string
 }
 
-export class CreateEntryController implements Controller {
+export class CloseRegisterController implements Controller {
   constructor(
-    private readonly validator: Validator<CreateEntryControllerRequest>,
-    private createEntry: CreateEntry,
+    private readonly validator: Validator<CloseRegisterControllerRequest>,
+    private createEntry: CloseRegister,
   ) {}
 
-  async handle(request: CreateEntryControllerRequest): Promise<HttpResponse> {
+  async handle(request: CloseRegisterControllerRequest): Promise<HttpResponse> {
     const validated = this.validator.validate(request)
 
     if (validated.isLeft()) {
@@ -28,7 +28,6 @@ export class CreateEntryController implements Controller {
 
     const result = await this.createEntry.execute({
       userId: request.currentUserId,
-      ...request,
     })
 
     if (result.isLeft()) {
@@ -39,11 +38,6 @@ export class CreateEntryController implements Controller {
           return clientError(error)
       }
     }
-    return created({
-      message: t('entry.created'),
-      dto: result.value.map((entry) => {
-        return entry.toResponseBody()
-      }),
-    })
+    return created({ message: t('entry.deleted') })
   }
 }

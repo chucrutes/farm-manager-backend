@@ -15,9 +15,7 @@ type Request = CreateEntryRequest
 
 describe('Create an user', () => {
   const user = UserFactory.create()
-  const {
-    props: { userId, ...props }
-  } = EntryFactory.create({ userId: user.id })
+  const { id, props } = EntryFactory.create({ userId: user.id })
 
   beforeAll(() => {
     usersRepository = new InMemoryUsersRepository()
@@ -28,7 +26,7 @@ describe('Create an user', () => {
   test('should create an entry', async () => {
     const data: Request = {
       userId: user.id,
-      ...props
+      ...props,
     }
 
     const response = await createEntry.execute(data)
