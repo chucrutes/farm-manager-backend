@@ -12,15 +12,16 @@ datasource db {
 }
 
 model User {
-  id             String   @id
+  id             String        @id
   name           String
-  username       String?  @unique
-  email          String   @unique
+  username       String?       @unique
+  email          String        @unique
   password       String
   phone          String?
   email_verified Boolean?
-  created_at     DateTime @default(now())
-  updated_at     DateTime @updatedAt
+  created_at     DateTime      @default(now())
+  updated_at     DateTime      @updatedAt
+  FarmMembers    FarmMembers[]
 
   @@map("users")
 }
@@ -40,14 +41,21 @@ enum Categories {
   EXPENSE
   PROFIT
   ASSET
+  INVESTMENT
 }
 
 model Farm {
-  id         String   @id
-  name       String
-  created_at DateTime @default(now())
-  updated_at DateTime @updatedAt
-  Entry      Entry[]
+  id   String @id
+  name String
+
+  created_at DateTime  @default(now())
+  updated_at DateTime  @updatedAt
+  deleted_at DateTime?
+
+  Entry       Entry[]
+  EntryType   EntryType[]
+  FarmPlan    FarmPlan[]
+  FarmMembers FarmMembers[]
 
   @@map("farms")
 }
@@ -64,11 +72,14 @@ enum FarmPlans {
 }
 
 model FarmPlan {
-  farm_id    String
-  status     FarmPlanStatuses
-  plan       FarmPlanStatuses
-  created_at DateTime         @default(now())
-  updated_at DateTime         @updatedAt
+  farm_id String
+  farm    Farm   @relation(fields: [farm_id], references: [id])
+
+  status FarmPlanStatuses
+  plan   FarmPlanStatuses
+
+  created_at DateTime @default(now())
+  updated_at DateTime @updatedAt
 
   @@id([farm_id])
   @@map("farm_plans")
@@ -79,9 +90,28 @@ enum Roles {
   WORKER
 }
 
+model EntryType {
+  id String @id
+
+  name     String
+  category Categories
+
+  farm    Farm   @relation(fields: [farm_id], references: [id], onDelete: Cascade)
+  farm_id String
+
+  created_at DateTime  @default(now())
+  updated_at DateTime  @updatedAt
+  deleted_at DateTime?
+  Entry      Entry[]
+
+  @@map("entry_types")
+}
+
 model FarmMembers {
   user_id    String
+  user       User     @relation(fields: [user_id], references: [id], onDelete: Cascade)
   farm_id    String
+  farm       Farm     @relation(fields: [farm_id], references: [id], onDelete: Cascade)
   role       Roles
   created_at DateTime @default(now())
   updated_at DateTime @updatedAt
@@ -91,17 +121,22 @@ model FarmMembers {
 }
 
 model Entry {
-  id          String     @id
-  farm        Farm       @relation(fields: [farm_id], references: [id], onDelete: Cascade)
-  farm_id     String
+  id String @id
+
+  farm    Farm      @relation(fields: [farm_id], references: [id], onDelete: Cascade)
+  farm_id String
+  type    EntryType @relation(fields: [type_id], references: [id], onDelete: Cascade)
+  type_id String
+
   description String
   price       Float
   quantity    Float
   total       Float
-  type        Types
   category    Categories
-  created_at  DateTime   @default(now())
-  updated_at  DateTime   @updatedAt
+
+  created_at DateTime  @default(now())
+  updated_at DateTime  @updatedAt
+  deleted_at DateTime?
 
   @@map("entries")
 }

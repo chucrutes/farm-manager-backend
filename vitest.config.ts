@@ -8,6 +8,6 @@ export default defineConfig({
       '@core': './src/core',
       '@infra': './src/infra'
     },
-    exclude: ['./src/tests']
+    exclude: ['./src/tests', './dist']
   }
 })

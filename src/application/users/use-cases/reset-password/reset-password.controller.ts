@@ -1,9 +1,9 @@
-import { Controller } from '@/core/infra/controller'
-import { HttpResponse, clientError, ok } from '@/core/infra/http-response'
-import { Validator } from '@/core/infra/validator'
 import { t } from 'i18next'
-import { UserDoesNotExistError } from './errors/UserDoesNotExistError'
 import { ResetPassword } from './reset-password'
+import { Validator } from '@/core/infra/validator'
+import { Controller } from '@/core/infra/controller'
+import { UserDoesNotExistError } from './errors/UserDoesNotExistError'
+import { HttpResponse, clientError, ok } from '@/core/infra/http-response'
 
 type ResetPasswordControllerRequest = {
   currentUserId: string

@@ -1,9 +1,9 @@
+import { AuthenticateUser } from './authenticate-user'
 import { beforeEach, describe, expect, test } from 'vitest'
 import { IUsersRepository } from '../../repositories/IUsersRepository'
-import { AuthenticateUser } from './authenticate-user'
-import { InMemoryUsersRepository } from '../../repositories/in-memory/InMemoryUsersRepository'
 import { UserFactory } from '../../../../tests/factories/UserFactory'
 import { InvalidEmailOrPasswordError } from './errors/InvalidEmailOrPasswordError'
+import { InMemoryUsersRepository } from '../../repositories/in-memory/InMemoryUsersRepository'
 
 let usersRepository: IUsersRepository
 let authenticateUser: AuthenticateUser

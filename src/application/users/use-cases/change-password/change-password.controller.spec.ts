@@ -1,10 +1,10 @@
-import { IUsersRepository } from '@/application/users/repositories/IUsersRepository'
-import { PrismaUsersRepository } from '@/application/users/repositories/prisma/PrismaUsersRepository'
+import request from 'supertest'
 import { app } from '@/infra/http/app'
+import { StatusCodes } from 'http-status-codes'
 import { prismaClient } from '@/infra/prisma/client'
 import { UserFactory } from '@/tests/factories/UserFactory'
-import { StatusCodes } from 'http-status-codes'
-import request from 'supertest'
+import { IUsersRepository } from '@/application/users/repositories/IUsersRepository'
+import { PrismaUsersRepository } from '@/application/users/repositories/prisma/PrismaUsersRepository'
 import { afterAll, beforeAll, describe, expect, test } from 'vitest'
 
 let usersRepository: IUsersRepository
@@ -16,7 +16,7 @@ describe('Change password (end-to-end)', async () => {
 
   afterAll(async () => {
     await prismaClient.user.deleteMany({
-      where: { name: { contains: 'test' } },
+      where: { name: { contains: 'test' } }
     })
   })
 
@@ -28,7 +28,7 @@ describe('Change password (end-to-end)', async () => {
     const data: any = {
       currentPassword: '12345678',
       password: 'Bacon@1234',
-      confirmPassword: 'Bacon@1234',
+      confirmPassword: 'Bacon@1234'
     }
 
     const response = await request(app)

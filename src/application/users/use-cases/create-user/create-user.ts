@@ -1,5 +1,5 @@
-import { Either, left, right } from '@/core/logic/either'
 import { User } from '../../domain/user'
+import { Either, left, right } from '@/core/logic/either'
 import { IUsersRepository } from '../../repositories/IUsersRepository'
 import { UserAlreadyExistsError } from './errors/UserAlreadyExistsError'
 
@@ -48,9 +48,7 @@ export class CreateUser {
     }
 
     const user = userOrError.value
-
     await this.usersRepository.create(user)
-
     return right(user)
   }
 }

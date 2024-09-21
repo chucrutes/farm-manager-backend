@@ -1,12 +1,20 @@
 import { Generate } from '../logic/generate'
 
+type Timestamps = {
+  createdAt?: Date
+  updatedAt?: Date
+  deleteddAt?: Date
+}
+
 export class Entity<T> {
   protected readonly _id: string
   public readonly props: T
+  public readonly timestamps?: Timestamps
 
-  constructor(props: T, id?: string) {
+  constructor(props: T, id?: string, timestamps?: Timestamps) {
     this._id = id || Generate.id()
     this.props = props
+    this.timestamps = timestamps
   }
 
   get id() {
@@ -30,7 +38,7 @@ export class Entity<T> {
       id: Generate.id(),
       versionNumber,
       entityId: this._id,
-      ...this.props,
+      ...this.props
     }
   }
 
@@ -38,6 +46,7 @@ export class Entity<T> {
     return {
       _id: this._id,
       ...this.props,
+      ...this.timestamps
     }
   }
 }

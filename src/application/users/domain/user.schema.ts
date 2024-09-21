@@ -1,5 +1,4 @@
 import { z } from 'zod'
-import { min } from '@/utils/clear-html-tags'
 
 export const UserSchema = z.object({
   name: z.string().min(1).max(64),

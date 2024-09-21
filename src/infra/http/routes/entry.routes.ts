@@ -2,18 +2,18 @@ import { Router } from 'express'
 import { adaptRoute } from '@/core/infra/adapters/express-route-adapter'
 import { adaptMiddleware } from '@/core/infra/adapters/express-middleware-adapter'
 import { makeEnsureAuthenticated } from '../factories/middlewares/makeEnsureAuthenticated'
-import { makeCreateEntryController } from '../factories/controllers/entry/makeCreateEntryController'
 import { makeListEntryController } from '../factories/controllers/entry/makeListEntryController'
+import { makeCreateOrUpdateEntryController } from '../factories/controllers/entry/makeCreateOrUpdateEntryController'
 
 export const entry = Router()
 
 entry.post(
   '/',
   adaptMiddleware(makeEnsureAuthenticated()),
-  adaptRoute(makeCreateEntryController()),
+  adaptRoute(makeCreateOrUpdateEntryController())
 )
 entry.get(
   '/',
   adaptMiddleware(makeEnsureAuthenticated()),
-  adaptRoute(makeListEntryController()),
+  adaptRoute(makeListEntryController())
 )
