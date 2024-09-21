@@ -4,13 +4,16 @@ import PrismaFarmsRepository from '@/application/farms/repositories/prisma/Prism
 import { CreateOrUpdateEntry } from '@/application/entries/use-cases/create-or-update/create-or-update'
 import { PrismaEntriesRepository } from '@/application/entries/repositories/prisma/PrismaEntriesRepository'
 import { CreateOrUpdateEntryController } from '@/application/entries/use-cases/create-or-update/create-or-update.controller'
+import PrismaEntryTypesRepository from '@/application/entry-type/repositories/prisma/PrismaEntryTypesRepository'
 export function makeCreateOrUpdateEntryController(): Controller {
   const entriesRepository = new PrismaEntriesRepository()
   const farmsRepository = new PrismaFarmsRepository()
+  const entryTypesRepository = new PrismaEntryTypesRepository()
 
   const createEntry = new CreateOrUpdateEntry({
     farmsRepository,
-    entriesRepository
+    entriesRepository,
+    entryTypesRepository
   })
 
   const validator = new ValidatorCompositor([])

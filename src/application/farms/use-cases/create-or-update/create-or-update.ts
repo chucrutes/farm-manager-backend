@@ -4,7 +4,7 @@ import { FarmProps, Roles } from '../../domain/farm.schema'
 import { IFarmsRepository } from '../../repositories/IFarmsRepository'
 
 export type CreateOrUpdateFarmRequest = FarmProps & {
-  id?: string
+  _id?: string
   userId: string
 }
 
@@ -15,20 +15,20 @@ export class CreateOrUpdateFarm {
 
   async execute({
     name,
-    id,
+    _id,
     userId
   }: CreateOrUpdateFarmRequest): Promise<CreateOrUpdateFarmResponse> {
     let farmExists: Farm | null = null
 
-    if (id) {
-      farmExists = await this.farmsRepository.findById(id)
+    if (_id) {
+      farmExists = await this.farmsRepository.findById(_id)
     }
 
     const farmOrError = Farm.create(
       {
         name
       },
-      id
+      _id
     )
 
     if (farmOrError.isLeft()) {
