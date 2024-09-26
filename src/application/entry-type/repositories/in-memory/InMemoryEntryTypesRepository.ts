@@ -1,5 +1,8 @@
 import { EntryType } from '../../domain/entry-type'
-import { IEntryTypesRepository } from '../IEntryTypesRepository'
+import {
+  IEntryTypesRepository,
+  IncludeRelations
+} from '../IEntryTypesRepository'
 
 export class InMemoryEntryTypesRepository implements IEntryTypesRepository {
   constructor(public entryTypes: EntryType[] = []) {}
@@ -32,4 +35,10 @@ export class InMemoryEntryTypesRepository implements IEntryTypesRepository {
     return entryType
   }
   async deleteMany(_ids: string[]): Promise<void> {}
+  getAllByFarmId(
+    farmId: string,
+    includeRelations?: IncludeRelations
+  ): Promise<EntryType[]> {
+    throw new Error('Method not implemented.')
+  }
 }

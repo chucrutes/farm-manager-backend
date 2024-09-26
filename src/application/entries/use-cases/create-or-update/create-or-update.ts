@@ -54,7 +54,7 @@ export class CreateOrUpdateEntry {
     }
 
     const entry = entryOrError.value
-    await this.entriesRepository.create(entry)
+    await this.entriesRepository.createOrUpdate(entry)
 
     return right(entry)
   }

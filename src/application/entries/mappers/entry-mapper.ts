@@ -1,10 +1,18 @@
 import { t } from 'i18next'
 import { Entry } from '../domain/entry'
-import { Entry as PersistenceEntry } from '@prisma/client'
+import {
+  Entry as PersistenceEntry,
+  EntryType as PersistenceEntryType
+} from '@prisma/client'
 import { Categories } from '../domain/@types/categories.enum'
+import { EntryTypeMapper } from '@/application/entry-type/mappers/entry-type.mapper'
+
+type Raw = PersistenceEntry & {
+  type?: PersistenceEntryType
+}
 
 export class EntryMapper {
-  static toDomain(raw: PersistenceEntry) {
+  static toDomain(raw: Raw) {
     const entryOrError = Entry.create(
       {
         category: raw.category as Categories,
@@ -13,7 +21,10 @@ export class EntryMapper {
         quantity: raw.quantity,
         total: raw.total
       },
-      raw.id
+      raw.id,
+      {
+        type: raw.type && EntryTypeMapper.toDomain(raw.type)
+      }
     )
 
     if (entryOrError.isLeft()) {

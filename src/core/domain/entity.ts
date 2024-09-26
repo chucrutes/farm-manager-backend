@@ -6,6 +6,10 @@ type Timestamps = {
   deleteddAt?: Date
 }
 
+export type PartialIncludes<T extends object> = {
+  [P in keyof T]?: boolean
+}
+
 export class Entity<T> {
   protected readonly _id: string
   public readonly props: T

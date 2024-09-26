@@ -1,7 +1,12 @@
-import { Entry } from '../domain/entry'
+import { PartialIncludes } from '@/core/domain/entity'
+import { Entry, Relations } from '../domain/entry'
+import { ICrudRepository } from '@/core/domain/ICrudRepository'
 
-export interface IEntriesRepository {
-  create(entry: Entry): Promise<void>
-  getAllByFarmId(userId: string): Promise<Entry[]>
+type IncludeRelations = PartialIncludes<Relations>
+export interface IEntriesRepository extends ICrudRepository<Entry, Relations> {
+  getAllByFarmId(
+    userId: string,
+    includeRelations?: IncludeRelations
+  ): Promise<Entry[]>
   totalRevenueByFarm(farmId: string): Promise<number | null>
 }

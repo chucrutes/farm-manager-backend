@@ -1,9 +1,15 @@
 import { prismaClient } from '@/infra/prisma/client'
-import { EntryType, LANG_ENTITY } from '../../domain/entry-type'
-import { IEntryTypesRepository } from '../IEntryTypesRepository'
+import { EntryType, LANG_ENTITY, Relations } from '../../domain/entry-type'
+import {
+  IEntryTypesRepository,
+  IncludeRelations
+} from '../IEntryTypesRepository'
 import { EntryTypeMapper } from '../../mappers/entry-type.mapper'
+import { Prisma } from '@prisma/client'
 
 const dbEntryTypeClient = prismaClient.entryType
+
+type EntryTypeInclude = Prisma.EntryTypeInclude
 
 export default class PrismaEntryTypesRepository
   implements IEntryTypesRepository
@@ -60,5 +66,15 @@ export default class PrismaEntryTypesRepository
         }
       }
     })
+  }
+
+  async getAllByFarmId(farmId: string): Promise<EntryType[]> {
+    const data = await prismaClient.entryType.findMany({
+      where: {
+        farm_id: farmId
+      }
+    })
+
+    return data.map(EntryTypeMapper.toDomain)
   }
 }

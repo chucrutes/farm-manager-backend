@@ -5,6 +5,9 @@ import { ZodValidationError } from '@/core/domain/errors/ZodValidationError'
 
 export const LANG_ENTITY = 'farm'
 
+// biome-ignore lint/complexity/noBannedTypes: <explanation>
+export type Relations = {}
+
 export class Farm extends Entity<FarmProps> {
   private constructor(props: FarmProps, id?: string) {
     super(props, id)
