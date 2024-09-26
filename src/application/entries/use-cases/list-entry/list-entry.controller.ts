@@ -1,7 +1,7 @@
+import { ListEntry } from './list-entry'
+import { Validator } from '@/core/infra/validator'
 import { Controller } from '@/core/infra/controller'
 import { HttpResponse, clientError, ok } from '@/core/infra/http-response'
-import { Validator } from '@/core/infra/validator'
-import { ListEntry } from './list-entry'
 
 type ListEntryControllerRequest = {
   currentUserId: string
@@ -26,7 +26,8 @@ export class ListEntryController implements Controller {
 
     return ok({
       dto: result.entries.map((res) => ({
-        ...res.toResponseBody()
+        ...res.toResponseBody(),
+        type: res.type?.toResponseBody()
       })),
       total: result.total
     })
