@@ -8,4 +8,4 @@ export enum Roles {
   WORKER = 'WORKER'
 }
 
-export type FarmProps = z.infer<typeof FarmSchema>
+export type FarmAttributes = z.infer<typeof FarmSchema>

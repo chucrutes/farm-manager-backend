@@ -1,7 +1,7 @@
 import { Farm } from '@/application/farms/domain/farm'
-import { FarmProps } from '@/application/farms/domain/farm.schema'
+import { FarmAttributes } from '@/application/farms/domain/farm.schema'
 
-type DefaultProperties = Partial<FarmProps>
+type DefaultProperties = Partial<FarmAttributes>
 type CreateOverrides = DefaultProperties & { id?: string }
 
 export class FarmFactory {

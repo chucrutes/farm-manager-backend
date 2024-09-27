@@ -9,4 +9,4 @@ export const UserSchema = z.object({
   emailVerified: z.boolean().nullish()
 })
 
-export type UserProps = z.infer<typeof UserSchema>
+export type UserAttributes = z.infer<typeof UserSchema>

@@ -1,4 +1,7 @@
+import type { z } from 'zod'
 import { Generate } from '../logic/generate'
+import { ZodValidationError } from './errors/ZodValidationError'
+import { type Either, left, right } from '../logic/either'
 
 type Timestamps = {
   createdAt?: Date
@@ -6,26 +9,50 @@ type Timestamps = {
   deleteddAt?: Date
 }
 
+export type ZodObject = z.AnyZodObject
+
 export type PartialIncludes<T extends object> = {
   [P in keyof T]?: boolean
 }
 
-export class Entity<T> {
-  protected readonly _id: string
-  public readonly props: T
-  public readonly timestamps?: Timestamps
+export type ConstructorProps<Attributes, Relations> = {
+  schema: ZodObject
+  attributes: Attributes
+  id?: string
+  timestamps?: Timestamps
+  relations?: Relations
+}
 
-  constructor(props: T, id?: string, timestamps?: Timestamps) {
-    this._id = id || Generate.id()
-    this.props = props
-    this.timestamps = timestamps
+export class Entity<Attributes extends object, Relations> {
+  protected readonly _id: string
+  public readonly attributes: Attributes
+  public readonly timestamps?: Timestamps
+  public readonly relations?: Relations
+
+  constructor(props: ConstructorProps<Attributes, Relations>) {
+    this._id = props.id || Generate.id()
+    this.attributes = props.attributes
+    this.timestamps = props.timestamps
+    this.relations = props.relations
+  }
+
+  static create<Attributes extends object, Relations>(
+    props: ConstructorProps<Attributes, Relations>
+  ): Either<Error, Entity<Attributes, Relations>> {
+    const result = props.schema.safeParse(props.attributes)
+
+    if (!result.success) {
+      return left(new ZodValidationError(result.error))
+    }
+
+    return right(new Entity(props))
   }
 
   get id() {
     return this._id
   }
 
-  public equals(object?: Entity<T> | null): boolean {
+  public equals(object?: Entity<Attributes, Relations> | null): boolean {
     if (!object || object == null || object === undefined) {
       return false
     }
@@ -42,14 +69,14 @@ export class Entity<T> {
       id: Generate.id(),
       versionNumber,
       entityId: this._id,
-      ...this.props
+      ...this.attributes
     }
   }
 
   public toResponseBody() {
     return {
       _id: this._id,
-      ...this.props,
+      ...this.attributes,
       ...this.timestamps
     }
   }

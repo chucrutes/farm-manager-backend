@@ -1,8 +1,8 @@
 import { Entity } from '@/core/domain/entity'
-import { Farm } from '@/application/farms/domain/farm'
-import { EntryProps, EntrySchema } from './entry.schema'
-import { Either, left, right } from '@/core/logic/either'
-import { EntryType } from '@/application/entry-type/domain/entry-type'
+import type { Farm } from '@/application/farms/domain/farm'
+import { type Either, left, right } from '@/core/logic/either'
+import { type EntryAttributes, EntrySchema } from './entry.schema'
+import type { EntryType } from '@/application/entry-type/domain/entry-type'
 import { ZodValidationError } from '@/core/domain/errors/ZodValidationError'
 
 export const LANG_ENTITY = 'entry'
@@ -12,18 +12,22 @@ export type Relations = {
   type?: EntryType
 }
 
-export class Entry extends Entity<EntryProps> {
+export class Entry extends Entity<EntryAttributes, Relations> {
   private _farm?: Farm
   private _type?: EntryType
 
-  private constructor(props: EntryProps, id?: string, relations?: Relations) {
+  private constructor(
+    props: EntryAttributes,
+    id?: string,
+    relations?: Relations
+  ) {
     super(props, id)
     this._farm = relations?.farm
     this._type = relations?.type
   }
 
   static create(
-    props: EntryProps,
+    props: EntryAttributes,
     id?: string,
     relations?: Relations
   ): Either<Error, Entry> {

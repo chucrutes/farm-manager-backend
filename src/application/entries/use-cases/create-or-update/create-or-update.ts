@@ -1,12 +1,12 @@
 import { Entry } from '../../domain/entry'
-import { EntryProps } from '../../domain/entry.schema'
-import { Either, left, right } from '@/core/logic/either'
-import { IEntriesRepository } from '../../repositories/IEntriesRepository'
-import { IFarmsRepository } from '@/application/farms/repositories/IFarmsRepository'
-import { IEntryTypesRepository } from '@/application/entry-type/repositories/IEntryTypesRepository'
+import type { EntryAttributes } from '../../domain/entry.schema'
+import { type Either, left, right } from '@/core/logic/either'
+import type { IEntriesRepository } from '../../repositories/IEntriesRepository'
+import type { IFarmsRepository } from '@/application/farms/repositories/IFarmsRepository'
+import type { IEntryTypesRepository } from '@/application/entry-type/repositories/IEntryTypesRepository'
 import { EntryTypeNotFoundError } from '@/application/entry-type/use-cases/@errors/EntryTypeNotFoundError'
 
-export type CreateOrUpdateEntryRequest = EntryProps & {
+export type CreateOrUpdateEntryRequest = EntryAttributes & {
   userId: string
   typeId: string
   _id?: string
@@ -14,7 +14,7 @@ export type CreateOrUpdateEntryRequest = EntryProps & {
 
 type CreateOrUpdateEntryResponse = Either<Error, Entry>
 
-type CreateOrUpdateEntryProps = {
+type CreateOrUpdateEntryAttributes = {
   entriesRepository: IEntriesRepository
   entryTypesRepository: IEntryTypesRepository
   farmsRepository: IFarmsRepository
@@ -25,7 +25,7 @@ export class CreateOrUpdateEntry {
   private entryTypesRepository: IEntryTypesRepository
 
   private farmsRepository: IFarmsRepository
-  constructor(props: CreateOrUpdateEntryProps) {
+  constructor(props: CreateOrUpdateEntryAttributes) {
     this.entriesRepository = props.entriesRepository
     this.entryTypesRepository = props.entryTypesRepository
     this.farmsRepository = props.farmsRepository

@@ -15,4 +15,4 @@ export const EntryRequestSchema = EntrySchema.merge(
     type: EntryTypeSchema.merge(IdSchema)
   })
 )
-export type EntryProps = z.infer<typeof EntrySchema>
+export type EntryAttributes = z.infer<typeof EntrySchema>

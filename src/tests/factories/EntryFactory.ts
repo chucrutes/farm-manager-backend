@@ -1,10 +1,10 @@
 import { Farm } from '@/application/farms/domain/farm'
 import { Entry } from '@/application/entries/domain/entry'
 import { Types } from '@/application/entries/domain/@types/types.enum'
-import { EntryProps } from '@/application/entries/domain/entry.schema'
+import { EntryAttributes } from '@/application/entries/domain/entry.schema'
 import { Categories } from '@/application/entries/domain/@types/categories.enum'
 
-type EntryOverrides = Partial<Omit<EntryProps, 'farmId'>> & {
+type EntryOverrides = Partial<Omit<EntryAttributes, 'farmId'>> & {
   farm?: Farm
   id?: string
 }

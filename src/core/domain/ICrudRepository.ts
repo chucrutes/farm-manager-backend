@@ -1,4 +1,4 @@
-import { PartialIncludes } from './entity'
+import type { PartialIncludes } from './entity'
 
 export interface ICrudRepository<Entity, Relations extends object> {
   createOrUpdate(entity: Entity): Promise<void>

@@ -1,35 +1,30 @@
-import { Entity, type ZodObject } from '@/core/domain/entity'
+import type { Entity } from '@/core/domain/entity'
 import { type Either, left, right } from '@/core/logic/either'
 import type { ICrudRepository } from '@/core/domain/ICrudRepository'
 
 export class CreateOrUpdateEntity<
-  R extends object,
-  T extends ICrudRepository<Entity<object, unknown>, R>
+  T extends Entity<any, any>,
+  R extends ICrudRepository<T, R>
 > {
-  constructor(
-    private readonly repository: T,
-    private readonly schema: ZodObject
-  ) {}
+  constructor(private readonly repository: R) {}
 
   async execute({
     attributes,
-    _id
+    _id,
+    userId
   }: {
-    attributes: object
+    attributes: T
     _id?: string
     userId: string
-  }): Promise<Either<Error, Entity<object, unknown>>> {
-    let entityExists: Entity<object, unknown> | null = null
+  }): Promise<Either<Error, T>> {
+    let entityExists: T | null = null
 
     if (_id) {
       entityExists = await this.repository.findById(_id)
     }
 
-    const entityOrError = Entity.create({
-      attributes,
-      id: _id,
-      schema: this.schema
-    })
+    // Dynamically create or update the entity using the provided attributes
+    const entityOrError = T.create({ attributes }, _id)
 
     if (entityOrError.isLeft()) {
       return left(entityOrError.value)
@@ -38,7 +33,6 @@ export class CreateOrUpdateEntity<
     const entity = entityOrError.value
 
     await this.repository.createOrUpdate(entity)
-
     return right(entity)
   }
 }

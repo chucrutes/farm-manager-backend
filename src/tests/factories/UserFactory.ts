@@ -1,8 +1,8 @@
 import { JWT } from '@/core/domain/jwt'
 import { User } from '@/application/users/domain/user'
-import { UserProps } from '@/application/users/domain/user.schema'
+import { UserAttributes } from '@/application/users/domain/user.schema'
 
-type UserOverrides = Partial<UserProps>
+type UserOverrides = Partial<UserAttributes>
 
 export class UserFactory {
   static create(overrides?: UserOverrides) {

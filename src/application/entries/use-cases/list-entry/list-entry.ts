@@ -11,7 +11,7 @@ type ListEntryResponse = {
   total?: number | null
 }
 
-type ListEntryProps = {
+type ListEntryAttributes = {
   entriesRepository: IEntriesRepository
   farmsRepository: IFarmsRepository
 }
@@ -19,7 +19,7 @@ type ListEntryProps = {
 export class ListEntry {
   private entriesRepository: IEntriesRepository
   private farmsRepository: IFarmsRepository
-  constructor(props: ListEntryProps) {
+  constructor(props: ListEntryAttributes) {
     this.entriesRepository = props.entriesRepository
     this.farmsRepository = props.farmsRepository
   }

@@ -1,14 +1,14 @@
 import { Entity } from '@/core/domain/entity'
-import { UserProps, UserSchema } from './user.schema'
+import { UserAttributes, UserSchema } from './user.schema'
 import { Either, left, right } from '@/core/logic/either'
 import { ZodValidationError } from '@/core/domain/errors/ZodValidationError'
 
-export class User extends Entity<UserProps> {
-  private constructor(props: UserProps, id?: string) {
+export class User extends Entity<UserAttributes> {
+  private constructor(props: UserAttributes, id?: string) {
     super(props, id)
   }
 
-  static create(props: UserProps, id?: string): Either<Error, User> {
+  static create(props: UserAttributes, id?: string): Either<Error, User> {
     const result = UserSchema.safeParse(props)
 
     if (!result.success) {
