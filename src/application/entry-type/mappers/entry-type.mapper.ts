@@ -1,4 +1,4 @@
-import { t } from 'i18next'
+
 import { Categories } from '../domain/entry-type.schema'
 import { EntryType, LANG_ENTITY } from '../domain/entry-type'
 import { EntryType as PersistenceEntryType } from '@prisma/client'
@@ -14,7 +14,7 @@ export class EntryTypeMapper {
     )
 
     if (entityOrError.isLeft()) {
-      throw new Error(t(`errors.invalid_${LANG_ENTITY}`))
+      throw new Error((`errors.invalid_${LANG_ENTITY}`))
     }
 
     return entityOrError.value

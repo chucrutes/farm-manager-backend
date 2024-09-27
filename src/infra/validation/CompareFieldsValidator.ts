@@ -1,4 +1,3 @@
-import { t } from 'i18next'
 import { Validator } from '@/core/infra/validator'
 import { Either, left, right } from '@/core/logic/either'
 
@@ -14,7 +13,7 @@ export class CompareFieldsValidator<T = any> implements Validator<T> {
   public validate(data: T): Either<Error, null> {
     if (data[this.fields.field] !== data[this.fields.fieldToCompare]) {
       return left(
-        new Error(t(this.fields.keyMessage ?? 'errors.fields_are_not_equal'))
+        new Error(this.fields.keyMessage ?? 'errors.fields_are_not_equal')
       )
     }
     return right(null)

@@ -6,7 +6,7 @@ import {
   created
 } from '@/core/infra/http-response'
 import { Validator } from '@/core/infra/validator'
-import { t } from 'i18next'
+
 import { CreateUser } from './create-user'
 import { UserAlreadyExistsError } from './errors/UserAlreadyExistsError'
 
@@ -44,6 +44,6 @@ export class CreateUserController implements Controller {
           return clientError(error)
       }
     }
-    return created({ message: t('account.created') })
+    return created({ message: ('account.created') })
   }
 }

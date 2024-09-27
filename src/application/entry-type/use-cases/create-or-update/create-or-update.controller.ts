@@ -1,7 +1,7 @@
 import { Controller } from '@/core/infra/controller'
 import { HttpResponse, clientError, ok } from '@/core/infra/http-response'
 import { Validator } from '@/core/infra/validator'
-import { t } from 'i18next'
+
 import {
   CreateOrUpdateEntryType,
   CreateOrUpdateEntryTypeRequest
@@ -43,6 +43,6 @@ export class CreateOrUpdateEntryTypeController implements Controller {
           return clientError(error)
       }
     }
-    return ok({ message: t(`${LANG_ENTITY}.created`) })
+    return ok({ message: (`${LANG_ENTITY}.created`) })
   }
 }

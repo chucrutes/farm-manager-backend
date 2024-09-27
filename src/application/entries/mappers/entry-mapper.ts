@@ -1,4 +1,4 @@
-import { t } from 'i18next'
+
 import { Entry } from '../domain/entry'
 import {
   Entry as PersistenceEntry,
@@ -28,7 +28,7 @@ export class EntryMapper {
     )
 
     if (entryOrError.isLeft()) {
-      throw new Error(t('errors.invalid_entry'))
+      throw new Error(('errors.invalid_entry'))
     }
 
     return entryOrError.value

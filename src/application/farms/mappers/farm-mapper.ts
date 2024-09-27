@@ -1,4 +1,4 @@
-import { t } from 'i18next'
+
 import { Farm } from '../domain/farm'
 import { Farm as PersistenceFarm } from '@prisma/client'
 
@@ -12,7 +12,7 @@ export class FarmMapper {
     )
 
     if (farmOrError.isLeft()) {
-      throw new Error(t('errors.invalid_farm'))
+      throw new Error(('errors.invalid_farm'))
     }
 
     return farmOrError.value

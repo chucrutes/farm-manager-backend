@@ -1,7 +1,7 @@
 import { Controller } from '@/core/infra/controller'
 import { HttpResponse, clientError, ok } from '@/core/infra/http-response'
 import { Validator } from '@/core/infra/validator'
-import { t } from 'i18next'
+
 import { ChangePassword } from './change-password'
 import { UserDoesNotExistError } from './errors/UserDoesNotExistError'
 import { CurrentPaswordDoesNotMatchError } from './errors/CurrentPasswordDoesNotMatchError'
@@ -40,6 +40,6 @@ export class ChangePasswordController implements Controller {
       }
     }
 
-    return ok({ message: t('user.password_changed') })
+    return ok({ message: ('user.password_changed') })
   }
 }

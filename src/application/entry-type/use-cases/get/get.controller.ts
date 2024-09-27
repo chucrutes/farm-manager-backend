@@ -1,4 +1,4 @@
-import { t } from 'i18next'
+
 import { Validator } from '@/core/infra/validator'
 import { Controller } from '@/core/infra/controller'
 import { LANG_ENTITY } from '../../domain/entry-type'

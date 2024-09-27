@@ -1,4 +1,4 @@
-import { t } from 'i18next'
+
 import { User } from '../domain/user'
 import { Password } from '@/core/domain/password'
 import { User as PersistenceUser } from '@prisma/client'
@@ -18,7 +18,7 @@ export class UserMapper {
     )
 
     if (userOrError.isLeft()) {
-      throw new Error(t('errors.invalid_user'))
+      throw new Error(('errors.invalid_user'))
     }
 
     return userOrError.value
@@ -30,7 +30,7 @@ export class UserMapper {
     const hashed = Password.create(user.props.password, true)
 
     if (hashed.isLeft()) {
-      throw new Error(t('errors.invalid_hash_password'))
+      throw new Error(('errors.invalid_hash_password'))
     }
 
     return {
