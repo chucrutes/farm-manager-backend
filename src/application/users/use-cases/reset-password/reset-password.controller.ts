@@ -1,11 +1,10 @@
-import { t } from 'i18next'
 import { ResetPassword } from './reset-password'
 import { Validator } from '@/core/infra/validator'
 import { Controller } from '@/core/infra/controller'
 import { UserDoesNotExistError } from './errors/UserDoesNotExistError'
 import { HttpResponse, clientError, ok } from '@/core/infra/http-response'
 
-type ResetPasswordControllerRequest = {
+export type ResetPasswordControllerRequest = {
   currentUserId: string
   password: string
   confirmPassword: string
@@ -42,6 +41,6 @@ export class ResetPasswordController implements Controller {
       }
     }
 
-    return ok({ message: t('user.password_reset') })
+    return ok({ message: ('user.password_reset') })
   }
 }

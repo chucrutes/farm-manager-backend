@@ -82,7 +82,8 @@ export class PrismaUsersRepository implements IUsersRepository {
           ...data
         }
       })
-      .catch(() => {
+      .catch((error) => {
+        console.log(JSON.stringify(error))
         throw new Error('Error on update user')
       })
   }
