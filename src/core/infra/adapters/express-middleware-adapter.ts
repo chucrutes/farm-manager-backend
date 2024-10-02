@@ -1,6 +1,6 @@
-import { NextFunction, Request, Response } from 'express'
+import type { NextFunction, Request, Response } from 'express'
 import { StatusCodes } from 'http-status-codes'
-import { Middleware } from '../middleware'
+import type { Middleware } from '../middleware'
 
 export const adaptMiddleware = (middleware: Middleware) => {
   return async (request: Request, response: Response, next: NextFunction) => {
@@ -22,15 +22,16 @@ export const adaptMiddleware = (middleware: Middleware) => {
      * Não é um erro, mas parar a requisição.
      */
     if (httpResponse === false) {
-      return response.status(StatusCodes.OK).send()
+      response.status(StatusCodes.OK).send()
+      return
     }
 
     if (httpResponse.statusCode === StatusCodes.OK) {
       Object.assign(request, httpResponse.body)
-      return next()
+      next()
     }
 
-    return response.status(httpResponse.statusCode).json({
+    response.status(httpResponse.statusCode).json({
       type: httpResponse.body.type,
       message: httpResponse.body.message
     })

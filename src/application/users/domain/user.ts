@@ -1,6 +1,6 @@
 import { Entity } from '@/core/domain/entity'
-import { UserProps, UserSchema } from './user.schema'
-import { Either, left, right } from '@/core/logic/either'
+import { type UserProps, UserSchema } from './user.schema'
+import { type Either, left, right } from '@/core/logic/either'
 import { ZodValidationError } from '@/core/domain/errors/ZodValidationError'
 
 export class User extends Entity<UserProps> {

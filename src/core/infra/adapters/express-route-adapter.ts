@@ -1,5 +1,5 @@
-import { Request, Response } from 'express'
-import { Controller } from '../controller'
+import type { Request, Response } from 'express'
+import type { Controller } from '../controller'
 
 export const adaptRoute = (controller: Controller) => {
   return async (request: Request, response: Response) => {
@@ -14,6 +14,6 @@ export const adaptRoute = (controller: Controller) => {
 
     const httpResponse = await controller.handle(requestData)
 
-    return response.status(httpResponse.statusCode).json(httpResponse.body)
+    response.status(httpResponse.statusCode).json(httpResponse.body)
   }
 }
