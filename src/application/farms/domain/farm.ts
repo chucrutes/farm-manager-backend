@@ -1,6 +1,6 @@
 import { Entity } from '@/core/domain/entity'
-import { FarmProps, FarmSchema } from './farm.schema'
-import { Either, left, right } from '@/core/logic/either'
+import { type FarmProps, FarmSchema } from './farm.schema'
+import { type Either, left, right } from '@/core/logic/either'
 import { ZodValidationError } from '@/core/domain/errors/ZodValidationError'
 
 export const LANG_ENTITY = 'farm'

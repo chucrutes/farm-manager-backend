@@ -20,16 +20,19 @@ app.use(express.json())
 app.get('/', (_, res) => {
   res.status(200).send('OK')
 })
+
 io.on('connection', (socket) => {
   console.log(green(socket.id))
+  console.log(green(io.sockets.sockets.size))
   console.log('a user connected')
+  socket.broadcast.emit('broadcast-group', socket.id)
 
-  socket.on('channel', (message: string) => {
+  socket.on('newMessage', (message: string) => {
     console.log(message)
-    socket.emit('queue', `teste${message}`)
+    socket.broadcast.emit('broadcast-group', socket.id)
   })
 
-  socket.emit('queue', 'teste')
+  // socket.emit('queue', 'teste')
 })
 io.listen(3001)
 app.use('/api', router)
