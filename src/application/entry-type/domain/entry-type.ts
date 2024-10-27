@@ -1,7 +1,7 @@
 import { Entity } from '@/core/domain/entity'
-import { Farm } from '@/application/farms/domain/farm'
-import { Either, left, right } from '@/core/logic/either'
-import { EntryTypeProps, EntryTypeSchema } from './entry-type.schema'
+import type { Farm } from '@/application/farms/domain/farm'
+import { type Either, left, right } from '@/core/logic/either'
+import { type EntryTypeProps, EntryTypeSchema } from './entry-type.schema'
 import { ZodValidationError } from '@/core/domain/errors/ZodValidationError'
 
 export const LANG_ENTITY = 'entry_type'

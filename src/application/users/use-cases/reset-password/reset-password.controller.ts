@@ -1,8 +1,8 @@
-import { ResetPassword } from './reset-password'
-import { Validator } from '@/core/infra/validator'
-import { Controller } from '@/core/infra/controller'
-import { UserDoesNotExistError } from './errors/UserDoesNotExistError'
-import { HttpResponse, clientError, ok } from '@/core/infra/http-response'
+import type { Validator } from '@/core/infra/validator'
+import type { Controller } from '@/core/infra/controller'
+import * as UserDoesNotExistError from './errors/UserDoesNotExistError'
+import { type HttpResponse, clientError, ok } from '@/core/infra/http-response'
+import type { ResetPassword } from './reset-password'
 
 export type ResetPasswordControllerRequest = {
   currentUserId: string
@@ -34,13 +34,13 @@ export class ResetPasswordController implements Controller {
       const error = result.value
 
       switch (error.constructor) {
-        case UserDoesNotExistError:
+        case UserDoesNotExistError.UserDoesNotExistError:
           return clientError(error)
         default:
           return clientError(error)
       }
     }
 
-    return ok({ message: ('user.password_reset') })
+    return ok({ message: 'user.password_reset' })
   }
 }

@@ -1,6 +1,6 @@
 import { EntryType, LANG_ENTITY } from './entry-type'
 import { describe, expect, test } from 'vitest'
-import { Categories, EntryTypeProps } from './entry-type.schema'
+import { Categories, type EntryTypeProps } from './entry-type.schema'
 
 describe(`Entity ${LANG_ENTITY}`, () => {
   test(`should be able to create a ${LANG_ENTITY}`, () => {

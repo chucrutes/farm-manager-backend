@@ -1,10 +1,9 @@
-
 import { Entry } from '../domain/entry'
-import {
+import type {
   Entry as PersistenceEntry,
   EntryType as PersistenceEntryType
 } from '@prisma/client'
-import { Categories } from '../domain/@types/categories.enum'
+import type { Categories } from '../domain/@types/categories.enum'
 import { EntryTypeMapper } from '@/application/entry-type/mappers/entry-type.mapper'
 
 type Raw = PersistenceEntry & {
@@ -28,7 +27,7 @@ export class EntryMapper {
     )
 
     if (entryOrError.isLeft()) {
-      throw new Error(('errors.invalid_entry'))
+      throw new Error('errors.invalid_entry')
     }
 
     return entryOrError.value

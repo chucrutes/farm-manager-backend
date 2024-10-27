@@ -1,5 +1,5 @@
 import { EntryType } from '../domain/entry-type'
-import { Categories, EntryTypeProps } from '../domain/entry-type.schema'
+import { Categories, type EntryTypeProps } from '../domain/entry-type.schema'
 
 type DefaultProperties = Partial<EntryTypeProps>
 type CreateOverrides = DefaultProperties & { id?: string }

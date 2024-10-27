@@ -1,6 +1,6 @@
-import { Farm } from '../../domain/farm'
-import { Roles } from '../../domain/farm.schema'
-import { IFarmsRepository } from '../IFarmsRepository'
+import type { Farm } from '../../domain/farm'
+import type { Roles } from '../../domain/farm.schema'
+import type { IFarmsRepository } from '../IFarmsRepository'
 
 export class InMemoryFarmsRepository implements IFarmsRepository {
   constructor(public farms: Farm[] = []) {}

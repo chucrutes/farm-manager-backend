@@ -1,7 +1,7 @@
-import { ListEntryType } from './list'
-import { Validator } from '@/core/infra/validator'
-import { Controller } from '@/core/infra/controller'
-import { HttpResponse, clientError, ok } from '@/core/infra/http-response'
+import type { ListEntryType } from './list'
+import type { Validator } from '@/core/infra/validator'
+import type { Controller } from '@/core/infra/controller'
+import { type HttpResponse, clientError, ok } from '@/core/infra/http-response'
 
 type ListEntryTypeControllerRequest = {
   currentUserId: string

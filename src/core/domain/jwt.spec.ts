@@ -1,6 +1,6 @@
 import { describe, expect, test } from 'vitest'
 import { InvalidJWTTokenError } from './errors/InvalidJWTTokenError'
-import { JWT, JWTTokenPayload } from './jwt'
+import { JWT, type JWTTokenPayload } from './jwt'
 import { User } from '@/application/users/domain/user'
 
 describe('JWT model', () => {
@@ -8,7 +8,7 @@ describe('JWT model', () => {
     const userOrError = User.create({
       name: 'test',
       email: 'email@test.com',
-      password: '123456789',
+      password: '123456789'
     })
 
     const user = userOrError.value as User
@@ -22,7 +22,7 @@ describe('JWT model', () => {
     const userOrError = User.create({
       name: 'test',
       email: 'email@test.com',
-      password: '123456789',
+      password: '123456789'
     })
 
     const user = userOrError.value as User
@@ -47,7 +47,7 @@ describe('JWT model', () => {
     const userOrError = User.create({
       name: 'test',
       email: 'email@test.com',
-      password: '123456789',
+      password: '123456789'
     })
 
     const user = userOrError.value as User

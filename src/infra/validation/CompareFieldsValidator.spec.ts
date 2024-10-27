@@ -4,7 +4,7 @@ import { CompareFieldsValidator } from './CompareFieldsValidator'
 describe('Compare Fields Validator', () => {
   const validator = new CompareFieldsValidator({
     field: 'field',
-    fieldToCompare: 'field2',
+    fieldToCompare: 'field2'
   })
 
   test('should not return an error if both fields are equal', () => {

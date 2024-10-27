@@ -1,11 +1,8 @@
 import { prismaClient } from '@/infra/prisma/client'
-import { EntryType, LANG_ENTITY, Relations } from '../../domain/entry-type'
-import {
-  IEntryTypesRepository,
-  IncludeRelations
-} from '../IEntryTypesRepository'
+import { type EntryType, LANG_ENTITY } from '../../domain/entry-type'
+import type { IEntryTypesRepository } from '../IEntryTypesRepository'
 import { EntryTypeMapper } from '../../mappers/entry-type.mapper'
-import { Prisma } from '@prisma/client'
+import type { Prisma } from '@prisma/client'
 
 const dbEntryTypeClient = prismaClient.entryType
 

@@ -1,6 +1,5 @@
-
 import { Farm } from '../domain/farm'
-import { Farm as PersistenceFarm } from '@prisma/client'
+import type { Farm as PersistenceFarm } from '@prisma/client'
 
 export class FarmMapper {
   static toDomain(raw: PersistenceFarm) {
@@ -12,7 +11,7 @@ export class FarmMapper {
     )
 
     if (farmOrError.isLeft()) {
-      throw new Error(('errors.invalid_farm'))
+      throw new Error('errors.invalid_farm')
     }
 
     return farmOrError.value

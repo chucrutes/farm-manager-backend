@@ -1,7 +1,6 @@
-
-import { Categories } from '../domain/entry-type.schema'
+import type { Categories } from '../domain/entry-type.schema'
 import { EntryType, LANG_ENTITY } from '../domain/entry-type'
-import { EntryType as PersistenceEntryType } from '@prisma/client'
+import type { EntryType as PersistenceEntryType } from '@prisma/client'
 
 export class EntryTypeMapper {
   static toDomain(raw: PersistenceEntryType) {
@@ -14,7 +13,7 @@ export class EntryTypeMapper {
     )
 
     if (entityOrError.isLeft()) {
-      throw new Error((`errors.invalid_${LANG_ENTITY}`))
+      throw new Error(`errors.invalid_${LANG_ENTITY}`)
     }
 
     return entityOrError.value

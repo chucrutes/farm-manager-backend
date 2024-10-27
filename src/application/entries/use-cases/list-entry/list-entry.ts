@@ -1,6 +1,6 @@
-import { IFarmsRepository } from '@/application/farms/repositories/IFarmsRepository'
-import { Entry } from '../../domain/entry'
-import { IEntriesRepository } from '../../repositories/IEntriesRepository'
+import type { IFarmsRepository } from '@/application/farms/repositories/IFarmsRepository'
+import type { Entry } from '../../domain/entry'
+import type { IEntriesRepository } from '../../repositories/IEntriesRepository'
 
 export type ListEntryRequest = {
   userId: string

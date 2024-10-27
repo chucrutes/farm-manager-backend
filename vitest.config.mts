@@ -1,4 +1,4 @@
-import path from 'path'
+import path from 'node:path'
 import { defineConfig } from 'vitest/config'
 export default defineConfig({
   resolve: {
@@ -6,7 +6,7 @@ export default defineConfig({
       '@': path.resolve(__dirname, './src'),
       '@application': path.resolve(__dirname, './src/application'),
       '@core': path.resolve(__dirname, './src/core'),
-      '@infra': path.resolve(__dirname, './src/infra'),
+      '@infra': path.resolve(__dirname, './src/infra')
     }
   },
   test: {

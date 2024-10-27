@@ -1,9 +1,9 @@
-import { Prisma } from '@prisma/client'
-import { Entry, Relations } from '../../domain/entry'
+import type { Prisma } from '@prisma/client'
+import type { Entry, Relations } from '../../domain/entry'
 import { prismaClient } from '@/infra/prisma/client'
 import { EntryMapper } from '../../mappers/entry-mapper'
-import { IEntriesRepository } from '../IEntriesRepository'
-import { IncludeRelations } from '@/application/entry-type/repositories/IEntryTypesRepository'
+import type { IEntriesRepository } from '../IEntriesRepository'
+import type { IncludeRelations } from '@/application/entry-type/repositories/IEntryTypesRepository'
 
 type EntryInclude = Prisma.EntryInclude
 

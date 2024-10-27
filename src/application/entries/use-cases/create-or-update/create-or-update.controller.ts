@@ -1,8 +1,8 @@
-import { Controller } from '@/core/infra/controller'
-import { HttpResponse, clientError, ok } from '@/core/infra/http-response'
-import { Validator } from '@/core/infra/validator'
+import type { Controller } from '@/core/infra/controller'
+import { type HttpResponse, clientError, ok } from '@/core/infra/http-response'
+import type { Validator } from '@/core/infra/validator'
 
-import {
+import type {
   CreateOrUpdateEntry,
   CreateOrUpdateEntryRequest
 } from './create-or-update'
@@ -43,6 +43,6 @@ export class CreateOrUpdateEntryController implements Controller {
           return clientError(error)
       }
     }
-    return ok({ message: (`${LANG_ENTITY}.created`) })
+    return ok({ message: `${LANG_ENTITY}.created` })
   }
 }

@@ -1,6 +1,6 @@
-import { PartialIncludes } from '@/core/domain/entity'
-import { Entry, Relations } from '../../domain/entry'
-import { IEntriesRepository } from '../IEntriesRepository'
+import type { PartialIncludes } from '@/core/domain/entity'
+import type { Entry, Relations } from '../../domain/entry'
+import type { IEntriesRepository } from '../IEntriesRepository'
 
 export class InMemoryEntriesRepository implements IEntriesRepository {
   public entries: Entry[] = []

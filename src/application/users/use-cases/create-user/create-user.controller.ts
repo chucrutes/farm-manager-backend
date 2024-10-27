@@ -1,13 +1,13 @@
-import { Controller } from '@/core/infra/controller'
+import type { Controller } from '@/core/infra/controller'
 import {
-  HttpResponse,
+  type HttpResponse,
   clientError,
   conflict,
   created
 } from '@/core/infra/http-response'
-import { Validator } from '@/core/infra/validator'
+import type { Validator } from '@/core/infra/validator'
 
-import { CreateUser } from './create-user'
+import type { CreateUser } from './create-user'
 import { UserAlreadyExistsError } from './errors/UserAlreadyExistsError'
 
 type CreateUserControllerRequest = {
@@ -44,6 +44,6 @@ export class CreateUserController implements Controller {
           return clientError(error)
       }
     }
-    return created({ message: ('account.created') })
+    return created({ message: 'account.created' })
   }
 }

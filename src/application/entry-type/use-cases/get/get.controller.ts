@@ -1,9 +1,7 @@
-
-import { Validator } from '@/core/infra/validator'
-import { Controller } from '@/core/infra/controller'
-import { LANG_ENTITY } from '../../domain/entry-type'
-import { GetEntryType, GetEntryTypeRequest } from './get'
-import { HttpResponse, clientError, ok } from '@/core/infra/http-response'
+import type { Validator } from '@/core/infra/validator'
+import type { Controller } from '@/core/infra/controller'
+import type { GetEntryType, GetEntryTypeRequest } from './get'
+import { type HttpResponse, clientError, ok } from '@/core/infra/http-response'
 
 type GetEntryTypeControllerRequest = Omit<GetEntryTypeRequest, 'userId'> & {
   requesterId: string

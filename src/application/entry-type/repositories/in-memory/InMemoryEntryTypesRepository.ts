@@ -1,5 +1,5 @@
-import { EntryType } from '../../domain/entry-type'
-import {
+import type { EntryType } from '../../domain/entry-type'
+import type {
   IEntryTypesRepository,
   IncludeRelations
 } from '../IEntryTypesRepository'

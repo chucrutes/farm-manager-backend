@@ -1,4 +1,4 @@
-import { Controller } from '@/core/infra/controller'
+import type { Controller } from '@/core/infra/controller'
 import { ValidatorCompositor } from '@/infra/validation/ValidatorCompositor'
 import { CompareFieldsValidator } from '@/infra/validation/CompareFieldsValidator'
 import { CreateUser } from '@/application/users/use-cases/create-user/create-user'
