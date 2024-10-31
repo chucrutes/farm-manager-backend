@@ -4,22 +4,26 @@ import { type EntryProps, EntrySchema } from './entry.schema'
 import { type Either, left, right } from '@/core/logic/either'
 import type { EntryType } from '@/application/entry-type/domain/entry-type'
 import { ZodValidationError } from '@/core/domain/errors/ZodValidationError'
+import type { Register } from '@/application/register/domain/register'
 
 export const LANG_ENTITY = 'entry'
 
 export type Relations = {
   farm?: Farm
   type?: EntryType
+  register?: Register | null
 }
 
 export class Entry extends Entity<EntryProps> {
   private _farm?: Farm
+  private _register?: Register | null
   private _type?: EntryType
 
   private constructor(props: EntryProps, id?: string, relations?: Relations) {
     super(props, id)
     this._farm = relations?.farm
     this._type = relations?.type
+    this._register = relations?.register
   }
 
   static create(
@@ -41,5 +45,8 @@ export class Entry extends Entity<EntryProps> {
   }
   get type() {
     return this._type
+  }
+  get register() {
+    return this._register
   }
 }

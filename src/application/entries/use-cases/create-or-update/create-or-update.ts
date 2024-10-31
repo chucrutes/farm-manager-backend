@@ -1,9 +1,9 @@
 import { Entry } from '../../domain/entry'
-import { EntryProps } from '../../domain/entry.schema'
-import { Either, left, right } from '@/core/logic/either'
-import { IEntriesRepository } from '../../repositories/IEntriesRepository'
-import { IFarmsRepository } from '@/application/farms/repositories/IFarmsRepository'
-import { IEntryTypesRepository } from '@/application/entry-type/repositories/IEntryTypesRepository'
+import type { EntryProps } from '../../domain/entry.schema'
+import { type Either, left, right } from '@/core/logic/either'
+import type { IEntriesRepository } from '../../repositories/IEntriesRepository'
+import type { IFarmsRepository } from '@/application/farms/repositories/IFarmsRepository'
+import type { IEntryTypesRepository } from '@/application/entry-type/repositories/IEntryTypesRepository'
 import { EntryTypeNotFoundError } from '@/application/entry-type/use-cases/@errors/EntryTypeNotFoundError'
 
 export type CreateOrUpdateEntryRequest = EntryProps & {

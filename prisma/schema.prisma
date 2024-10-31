@@ -12,16 +12,19 @@ datasource db {
 }
 
 model User {
-  id             String        @id
+  id String @id
+
   name           String
-  username       String?       @unique
-  email          String        @unique
+  username       String?  @unique
+  email          String   @unique
   password       String
   phone          String?
   email_verified Boolean?
-  created_at     DateTime      @default(now())
-  updated_at     DateTime      @updatedAt
-  FarmMembers    FarmMembers[]
+
+  created_at DateTime @default(now())
+  updated_at DateTime @updatedAt
+
+  FarmMembers FarmMembers[]
 
   @@map("users")
 }
@@ -102,17 +105,20 @@ model EntryType {
   created_at DateTime  @default(now())
   updated_at DateTime  @updatedAt
   deleted_at DateTime?
-  Entry      Entry[]
+
+  entries Entry[]
 
   @@map("entry_types")
 }
 
 model FarmMembers {
-  user_id    String
-  user       User     @relation(fields: [user_id], references: [id], onDelete: Cascade)
-  farm_id    String
-  farm       Farm     @relation(fields: [farm_id], references: [id], onDelete: Cascade)
-  role       Roles
+  user_id String
+  user    User   @relation(fields: [user_id], references: [id], onDelete: Cascade)
+  farm_id String
+  farm    Farm   @relation(fields: [farm_id], references: [id], onDelete: Cascade)
+
+  role Roles
+
   created_at DateTime @default(now())
   updated_at DateTime @updatedAt
 
@@ -123,10 +129,12 @@ model FarmMembers {
 model Entry {
   id String @id
 
-  farm    Farm      @relation(fields: [farm_id], references: [id], onDelete: Cascade)
-  farm_id String
-  type    EntryType @relation(fields: [type_id], references: [id], onDelete: Cascade)
-  type_id String
+  farm        Farm      @relation(fields: [farm_id], references: [id], onDelete: Cascade)
+  farm_id     String
+  type        EntryType @relation(fields: [type_id], references: [id], onDelete: Cascade)
+  type_id     String
+  register    Register? @relation(fields: [register_id], references: [id])
+  register_id String?
 
   description String
   price       Float
@@ -139,4 +147,18 @@ model Entry {
   deleted_at DateTime?
 
   @@map("entries")
+}
+
+model Register {
+  id String @id
+
+  date DateTime
+
+  created_at DateTime  @default(now())
+  updated_at DateTime  @updatedAt
+  deleted_at DateTime?
+
+  entries Entry[]
+
+  @@map("registers")
 }

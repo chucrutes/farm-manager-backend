@@ -1,13 +1,16 @@
 import { Entry } from '../domain/entry'
 import type {
   Entry as PersistenceEntry,
-  EntryType as PersistenceEntryType
+  EntryType as PersistenceEntryType,
+  Register
 } from '@prisma/client'
 import type { Categories } from '../domain/@types/categories.enum'
 import { EntryTypeMapper } from '@/application/entry-type/mappers/entry-type.mapper'
+import { RegisterMapper } from '@/application/register/mappers/register-mapper'
 
 type Raw = PersistenceEntry & {
   type?: PersistenceEntryType
+  register?: Register | null
 }
 
 export class EntryMapper {
@@ -22,7 +25,8 @@ export class EntryMapper {
       },
       raw.id,
       {
-        type: raw.type && EntryTypeMapper.toDomain(raw.type)
+        type: raw.type && EntryTypeMapper.toDomain(raw.type),
+        register: raw.register && RegisterMapper.toDomain(raw.register)
       }
     )
 
@@ -57,7 +61,8 @@ export class EntryMapper {
       category: props.category,
       price: props.price,
       quantity: props.quantity,
-      total: props.total
+      total: props.total,
+      register_id: null
     }
   }
 }

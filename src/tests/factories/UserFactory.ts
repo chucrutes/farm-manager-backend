@@ -1,6 +1,6 @@
 import { JWT } from '@/core/domain/jwt'
 import { User } from '@/application/users/domain/user'
-import { UserProps } from '@/application/users/domain/user.schema'
+import type { UserProps } from '@/application/users/domain/user.schema'
 
 type UserOverrides = Partial<UserProps>
 
