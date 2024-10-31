@@ -119,6 +119,8 @@ export class PrismaEntriesRepository implements IEntriesRepository {
         case 'farm':
           include.farm = true
           break
+        case 'register':
+          include.register = true
       }
     }
 

@@ -1,4 +1,5 @@
 import { Entry } from '../../domain/entry'
+import { EntryNotFoundError } from '../EntryNotFoundError'
 import type { EntryProps } from '../../domain/entry.schema'
 import { type Either, left, right } from '@/core/logic/either'
 import type { IEntriesRepository } from '../../repositories/IEntriesRepository'
@@ -37,6 +38,7 @@ export class CreateOrUpdateEntry {
     _id,
     ...props
   }: CreateOrUpdateEntryRequest): Promise<CreateOrUpdateEntryResponse> {
+    let entryExists: Entry | null = null
     const farm = await this.farmsRepository.getFarmByUserId(userId)
     const type = await this.entryTypesRepository.findById(typeId)
 
@@ -47,7 +49,21 @@ export class CreateOrUpdateEntry {
       return left(new EntryTypeNotFoundError())
     }
 
-    const entryOrError = Entry.create(props, _id, { farm, type })
+    if (_id) {
+      entryExists = await this.entriesRepository.findById(_id, {
+        register: true
+      })
+
+      if (!entryExists) {
+        return left(new EntryNotFoundError())
+      }
+    }
+
+    const entryOrError = Entry.create(props, _id, {
+      farm,
+      type,
+      register: entryExists?.register ?? null
+    })
 
     if (entryOrError.isLeft()) {
       return left(entryOrError.value)

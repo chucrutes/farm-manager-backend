@@ -1,11 +1,11 @@
 import { EntryType } from '../../domain/entry-type'
-import { Either, left, right } from '@/core/logic/either'
-import { EntryTypeProps } from '../../domain/entry-type.schema'
-import { IEntryTypesRepository } from '../../repositories/IEntryTypesRepository'
-import { IFarmsRepository } from '@/application/farms/repositories/IFarmsRepository'
+import { type Either, left, right } from '@/core/logic/either'
+import type { EntryTypeProps } from '../../domain/entry-type.schema'
+import type { IEntryTypesRepository } from '../../repositories/IEntryTypesRepository'
+import type { IFarmsRepository } from '@/application/farms/repositories/IFarmsRepository'
 
 export type CreateOrUpdateEntryTypeRequest = EntryTypeProps & {
-  id?: string
+  _id?: string
   userId: string
 }
 
@@ -25,7 +25,7 @@ export class CreateOrUpdateEntryType {
   }
 
   async execute({
-    id,
+    _id,
     userId,
     ...props
   }: CreateOrUpdateEntryTypeRequest): Promise<CreateOrUpdateEntryTypeResponse> {
@@ -37,11 +37,11 @@ export class CreateOrUpdateEntryType {
       throw new Error('no farm id')
     }
 
-    if (id) {
-      entryTypeExists = await this.entryTypesRepository.findById(id)
+    if (_id) {
+      entryTypeExists = await this.entryTypesRepository.findById(_id)
     }
 
-    const entryTypeOrError = EntryType.create(props, id, { farm })
+    const entryTypeOrError = EntryType.create(props, _id, { farm })
 
     if (entryTypeOrError.isLeft()) {
       return left(entryTypeOrError.value)
