@@ -7,15 +7,19 @@ export type HttpResponse = {
 
 export type Response = {
   type?: 'info' | 'success' | 'warn' | 'error'
-  message: string
+  message?: string
 }
 
-export function ok<T>(dto?: T, response?: Response): HttpResponse {
+type DTO<T> = Response & T
+
+export function ok<T>(dto?: DTO<T>): HttpResponse {
+  console.log(JSON.stringify(dto, null, 2));
+  
   return {
     statusCode: StatusCodes.OK,
     body: {
-      type: response?.type ?? 'success',
-      message: response?.message,
+      type: dto?.type ?? 'success',
+      message: dto?.message,
       ...dto
     }
   }

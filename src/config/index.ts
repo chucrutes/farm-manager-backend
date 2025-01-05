@@ -1,7 +1,7 @@
 import { z } from 'zod'
 import dotenv from 'dotenv'
 
-dotenv.config({ path: ['.env.local'], override: true })
+dotenv.config({ path: ['.env'], override: true })
 
 const configs = z.object({
   PORT: z.coerce.number().optional(),

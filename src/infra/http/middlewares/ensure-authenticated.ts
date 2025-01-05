@@ -14,8 +14,6 @@ import { UserDoesNotExistsError } from './errors/UserDoesNotExistsError'
 type EnsureAuthenticationMiddlewareRequest = {
   intercept: {
     jwt: string
-    wid: string
-    pid: string
   }
 }
 
@@ -31,7 +29,7 @@ export class EnsureAuthenticatedMiddleware implements Middleware {
   ): Promise<HttpResponse> {
     try {
       const {
-        intercept: { jwt, wid, pid }
+        intercept: { jwt }
       } = request
 
       if (!jwt) {
@@ -42,16 +40,14 @@ export class EnsureAuthenticatedMiddleware implements Middleware {
 
       try {
         const decoded = decode(token) as DecodedJwt
-        const isUserValid = await this.usersRepository.findById(decoded.sub)
+        const userExists = await this.usersRepository.findById(decoded.sub)
 
-        if (!isUserValid) {
+        if (!userExists) {
           return unauthorized(new UserDoesNotExistsError())
         }
 
         return ok({
           userId: decoded.sub,
-          workspaceId: wid,
-          projectId: pid
         })
       } catch (err) {
         return forbidden(new AccessDeniedError())

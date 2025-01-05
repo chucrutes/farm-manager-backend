@@ -11,7 +11,7 @@ export class ListEntryController implements Controller {
   constructor(
     private readonly validator: Validator<ListEntryControllerRequest>,
     private listEntry: ListEntry
-  ) {}
+  ) { }
 
   async handle(request: ListEntryControllerRequest): Promise<HttpResponse> {
     const validated = this.validator.validate(request)
@@ -25,11 +25,14 @@ export class ListEntryController implements Controller {
     })
 
     return ok({
-      dto: result.entries.map((res) => ({
-        ...res.toResponseBody(),
-        type: res.type?.toResponseBody()
-      })),
-      total: result.total
-    })
-  }
+      dto: {
+        total: result.total,
+        entries: result.entries.map((item) => ({
+          ...item.toResponseBody(),
+          type: item.type?.toResponseBody(),
+          farm: item.farm?.toResponseBody()
+        }))
+      }
+      })
+    }
 }

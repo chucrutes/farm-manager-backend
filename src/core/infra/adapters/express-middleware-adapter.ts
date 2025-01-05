@@ -7,12 +7,8 @@ export const adaptMiddleware = (middleware: Middleware) => {
     const requestData = {
       intercept: {
         jwt: request.headers.authorization,
-        wid: request.headers['current-workspace-id'],
-        pid: request.headers['current-project-id']
       },
       currentUserId: request.userId,
-      currentWorkspaceId: request.workspaceId,
-      currentProjectId: request.projectId,
       ...request.headers
     }
 
@@ -28,7 +24,7 @@ export const adaptMiddleware = (middleware: Middleware) => {
 
     if (httpResponse.statusCode === StatusCodes.OK) {
       Object.assign(request, httpResponse.body)
-      next()
+      return next()
     }
 
     response.status(httpResponse.statusCode).json({

@@ -10,7 +10,7 @@
   "scripts": {
     "start": "node dist/infra/http/server.js",
     "build": "tsc -p tsconfig.build.json && tsc-alias",
-    "dev": "tsx watch src/infra/http/server.ts",
+    "start:dev": "tsx watch src/infra/http/server.ts",
     "test": "vitest --config vitest.config.mts",
     "test:single": "vitest run",
     "seed": "vitest --config vitest.seed.config.mts",

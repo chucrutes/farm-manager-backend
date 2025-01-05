@@ -32,7 +32,7 @@ export class ListEntry {
         total: 0
       }
     const farmId = farm.id
-    const entries = await this.entriesRepository.getAllByFarmId(farmId)
+    const entries = await this.entriesRepository.getAllByFarmId(farmId, {type: true, farm: true})
 
     let total: number | null = null
     if (farm) {
