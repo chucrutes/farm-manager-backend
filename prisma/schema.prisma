@@ -108,6 +108,7 @@ model EntryType {
 
   entries Entry[]
 
+  @@unique([name, farm_id])
   @@map("entry_types")
 }
 

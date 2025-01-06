@@ -1,23 +1,23 @@
-import { EntryType } from '../domain/entry-type'
+import { EntryType, Relations } from '../domain/entry-type'
 import { Categories, type EntryTypeProps } from '../domain/entry-type.schema'
 
 type DefaultProperties = Partial<EntryTypeProps>
 type CreateOverrides = DefaultProperties & { id?: string }
 
 export class EntryTypeFactory {
-  static create(overrides?: CreateOverrides) {
-    const farm = EntryType.create({
+  static create(overrides?: CreateOverrides, relations?: Relations) {
+    const entity = EntryType.create({
       name: overrides?.name || 'test-name',
       category: overrides?.category || Categories.ASSET
-    })
+    }, overrides?.id, relations)
 
-    return farm.value as EntryType
+    return entity.value as EntryType
   }
 
-  static createMany(overrides?: CreateOverrides[]) {
+  static createMany(overrides?: CreateOverrides[], relations?: Relations) {
     return (
-      overrides?.map((override) => EntryTypeFactory.create(override)) || [
-        EntryTypeFactory.create()
+      overrides?.map((override) => EntryTypeFactory.create(override, relations)) || [
+        EntryTypeFactory.create({}, relations)
       ]
     )
   }

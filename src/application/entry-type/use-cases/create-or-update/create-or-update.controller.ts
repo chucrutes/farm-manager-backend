@@ -8,7 +8,7 @@ import type {
 } from './create-or-update'
 import { LANG_ENTITY } from '../../domain/entry-type'
 
-type CreateOrUpdateEntryTypeControllerRequest = Omit<
+export type CreateOrUpdateEntryTypeControllerRequest = Omit<
   CreateOrUpdateEntryTypeRequest,
   'userId'
 > & {
@@ -43,6 +43,6 @@ export class CreateOrUpdateEntryTypeController implements Controller {
           return clientError(error)
       }
     }
-    return ok({ message: `${LANG_ENTITY}.created` })
+    return ok({ message: `${LANG_ENTITY}.created`, dto : result.value.toResponseBody() })
   }
 }

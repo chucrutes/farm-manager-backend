@@ -72,6 +72,8 @@ export default class PrismaEntryTypesRepository
       }
     })
 
+    console.table(data)
+
     return data.map(EntryTypeMapper.toDomain)
   }
 }

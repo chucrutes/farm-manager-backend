@@ -13,8 +13,6 @@ export type Response = {
 type DTO<T> = Response & T
 
 export function ok<T>(dto?: DTO<T>): HttpResponse {
-  console.log(JSON.stringify(dto, null, 2));
-  
   return {
     statusCode: StatusCodes.OK,
     body: {
