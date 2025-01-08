@@ -22,14 +22,17 @@ export class ListEntryType {
   }
 
   async execute({
-    userId
+    userId,
   }: ListEntryTypeRequest): Promise<ListEntryTypeResponse> {
     const farm = await this.farmsRepository.getFarmByUserId(userId)
+
     if (!farm) {
       return []
     }
     const farmId = farm.id
-    const entryTypes = await this.entryTypesRepository.getAllByFarmId(farmId)
+    const entryTypes = await this.entryTypesRepository.getAllByFarmId(farmId, {
+      farm: true,
+    })
 
     return entryTypes
   }

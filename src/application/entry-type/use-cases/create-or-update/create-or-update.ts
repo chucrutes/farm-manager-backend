@@ -41,7 +41,15 @@ export class CreateOrUpdateEntryType {
       entryTypeExists = await this.entryTypesRepository.findById(_id)
     }
 
-    const entryTypeOrError = EntryType.create(props, _id, { farm })
+    const entryTypeOrError = EntryType.create(
+      props,
+      _id,
+      {
+        createdAt: entryTypeExists?.timestamps?.createdAt || new Date(),
+        updatedAt: entryTypeExists?.timestamps?.updatedAt || new Date(),
+      },
+      { farm },
+    )
 
     if (entryTypeOrError.isLeft()) {
       return left(entryTypeOrError.value)

@@ -7,9 +7,13 @@ export class EntryTypeMapper {
     const entityOrError = EntryType.create(
       {
         name: raw.name,
-        category: raw.category as Categories
+        category: raw.category as Categories,
       },
-      raw.id
+      raw.id,
+      {
+        createdAt: raw.created_at,
+        updatedAt: raw.updated_at,
+      },
     )
 
     if (entityOrError.isLeft()) {
@@ -20,7 +24,7 @@ export class EntryTypeMapper {
   }
 
   static toPersistence(
-    entity: EntryType
+    entity: EntryType,
   ): Omit<PersistenceEntryType, 'created_at' | 'updated_at' | 'deleted_at'> {
     const { id, props, farm } = entity
     const farmId = farm?.id
@@ -33,7 +37,7 @@ export class EntryTypeMapper {
       id: id,
       name: props.name,
       category: props.category,
-      farm_id: farmId
+      farm_id: farmId,
     }
   }
 }

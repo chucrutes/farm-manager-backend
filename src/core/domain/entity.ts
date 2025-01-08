@@ -1,6 +1,6 @@
 import { Generate } from '../logic/generate'
 
-type Timestamps = {
+export type Timestamps = {
   createdAt?: Date
   updatedAt?: Date
   deleteddAt?: Date
@@ -42,7 +42,7 @@ export class Entity<T> {
       id: Generate.id(),
       versionNumber,
       entityId: this._id,
-      ...this.props
+      ...this.props,
     }
   }
 
@@ -50,7 +50,7 @@ export class Entity<T> {
     return {
       _id: this._id,
       ...this.props,
-      ...this.timestamps
+      ...this.timestamps,
     }
   }
 }

@@ -10,7 +10,7 @@ type ListEntryTypeControllerRequest = {
 export class ListEntryTypeController implements Controller {
   constructor(
     private readonly validator: Validator<ListEntryTypeControllerRequest>,
-    private listEntryType: ListEntryType
+    private listEntryType: ListEntryType,
   ) {}
 
   async handle(request: ListEntryTypeControllerRequest): Promise<HttpResponse> {
@@ -21,13 +21,14 @@ export class ListEntryTypeController implements Controller {
     }
 
     const result = await this.listEntryType.execute({
-      userId: request.currentUserId
+      userId: request.currentUserId,
     })
 
     return ok({
       dto: result.map((res) => ({
-        ...res.toResponseBody()
-      }))
+        ...res.toResponseBody(),
+        farm: res.farm?.toResponseBody(),
+      })),
     })
   }
 }
