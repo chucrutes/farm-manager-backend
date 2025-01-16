@@ -4,7 +4,7 @@ import type { Validator } from '@/core/infra/validator'
 
 import type {
   CreateOrUpdateEntryType,
-  CreateOrUpdateEntryTypeRequest
+  CreateOrUpdateEntryTypeRequest,
 } from './create-or-update'
 import { LANG_ENTITY } from '../../domain/entry-type'
 
@@ -18,11 +18,11 @@ export type CreateOrUpdateEntryTypeControllerRequest = Omit<
 export class CreateOrUpdateEntryTypeController implements Controller {
   constructor(
     private readonly validator: Validator<CreateOrUpdateEntryTypeControllerRequest>,
-    private createEntryType: CreateOrUpdateEntryType
+    private createEntryType: CreateOrUpdateEntryType,
   ) {}
 
   async handle(
-    request: CreateOrUpdateEntryTypeControllerRequest
+    request: CreateOrUpdateEntryTypeControllerRequest,
   ): Promise<HttpResponse> {
     const validated = this.validator.validate(request)
 
@@ -32,7 +32,7 @@ export class CreateOrUpdateEntryTypeController implements Controller {
 
     const result = await this.createEntryType.execute({
       userId: request.requesterId,
-      ...request
+      ...request,
     })
 
     if (result.isLeft()) {
@@ -43,6 +43,9 @@ export class CreateOrUpdateEntryTypeController implements Controller {
           return clientError(error)
       }
     }
-    return ok({ message: `${LANG_ENTITY}.created`, dto : result.value.toResponseBody() })
+    return ok({
+      message: `${LANG_ENTITY}.created`,
+      dto: result.value.toResponseBody(),
+    })
   }
 }

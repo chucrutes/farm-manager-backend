@@ -3,7 +3,7 @@ import type { Validator } from '@/core/infra/validator'
 import type { Controller } from '@/core/infra/controller'
 import { type HttpResponse, clientError, ok } from '@/core/infra/http-response'
 
-type ListEntryTypeControllerRequest = {
+export type ListEntryTypeControllerRequest = {
   currentUserId: string
 }
 

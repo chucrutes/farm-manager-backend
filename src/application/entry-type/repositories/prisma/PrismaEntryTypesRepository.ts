@@ -1,6 +1,7 @@
 import { prismaClient } from '@/infra/prisma/client'
 import { type EntryType, LANG_ENTITY } from '../../domain/entry-type'
 import type {
+  DeleteByName,
   IEntryTypesRepository,
   IncludeRelations,
 } from '../IEntryTypesRepository'
@@ -81,6 +82,24 @@ export default class PrismaEntryTypesRepository
     })
 
     return data.map(EntryTypeMapper.toDomain)
+  }
+
+  async deleteManyByName(items: DeleteByName[]): Promise<void> {
+    try {
+      const promises = items.map(({ farmId, name }) =>
+        prismaClient.entryType.delete({
+          where: {
+            name_farm_id: {
+              name,
+              farm_id: farmId,
+            },
+          },
+        }),
+      )
+      await Promise.all(promises)
+    } catch (e) {
+      // console.error(e)
+    }
   }
 
   buildInclude(includeRelations?: IncludeRelations) {

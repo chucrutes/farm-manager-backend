@@ -10,6 +10,10 @@ export type PartialIncludes<T extends object> = {
   [P in keyof T]?: boolean
 }
 
+export type ToResponseBody<T> = T & {
+  _id: string
+}
+
 export class Entity<T> {
   protected readonly _id: string
   public readonly props: T
@@ -46,7 +50,7 @@ export class Entity<T> {
     }
   }
 
-  public toResponseBody() {
+  public toResponseBody(): ToResponseBody<T> {
     return {
       _id: this._id,
       ...this.props,

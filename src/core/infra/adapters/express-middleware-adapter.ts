@@ -1,6 +1,7 @@
 import type { NextFunction, Request, Response } from 'express'
 import { StatusCodes } from 'http-status-codes'
 import type { Middleware } from '../middleware'
+import { stringifier } from '@/core/stringifier'
 
 export const adaptMiddleware = (middleware: Middleware) => {
   return async (request: Request, response: Response, next: NextFunction) => {
@@ -8,8 +9,7 @@ export const adaptMiddleware = (middleware: Middleware) => {
       intercept: {
         jwt: request.headers.authorization,
       },
-      currentUserId: request.userId,
-      ...request.headers
+      ...request.headers,
     }
 
     const httpResponse = await middleware.handle(requestData, request.body)
@@ -29,7 +29,7 @@ export const adaptMiddleware = (middleware: Middleware) => {
 
     response.status(httpResponse.statusCode).json({
       type: httpResponse.body.type,
-      message: httpResponse.body.message
+      message: httpResponse.body.message,
     })
   }
 }

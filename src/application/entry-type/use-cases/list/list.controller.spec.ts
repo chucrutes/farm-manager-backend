@@ -7,22 +7,28 @@ import { beforeAll, describe, expect, test } from 'vitest'
 import { initEntities, ROUTE_ENTITY } from '../../test/init-entities'
 import { app } from '@/infra/http/app'
 import request from 'supertest'
+import { EntryTypeFactory } from '../../test/entry-types.factory'
+import { ListEntryTypeControllerRequest } from './list.controller'
 import { IEntryTypesRepository } from '../../repositories/IEntryTypesRepository'
 import PrismaEntryTypesRepository from '../../repositories/prisma/PrismaEntryTypesRepository'
 import { stringifier } from '@/core/stringifier'
-import { ToResponseBody } from '@/core/domain/entity'
-import { EntryTypeProps } from '../../domain/entry-type.schema'
 
 let usersRepository: IUsersRepository
 let farmsRepository: IFarmsRepository
 let entryTypesRepository: IEntryTypesRepository
 
-describe('Get entry type(E2E)', async () => {
+export type Request = Omit<ListEntryTypeControllerRequest, 'requesterId'>
+
+describe('Create or update entry type(E2E)', async () => {
   const {
     farm,
+    manyEntryTypes,
     userWithJwt: { user, jwt },
-    entryType,
   } = initEntities()
+  const itemsToDelete = manyEntryTypes.map((item) => ({
+    name: item.props.name,
+    farmId: item.farm!.id,
+  }))
 
   beforeAll(async () => {
     usersRepository = new PrismaUsersRepository()
@@ -32,16 +38,20 @@ describe('Get entry type(E2E)', async () => {
     await usersRepository.create(user)
     await farmsRepository.createOrUpdate(farm)
     await farmsRepository.addMember(user.id, farm.id, Roles.OWNER)
-    await entryTypesRepository.createOrUpdate(entryType)
+
+    const promises = manyEntryTypes.map((item) =>
+      entryTypesRepository.createOrUpdate(item),
+    )
+    await Promise.all(promises)
   })
 
-  test('should get a type', async () => {
+  test('should list type', async () => {
     const response = await request(app)
-      .get(`${ROUTE_ENTITY}/${entryType.id}`)
+      .get(ROUTE_ENTITY)
       .auth(jwt.token, { type: 'bearer' })
 
-    expect((response.body.dto as ToResponseBody<EntryTypeProps>).name).toEqual(
-      entryType.props.name,
+    expect((response.body.dto as Array<unknown>).length).toEqual(
+      manyEntryTypes.length,
     )
 
     await farmsRepository.deleteMany([farm.id])
