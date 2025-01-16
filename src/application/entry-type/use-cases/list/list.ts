@@ -1,6 +1,6 @@
-import { EntryType } from '../../domain/entry-type'
-import { IEntryTypesRepository } from '../../repositories/IEntryTypesRepository'
-import { IFarmsRepository } from '@/application/farms/repositories/IFarmsRepository'
+import type { EntryType } from '../../domain/entry-type'
+import type { IEntryTypesRepository } from '../../repositories/IEntryTypesRepository'
+import type { IFarmsRepository } from '@/application/farms/repositories/IFarmsRepository'
 
 export type ListEntryTypeRequest = {
   userId: string

@@ -1,6 +1,7 @@
 import type { Categories } from '../domain/entry-type.schema'
 import { EntryType, LANG_ENTITY } from '../domain/entry-type'
 import type { EntryType as PersistenceEntryType } from '@prisma/client'
+import { isNull } from '@/infra/prisma/is-null'
 
 export class EntryTypeMapper {
   static toDomain(raw: PersistenceEntryType) {
@@ -8,6 +9,7 @@ export class EntryTypeMapper {
       {
         name: raw.name,
         category: raw.category as Categories,
+        commission: raw.commission,
       },
       raw.id,
       {
@@ -37,6 +39,7 @@ export class EntryTypeMapper {
       id: id,
       name: props.name,
       category: props.category,
+      commission: isNull(props.commission),
       farm_id: farmId,
     }
   }

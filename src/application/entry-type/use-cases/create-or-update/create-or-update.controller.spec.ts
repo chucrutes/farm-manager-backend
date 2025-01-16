@@ -1,19 +1,19 @@
 import { Roles } from '@/application/farms/domain/farm.schema'
-import { IFarmsRepository } from '@/application/farms/repositories/IFarmsRepository'
+import type { IFarmsRepository } from '@/application/farms/repositories/IFarmsRepository'
 import PrismaFarmsRepository from '@/application/farms/repositories/prisma/PrismaFarmsRepository'
-import { IUsersRepository } from '@/application/users/repositories/IUsersRepository'
+import type { IUsersRepository } from '@/application/users/repositories/IUsersRepository'
 import { PrismaUsersRepository } from '@/application/users/repositories/prisma/PrismaUsersRepository'
 import { afterAll, beforeAll, describe, expect, test } from 'vitest'
 import { initEntities, ROUTE_ENTITY } from '../../test/init-entities'
 import { app } from '@/infra/http/app'
 import request from 'supertest'
 import { EntryTypeFactory } from '../../test/entry-types.factory'
-import { CreateOrUpdateEntryTypeControllerRequest } from './create-or-update.controller'
-import { IEntryTypesRepository } from '../../repositories/IEntryTypesRepository'
+import type { CreateOrUpdateEntryTypeControllerRequest } from './create-or-update.controller'
+import type { IEntryTypesRepository } from '../../repositories/IEntryTypesRepository'
 import PrismaEntryTypesRepository from '../../repositories/prisma/PrismaEntryTypesRepository'
-import { stringifier } from '@/core/stringifier'
-import { ToResponseBody } from '@/core/domain/entity'
-import { EntryTypeProps } from '../../domain/entry-type.schema'
+import type { ToResponseBody } from '@/core/domain/entity'
+import type { EntryTypeProps } from '../../domain/entry-type.schema'
+import { entryType } from '@/infra/http/routes/entry-types.routes'
 
 let usersRepository: IUsersRepository
 let farmsRepository: IFarmsRepository
@@ -50,6 +50,21 @@ describe('Create or update entry type(E2E)', async () => {
     expect((response.body.dto as ToResponseBody<EntryTypeProps>).name).toEqual(
       entryType.props.name,
     )
+  })
+
+  test('should create a type without commission', async () => {
+    const { commission, ...entryType } = EntryTypeFactory.create().props
+
+    const data: Request = entryType
+
+    const response = await request(app)
+      .post(ROUTE_ENTITY)
+      .auth(jwt.token, { type: 'bearer' })
+      .send(data)
+
+    expect(
+      (response.body.dto as ToResponseBody<EntryTypeProps>).commission,
+    ).toBeUndefined()
   })
 
   afterAll(async () => {

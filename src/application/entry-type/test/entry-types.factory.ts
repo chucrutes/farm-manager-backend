@@ -1,4 +1,4 @@
-import { EntryType, Relations } from '../domain/entry-type'
+import { EntryType, type Relations } from '../domain/entry-type'
 import { Categories, type EntryTypeProps } from '../domain/entry-type.schema'
 import { faker } from '@faker-js/faker'
 type DefaultProperties = Partial<EntryTypeProps>
@@ -12,6 +12,8 @@ export class EntryTypeFactory {
           overrides?.name ||
           `${faker.lorem.word()}-${faker.number.float({ fractionDigits: 2 })}`,
         category: overrides?.category || Categories.ASSET,
+        commission:
+          overrides?.commission || faker.number.float({ fractionDigits: 2 }),
       },
       overrides?.id,
       undefined,

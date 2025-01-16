@@ -1,4 +1,4 @@
-import { Entity, Timestamps } from '@/core/domain/entity'
+import { Entity, type Timestamps } from '@/core/domain/entity'
 import type { Farm } from '@/application/farms/domain/farm'
 import { type Either, left, right } from '@/core/logic/either'
 import { type EntryTypeProps, EntryTypeSchema } from './entry-type.schema'
