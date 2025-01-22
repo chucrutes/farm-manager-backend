@@ -41,10 +41,9 @@ export class CreateOrUpdateEntryType {
 
     if (_id) {
       entryTypeExists = await this.entryTypesRepository.findById(_id)
-    }
-
-    if (!entryTypeExists) {
-      return left(new EntryNotFoundError())
+      if (!entryTypeExists) {
+        return left(new EntryNotFoundError())
+      }
     }
 
     const entryTypeByName = await this.entryTypesRepository.findByFarmAndName(
@@ -60,8 +59,8 @@ export class CreateOrUpdateEntryType {
       props,
       _id,
       {
-        createdAt: entryTypeExists.timestamps?.createdAt || new Date(),
-        updatedAt: entryTypeExists.timestamps?.updatedAt || new Date(),
+        createdAt: entryTypeExists?.timestamps?.createdAt || new Date(),
+        updatedAt: entryTypeExists?.timestamps?.updatedAt || new Date(),
       },
       { farm },
     )
