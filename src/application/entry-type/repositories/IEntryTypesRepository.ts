@@ -10,5 +10,6 @@ export interface IEntryTypesRepository
     farmId: string,
     includeRelations?: IncludeRelations,
   ): Promise<EntryType[]>
+  findByFarmAndName(farmId: string, name: string): Promise<EntryType | null>
   deleteManyByName(items: DeleteByName[]): Promise<void>
 }

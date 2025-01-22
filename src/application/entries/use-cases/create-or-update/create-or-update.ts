@@ -51,7 +51,7 @@ export class CreateOrUpdateEntry {
 
     if (_id) {
       entryExists = await this.entriesRepository.findById(_id, {
-        register: true
+        register: true,
       })
 
       if (!entryExists) {
@@ -62,7 +62,7 @@ export class CreateOrUpdateEntry {
     const entryOrError = Entry.create(props, _id, {
       farm,
       type,
-      register: entryExists?.register ?? null
+      register: entryExists?.register ?? null,
     })
 
     if (entryOrError.isLeft()) {

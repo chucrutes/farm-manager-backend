@@ -5,6 +5,7 @@ import { type Either, left, right } from '@/core/logic/either'
 import type { EntryType } from '@/application/entry-type/domain/entry-type'
 import { ZodValidationError } from '@/core/domain/errors/ZodValidationError'
 import type { Register } from '@/application/register/domain/register'
+import { getPercentage } from '../@utils/get-percentage'
 
 export const LANG_ENTITY = 'entry'
 
@@ -29,7 +30,7 @@ export class Entry extends Entity<EntryProps> {
   static create(
     props: EntryProps,
     id?: string,
-    relations?: Relations
+    relations?: Relations,
   ): Either<Error, Entry> {
     const result = EntrySchema.safeParse(props)
 
@@ -48,5 +49,12 @@ export class Entry extends Entity<EntryProps> {
   }
   get register() {
     return this._register
+  }
+
+  get afterTax(): null | number {
+    if (this._type?.props.commission) {
+      return this.props.total * getPercentage(this._type.props.commission)
+    }
+    return null
   }
 }

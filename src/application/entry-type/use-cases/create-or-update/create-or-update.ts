@@ -3,6 +3,8 @@ import { type Either, left, right } from '@/core/logic/either'
 import type { EntryTypeProps } from '../../domain/entry-type.schema'
 import type { IEntryTypesRepository } from '../../repositories/IEntryTypesRepository'
 import type { IFarmsRepository } from '@/application/farms/repositories/IFarmsRepository'
+import { EntryTypeWithTheSameNameError } from '../@errors/EntryTypeWithTheSameNameError'
+import { EntryNotFoundError } from '@/application/entries/use-cases/EntryNotFoundError'
 
 export type CreateOrUpdateEntryTypeRequest = EntryTypeProps & {
   _id?: string
@@ -41,12 +43,25 @@ export class CreateOrUpdateEntryType {
       entryTypeExists = await this.entryTypesRepository.findById(_id)
     }
 
+    if (!entryTypeExists) {
+      return left(new EntryNotFoundError())
+    }
+
+    const entryTypeByName = await this.entryTypesRepository.findByFarmAndName(
+      farm.id,
+      props.name,
+    )
+
+    if (entryTypeByName?.id !== _id) {
+      return left(new EntryTypeWithTheSameNameError())
+    }
+
     const entryTypeOrError = EntryType.create(
       props,
       _id,
       {
-        createdAt: entryTypeExists?.timestamps?.createdAt || new Date(),
-        updatedAt: entryTypeExists?.timestamps?.updatedAt || new Date(),
+        createdAt: entryTypeExists.timestamps?.createdAt || new Date(),
+        updatedAt: entryTypeExists.timestamps?.updatedAt || new Date(),
       },
       { farm },
     )

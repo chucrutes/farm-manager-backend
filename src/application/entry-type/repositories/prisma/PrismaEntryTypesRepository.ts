@@ -84,6 +84,24 @@ export default class PrismaEntryTypesRepository
     return data.map(EntryTypeMapper.toDomain)
   }
 
+  async findByFarmAndName(
+    farmId: string,
+    name: string,
+  ): Promise<EntryType | null> {
+    const data = await prismaClient.entryType.findUnique({
+      where: {
+        name_farm_id: {
+          name,
+          farm_id: farmId,
+        },
+      },
+    })
+
+    if (!data) return null
+
+    return EntryTypeMapper.toDomain(data)
+  }
+
   async deleteManyByName(items: DeleteByName[]): Promise<void> {
     try {
       const promises = items.map(({ farmId, name }) =>

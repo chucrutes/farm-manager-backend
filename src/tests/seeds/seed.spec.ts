@@ -1,8 +1,8 @@
 import { beforeAll, describe, expect, test } from 'vitest'
 import { UserFactory } from '@/tests/factories/UserFactory'
-import { IUsersRepository } from '@/application/users/repositories/IUsersRepository'
+import type { IUsersRepository } from '@/application/users/repositories/IUsersRepository'
 import { PrismaUsersRepository } from '@/application/users/repositories/prisma/PrismaUsersRepository'
-import { IFarmsRepository } from '@/application/farms/repositories/IFarmsRepository'
+import type { IFarmsRepository } from '@/application/farms/repositories/IFarmsRepository'
 import PrismaFarmsRepository from '@/application/farms/repositories/prisma/PrismaFarmsRepository'
 import { FarmFactory } from '@/application/farms/test/farm.factory'
 import { Roles } from '@/application/farms/domain/farm.schema'
@@ -27,7 +27,7 @@ describe('Create seeds (end-to-end)', async () => {
       {
         name: 'Thiago Melo',
         email: 'tmelo387@gmail.com',
-        password: 'Bacon@123',
+        password: 'teste',
         username: 'chucrutes',
       },
     ])

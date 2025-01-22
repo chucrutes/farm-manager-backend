@@ -10,7 +10,7 @@ export const CategoriesSchema = z.nativeEnum(Categories)
 
 export const EntryTypeSchema = z.object({
   name: z.string().min(1).max(64),
-  commission: z.number().nullish(),
+  commission: z.number().positive().nullish(),
   category: CategoriesSchema,
 })
 

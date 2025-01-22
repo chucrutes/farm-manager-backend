@@ -14,6 +14,7 @@ import PrismaEntryTypesRepository from '../../repositories/prisma/PrismaEntryTyp
 import type { ToResponseBody } from '@/core/domain/entity'
 import type { EntryTypeProps } from '../../domain/entry-type.schema'
 import { entryType } from '@/infra/http/routes/entry-types.routes'
+import { StatusCodes } from 'http-status-codes'
 
 let usersRepository: IUsersRepository
 let farmsRepository: IFarmsRepository
@@ -24,6 +25,7 @@ type Request = Omit<CreateOrUpdateEntryTypeControllerRequest, 'requesterId'>
 describe('Create or update entry type(E2E)', async () => {
   const {
     farm,
+    entryType,
     userWithJwt: { user, jwt },
   } = initEntities()
 
@@ -35,6 +37,7 @@ describe('Create or update entry type(E2E)', async () => {
     await usersRepository.create(user)
     await farmsRepository.createOrUpdate(farm)
     await farmsRepository.addMember(user.id, farm.id, Roles.OWNER)
+    await entryTypesRepository.createOrUpdate(entryType)
   })
 
   test('should create a type', async () => {
@@ -65,6 +68,38 @@ describe('Create or update entry type(E2E)', async () => {
     expect(
       (response.body.dto as ToResponseBody<EntryTypeProps>).commission,
     ).toBeUndefined()
+  })
+
+  test('should not create a type with the same name as a existing type', async () => {
+    const { commission, ...rest } = EntryTypeFactory.create({
+      name: entryType.props.name,
+    }).props
+
+    const data: Request = rest
+
+    const response = await request(app)
+      .post(ROUTE_ENTITY)
+      .auth(jwt.token, { type: 'bearer' })
+      .send(data)
+
+    expect(response.status).toEqual(StatusCodes.CONFLICT)
+  })
+  test('should update a type', async () => {
+    const { commission, ...rest } = EntryTypeFactory.create({
+      name: entryType.props.name,
+      id: entryType.id,
+    }).props
+
+    const data: Request = { _id: entryType.id, ...rest }
+
+    const response = await request(app)
+      .post(ROUTE_ENTITY)
+      .auth(jwt.token, { type: 'bearer' })
+      .send(data)
+
+    expect((response.body.dto as ToResponseBody<EntryTypeProps>)._id).toEqual(
+      entryType.id,
+    )
   })
 
   afterAll(async () => {

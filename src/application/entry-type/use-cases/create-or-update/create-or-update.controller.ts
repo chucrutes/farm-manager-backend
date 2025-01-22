@@ -1,5 +1,10 @@
 import type { Controller } from '@/core/infra/controller'
-import { type HttpResponse, clientError, ok } from '@/core/infra/http-response'
+import {
+  type HttpResponse,
+  clientError,
+  conflict,
+  ok,
+} from '@/core/infra/http-response'
 import type { Validator } from '@/core/infra/validator'
 
 import type {
@@ -7,6 +12,7 @@ import type {
   CreateOrUpdateEntryTypeRequest,
 } from './create-or-update'
 import { LANG_ENTITY } from '../../domain/entry-type'
+import { EntryTypeWithTheSameNameError } from '../@errors/EntryTypeWithTheSameNameError'
 
 export type CreateOrUpdateEntryTypeControllerRequest = Omit<
   CreateOrUpdateEntryTypeRequest,
@@ -39,6 +45,8 @@ export class CreateOrUpdateEntryTypeController implements Controller {
       const error = result.value
 
       switch (error.constructor) {
+        case EntryTypeWithTheSameNameError:
+          return conflict(error)
         default:
           return clientError(error)
       }

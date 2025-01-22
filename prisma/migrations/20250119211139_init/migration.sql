@@ -55,6 +55,7 @@ CREATE TABLE "entry_types" (
     "id" TEXT NOT NULL,
     "name" TEXT NOT NULL,
     "category" "Categories" NOT NULL,
+    "commission" DOUBLE PRECISION,
     "farm_id" TEXT NOT NULL,
     "created_at" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
     "updated_at" TIMESTAMP(3) NOT NULL,
@@ -79,11 +80,11 @@ CREATE TABLE "entries" (
     "id" TEXT NOT NULL,
     "farm_id" TEXT NOT NULL,
     "type_id" TEXT NOT NULL,
+    "register_id" TEXT,
     "description" TEXT NOT NULL,
     "price" DOUBLE PRECISION NOT NULL,
     "quantity" DOUBLE PRECISION NOT NULL,
     "total" DOUBLE PRECISION NOT NULL,
-    "category" "Categories" NOT NULL,
     "created_at" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
     "updated_at" TIMESTAMP(3) NOT NULL,
     "deleted_at" TIMESTAMP(3),
@@ -91,11 +92,25 @@ CREATE TABLE "entries" (
     CONSTRAINT "entries_pkey" PRIMARY KEY ("id")
 );
 
+-- CreateTable
+CREATE TABLE "registers" (
+    "id" TEXT NOT NULL,
+    "date" TIMESTAMP(3) NOT NULL,
+    "created_at" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    "updated_at" TIMESTAMP(3) NOT NULL,
+    "deleted_at" TIMESTAMP(3),
+
+    CONSTRAINT "registers_pkey" PRIMARY KEY ("id")
+);
+
 -- CreateIndex
 CREATE UNIQUE INDEX "users_username_key" ON "users"("username");
 
 -- CreateIndex
 CREATE UNIQUE INDEX "users_email_key" ON "users"("email");
+
+-- CreateIndex
+CREATE UNIQUE INDEX "entry_types_name_farm_id_key" ON "entry_types"("name", "farm_id");
 
 -- AddForeignKey
 ALTER TABLE "farm_plans" ADD CONSTRAINT "farm_plans_farm_id_fkey" FOREIGN KEY ("farm_id") REFERENCES "farms"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
@@ -114,3 +129,6 @@ ALTER TABLE "entries" ADD CONSTRAINT "entries_farm_id_fkey" FOREIGN KEY ("farm_i
 
 -- AddForeignKey
 ALTER TABLE "entries" ADD CONSTRAINT "entries_type_id_fkey" FOREIGN KEY ("type_id") REFERENCES "entry_types"("id") ON DELETE CASCADE ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE "entries" ADD CONSTRAINT "entries_register_id_fkey" FOREIGN KEY ("register_id") REFERENCES "registers"("id") ON DELETE SET NULL ON UPDATE CASCADE;
