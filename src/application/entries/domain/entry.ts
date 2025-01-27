@@ -1,4 +1,4 @@
-import { Entity } from '@/core/domain/entity'
+import { Entity, type Timestamps } from '@/core/domain/entity'
 import type { Farm } from '@/application/farms/domain/farm'
 import { type EntryProps, EntrySchema } from './entry.schema'
 import { type Either, left, right } from '@/core/logic/either'
@@ -20,8 +20,13 @@ export class Entry extends Entity<EntryProps> {
   private _register?: Register | null
   private _type?: EntryType
 
-  private constructor(props: EntryProps, id?: string, relations?: Relations) {
-    super(props, id)
+  private constructor(
+    props: EntryProps,
+    id?: string,
+    timeStamps?: Timestamps,
+    relations?: Relations,
+  ) {
+    super(props, id, timeStamps)
     this._farm = relations?.farm
     this._type = relations?.type
     this._register = relations?.register
@@ -30,6 +35,7 @@ export class Entry extends Entity<EntryProps> {
   static create(
     props: EntryProps,
     id?: string,
+    timeStamps?: Timestamps,
     relations?: Relations,
   ): Either<Error, Entry> {
     const result = EntrySchema.safeParse(props)
@@ -38,7 +44,7 @@ export class Entry extends Entity<EntryProps> {
       return left(new ZodValidationError(result.error))
     }
 
-    return right(new Entry(result.data, id, relations))
+    return right(new Entry(result.data, id, timeStamps, relations))
   }
 
   get farm() {
