@@ -1,17 +1,16 @@
 import { Roles } from '@/application/farms/domain/farm.schema'
-import { IFarmsRepository } from '@/application/farms/repositories/IFarmsRepository'
+import type { IFarmsRepository } from '@/application/farms/repositories/IFarmsRepository'
 import PrismaFarmsRepository from '@/application/farms/repositories/prisma/PrismaFarmsRepository'
-import { IUsersRepository } from '@/application/users/repositories/IUsersRepository'
+import type { IUsersRepository } from '@/application/users/repositories/IUsersRepository'
 import { PrismaUsersRepository } from '@/application/users/repositories/prisma/PrismaUsersRepository'
-import { beforeAll, describe, expect, test } from 'vitest'
+import { afterAll, beforeAll, describe, expect, test } from 'vitest'
 import { initEntities, ROUTE_ENTITY } from '../../test/init-entities'
 import { app } from '@/infra/http/app'
 import request from 'supertest'
-import { IEntryTypesRepository } from '../../repositories/IEntryTypesRepository'
+import type { IEntryTypesRepository } from '../../repositories/IEntryTypesRepository'
 import PrismaEntryTypesRepository from '../../repositories/prisma/PrismaEntryTypesRepository'
-import { stringifier } from '@/core/stringifier'
-import { ToResponseBody } from '@/core/domain/entity'
-import { EntryTypeProps } from '../../domain/entry-type.schema'
+import type { ToResponseBody } from '@/core/domain/entity'
+import type { EntryTypeProps } from '../../domain/entry-type.schema'
 
 let usersRepository: IUsersRepository
 let farmsRepository: IFarmsRepository
@@ -43,7 +42,9 @@ describe('Get entry type(E2E)', async () => {
     expect((response.body.dto as ToResponseBody<EntryTypeProps>).name).toEqual(
       entryType.props.name,
     )
+  })
 
+  afterAll(async () => {
     await farmsRepository.deleteMany([farm.id])
     await usersRepository.delete(user.id)
   })
