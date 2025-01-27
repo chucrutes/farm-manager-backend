@@ -3,6 +3,7 @@ import {
   type HttpResponse,
   clientError,
   conflict,
+  created,
   ok,
 } from '@/core/infra/http-response'
 import type { Validator } from '@/core/infra/validator'
@@ -51,8 +52,17 @@ export class CreateOrUpdateEntryTypeController implements Controller {
           return clientError(error)
       }
     }
-    return ok({
-      message: `${LANG_ENTITY}.created`,
+
+    if (request._id) {
+      return ok({
+        key: `${LANG_ENTITY}.created`,
+        message: 'Item atualizado com sucesso',
+        dto: result.value.toResponseBody(),
+      })
+    }
+    return created({
+      key: `${LANG_ENTITY}.created`,
+      message: 'Item criado com sucesso',
       dto: result.value.toResponseBody(),
     })
   }

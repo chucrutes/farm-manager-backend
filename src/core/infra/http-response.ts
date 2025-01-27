@@ -18,18 +18,19 @@ export function ok<T>(dto?: DTO<T>): HttpResponse {
     body: {
       type: dto?.type ?? 'success',
       message: dto?.message,
-      ...dto
-    }
+      ...dto,
+    },
   }
 }
 
-export function created(response?: Response): HttpResponse {
+export function created<T>(dto?: DTO<T>): HttpResponse {
   return {
     statusCode: StatusCodes.CREATED,
     body: {
-      type: response?.type ?? 'success',
-      message: response?.message
-    }
+      type: dto?.type ?? 'success',
+      message: dto?.message,
+      ...dto,
+    },
   }
 }
 
@@ -38,8 +39,8 @@ export function clientError(response?: Response): HttpResponse {
     statusCode: StatusCodes.BAD_REQUEST,
     body: {
       type: response?.type ?? 'error',
-      message: response?.message
-    }
+      message: response?.message,
+    },
   }
 }
 
@@ -48,8 +49,8 @@ export function unauthorized(response?: Response): HttpResponse {
     statusCode: StatusCodes.UNAUTHORIZED,
     body: {
       type: response?.type ?? 'error',
-      message: response?.message
-    }
+      message: response?.message,
+    },
   }
 }
 
@@ -58,8 +59,8 @@ export function forbidden(response?: Response): HttpResponse {
     statusCode: StatusCodes.FORBIDDEN,
     body: {
       type: response?.type ?? 'error',
-      message: response?.message
-    }
+      message: response?.message,
+    },
   }
 }
 
@@ -68,8 +69,8 @@ export function notFound(response?: Response): HttpResponse {
     statusCode: StatusCodes.NOT_FOUND,
     body: {
       type: response?.type ?? 'error',
-      message: response?.message
-    }
+      message: response?.message,
+    },
   }
 }
 
@@ -78,8 +79,8 @@ export function conflict(response?: Response): HttpResponse {
     statusCode: StatusCodes.CONFLICT,
     body: {
       type: response?.type ?? 'info',
-      message: response?.message
-    }
+      message: response?.message,
+    },
   }
 }
 
@@ -88,8 +89,8 @@ export function tooMany(response?: Response): HttpResponse {
     statusCode: StatusCodes.TOO_MANY_REQUESTS,
     body: {
       type: response?.type ?? 'error',
-      message: response?.message
-    }
+      message: response?.message,
+    },
   }
 }
 
@@ -98,7 +99,7 @@ export function fail(response?: Response) {
     statusCode: StatusCodes.INTERNAL_SERVER_ERROR,
     body: {
       type: response?.type ?? 'error',
-      message: response?.message
-    }
+      message: response?.message,
+    },
   }
 }
