@@ -21,8 +21,6 @@ describe('List entry types (E2E)', async () => {
     userWithJwt: { user, jwt },
   } = initEntities()
 
-  console.log('list entry types', farm.id, user.id)
-
   beforeAll(async () => {
     usersRepository = new PrismaUsersRepository()
     farmsRepository = new PrismaFarmsRepository()
@@ -31,7 +29,6 @@ describe('List entry types (E2E)', async () => {
     await usersRepository.create(user)
     await farmsRepository.createOrUpdate(farm)
     await farmsRepository.addMember(user.id, farm.id, Roles.OWNER)
-    console.log('farm', farm.id)
 
     const promises = manyEntryTypes.map((item) =>
       entryTypesRepository.createOrUpdate(item),
