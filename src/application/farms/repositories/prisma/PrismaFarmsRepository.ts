@@ -1,7 +1,7 @@
-import { Roles } from '../../domain/farm.schema'
+import type { Roles } from '../../domain/farm.schema'
 import { prismaClient } from '@/infra/prisma/client'
-import { Farm, LANG_ENTITY } from '../../domain/farm'
-import { IFarmsRepository } from '../IFarmsRepository'
+import { type Farm, LANG_ENTITY } from '../../domain/farm'
+import type { IFarmsRepository } from '../IFarmsRepository'
 import { FarmMapper } from '../../mappers/farm-mapper'
 
 const dbFarmClient = prismaClient.farm

@@ -1,7 +1,6 @@
 import type { NextFunction, Request, Response } from 'express'
 import { StatusCodes } from 'http-status-codes'
 import type { Middleware } from '../middleware'
-import { stringifier } from '@/core/stringifier'
 
 export const adaptMiddleware = (middleware: Middleware) => {
   return async (request: Request, response: Response, next: NextFunction) => {
