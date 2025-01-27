@@ -96,18 +96,21 @@ enum Roles {
 model EntryType {
   id String @id
 
-  name     String
-  category Categories
+  name       String
+  category   Categories
   commission Float?
 
-  farm    Farm   @relation(fields: [farm_id], references: [id], onDelete: Cascade)
-  farm_id String
+  farm        Farm      @relation(fields: [farm_id], references: [id], onDelete: Cascade)
+  farm_id     String
+  sub_type    EntryType @relation(fields: [sub_type_id], references: [id], onDelete: Cascade, name: "sub_type")
+  sub_type_id String
 
   created_at DateTime  @default(now())
   updated_at DateTime  @updatedAt
   deleted_at DateTime?
 
-  entries Entry[]
+  entries   Entry[]
+  sub_types EntryType[] @relation(name: "sub_type")
 
   @@unique([name, farm_id])
   @@map("entry_types")
@@ -142,7 +145,7 @@ model Entry {
   price       Float
   quantity    Float
   total       Float
-  after_tax Float?
+  after_tax   Float?
 
   created_at DateTime  @default(now())
   updated_at DateTime  @updatedAt
