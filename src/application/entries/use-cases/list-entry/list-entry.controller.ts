@@ -4,14 +4,14 @@ import type { Controller } from '@/core/infra/controller'
 import { type HttpResponse, clientError, ok } from '@/core/infra/http-response'
 
 type ListEntryControllerRequest = {
-  currentUserId: string
+  requesterId: string
 }
 
 export class ListEntryController implements Controller {
   constructor(
     private readonly validator: Validator<ListEntryControllerRequest>,
-    private listEntry: ListEntry
-  ) { }
+    private listEntry: ListEntry,
+  ) {}
 
   async handle(request: ListEntryControllerRequest): Promise<HttpResponse> {
     const validated = this.validator.validate(request)
@@ -21,7 +21,7 @@ export class ListEntryController implements Controller {
     }
 
     const result = await this.listEntry.execute({
-      userId: request.currentUserId
+      userId: request.requesterId,
     })
 
     return ok({
@@ -30,9 +30,9 @@ export class ListEntryController implements Controller {
         entries: result.entries.map((item) => ({
           ...item.toResponseBody(),
           type: item.type?.toResponseBody(),
-          farm: item.farm?.toResponseBody()
-        }))
-      }
-      })
-    }
+          farm: item.farm?.toResponseBody(),
+        })),
+      },
+    })
+  }
 }

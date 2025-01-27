@@ -7,8 +7,8 @@ export class PrismaUsersRepository implements IUsersRepository {
   async findByEmail(email: string): Promise<User | null> {
     const user = await prismaClient.user.findUnique({
       where: {
-        email
-      }
+        email,
+      },
     })
 
     if (!user) {
@@ -21,8 +21,8 @@ export class PrismaUsersRepository implements IUsersRepository {
   async findByEmailOrUsername(identifier: string): Promise<User | null> {
     const user = await prismaClient.user.findFirst({
       where: {
-        OR: [{ email: identifier }, { username: identifier }]
-      }
+        OR: [{ email: identifier }, { username: identifier }],
+      },
     })
 
     if (!user) {
@@ -35,8 +35,8 @@ export class PrismaUsersRepository implements IUsersRepository {
   async existsByEmail(email: string): Promise<boolean> {
     const userExists = await prismaClient.user.findUnique({
       where: {
-        email
-      }
+        email,
+      },
     })
 
     return !!userExists
@@ -45,8 +45,8 @@ export class PrismaUsersRepository implements IUsersRepository {
   async existsByUsername(username: string): Promise<boolean> {
     const userExists = await prismaClient.user.findUnique({
       where: {
-        username
-      }
+        username,
+      },
     })
 
     return !!userExists
@@ -55,8 +55,8 @@ export class PrismaUsersRepository implements IUsersRepository {
   async findById(id: string): Promise<User | null> {
     const user = await prismaClient.user.findUnique({
       where: {
-        id
-      }
+        id,
+      },
     })
 
     if (!user) return null
@@ -68,7 +68,7 @@ export class PrismaUsersRepository implements IUsersRepository {
     const data = await UserMapper.toPersistence(user)
 
     await prismaClient.user.create({
-      data
+      data,
     })
   }
 
@@ -79,12 +79,20 @@ export class PrismaUsersRepository implements IUsersRepository {
       .update({
         where: { id: user.id },
         data: {
-          ...data
-        }
+          ...data,
+        },
       })
       .catch((error) => {
         console.log(JSON.stringify(error))
         throw new Error('Error on update user')
       })
+  }
+
+  async delete(id: string): Promise<void> {
+    await prismaClient.user.delete({
+      where: {
+        id,
+      },
+    })
   }
 }

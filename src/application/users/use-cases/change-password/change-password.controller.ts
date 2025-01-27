@@ -7,7 +7,7 @@ import { UserDoesNotExistError } from './errors/UserDoesNotExistError'
 import { CurrentPaswordDoesNotMatchError } from './errors/CurrentPasswordDoesNotMatchError'
 
 type ChangePasswordControllerRequest = {
-  currentUserId: string
+  requesterId: string
   currentPassword: string
   password: string
   confirmPassword: string
@@ -16,20 +16,20 @@ type ChangePasswordControllerRequest = {
 export class ChangePasswordController implements Controller {
   constructor(
     private readonly validator: Validator<ChangePasswordControllerRequest>,
-    private changePassword: ChangePassword
+    private changePassword: ChangePassword,
   ) {}
   async handle({
-    currentUserId,
+    requesterId,
     ...request
   }: ChangePasswordControllerRequest): Promise<HttpResponse> {
-    const validated = this.validator.validate({ currentUserId, ...request })
+    const validated = this.validator.validate({ requesterId, ...request })
 
     if (validated.isLeft()) {
       return clientError(validated.value)
     }
     const result = await this.changePassword.execute({
-      userId: currentUserId,
-      ...request
+      userId: requesterId,
+      ...request,
     })
 
     if (result.isLeft()) {

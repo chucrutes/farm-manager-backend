@@ -5,7 +5,7 @@ import {
   fail,
   forbidden,
   ok,
-  unauthorized
+  unauthorized,
 } from '@/core/infra/http-response'
 import { Middleware } from '@/core/infra/middleware'
 import { decode } from 'jsonwebtoken'
@@ -25,11 +25,11 @@ export class EnsureAuthenticatedMiddleware implements Middleware {
   constructor(private readonly usersRepository: IUsersRepository) {}
 
   async handle(
-    request: EnsureAuthenticationMiddlewareRequest
+    request: EnsureAuthenticationMiddlewareRequest,
   ): Promise<HttpResponse> {
     try {
       const {
-        intercept: { jwt }
+        intercept: { jwt },
       } = request
 
       if (!jwt) {
@@ -47,7 +47,7 @@ export class EnsureAuthenticatedMiddleware implements Middleware {
         }
 
         return ok({
-          userId: decoded.sub,
+          requesterId: decoded.sub,
         })
       } catch (err) {
         return forbidden(new AccessDeniedError())

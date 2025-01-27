@@ -1,14 +1,21 @@
 import type { Controller } from '@/core/infra/controller'
-import { type HttpResponse, clientError, ok } from '@/core/infra/http-response'
+import {
+  type HttpResponse,
+  clientError,
+  conflict,
+  created,
+  ok,
+} from '@/core/infra/http-response'
 import type { Validator } from '@/core/infra/validator'
 
 import type {
   CreateOrUpdateEntryType,
-  CreateOrUpdateEntryTypeRequest
+  CreateOrUpdateEntryTypeRequest,
 } from './create-or-update'
 import { LANG_ENTITY } from '../../domain/entry-type'
+import { EntryTypeWithTheSameNameError } from '../@errors/EntryTypeWithTheSameNameError'
 
-type CreateOrUpdateEntryTypeControllerRequest = Omit<
+export type CreateOrUpdateEntryTypeControllerRequest = Omit<
   CreateOrUpdateEntryTypeRequest,
   'userId'
 > & {
@@ -18,11 +25,11 @@ type CreateOrUpdateEntryTypeControllerRequest = Omit<
 export class CreateOrUpdateEntryTypeController implements Controller {
   constructor(
     private readonly validator: Validator<CreateOrUpdateEntryTypeControllerRequest>,
-    private createEntryType: CreateOrUpdateEntryType
+    private createEntryType: CreateOrUpdateEntryType,
   ) {}
 
   async handle(
-    request: CreateOrUpdateEntryTypeControllerRequest
+    request: CreateOrUpdateEntryTypeControllerRequest,
   ): Promise<HttpResponse> {
     const validated = this.validator.validate(request)
 
@@ -32,17 +39,31 @@ export class CreateOrUpdateEntryTypeController implements Controller {
 
     const result = await this.createEntryType.execute({
       userId: request.requesterId,
-      ...request
+      ...request,
     })
 
     if (result.isLeft()) {
       const error = result.value
 
       switch (error.constructor) {
+        case EntryTypeWithTheSameNameError:
+          return conflict(error)
         default:
           return clientError(error)
       }
     }
-    return ok({ message: `${LANG_ENTITY}.created` })
+
+    if (request._id) {
+      return ok({
+        key: `${LANG_ENTITY}.created`,
+        message: 'Item atualizado com sucesso',
+        dto: result.value.toResponseBody(),
+      })
+    }
+    return created({
+      key: `${LANG_ENTITY}.created`,
+      message: 'Item criado com sucesso',
+      dto: result.value.toResponseBody(),
+    })
   }
 }

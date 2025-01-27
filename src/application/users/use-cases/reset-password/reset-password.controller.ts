@@ -5,7 +5,7 @@ import { type HttpResponse, clientError, ok } from '@/core/infra/http-response'
 import type { ResetPassword } from './reset-password'
 
 export type ResetPasswordControllerRequest = {
-  currentUserId: string
+  requesterId: string
   password: string
   confirmPassword: string
 }
@@ -13,21 +13,21 @@ export type ResetPasswordControllerRequest = {
 export class ResetPasswordController implements Controller {
   constructor(
     private readonly validator: Validator<ResetPasswordControllerRequest>,
-    private resetPassword: ResetPassword
+    private resetPassword: ResetPassword,
   ) {}
   async handle({
-    currentUserId,
+    requesterId,
     ...request
   }: ResetPasswordControllerRequest): Promise<HttpResponse> {
-    const validated = this.validator.validate({ currentUserId, ...request })
+    const validated = this.validator.validate({ requesterId, ...request })
 
     if (validated.isLeft()) {
       return clientError(validated.value)
     }
 
     const result = await this.resetPassword.execute({
-      userId: currentUserId,
-      ...request
+      userId: requesterId,
+      ...request,
     })
 
     if (result.isLeft()) {

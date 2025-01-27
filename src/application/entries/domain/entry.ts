@@ -1,10 +1,11 @@
-import { Entity } from '@/core/domain/entity'
+import { Entity, type Timestamps } from '@/core/domain/entity'
 import type { Farm } from '@/application/farms/domain/farm'
 import { type EntryProps, EntrySchema } from './entry.schema'
 import { type Either, left, right } from '@/core/logic/either'
 import type { EntryType } from '@/application/entry-type/domain/entry-type'
 import { ZodValidationError } from '@/core/domain/errors/ZodValidationError'
 import type { Register } from '@/application/register/domain/register'
+import { getPercentage } from '../@utils/get-percentage'
 
 export const LANG_ENTITY = 'entry'
 
@@ -19,8 +20,13 @@ export class Entry extends Entity<EntryProps> {
   private _register?: Register | null
   private _type?: EntryType
 
-  private constructor(props: EntryProps, id?: string, relations?: Relations) {
-    super(props, id)
+  private constructor(
+    props: EntryProps,
+    id?: string,
+    timeStamps?: Timestamps,
+    relations?: Relations,
+  ) {
+    super(props, id, timeStamps)
     this._farm = relations?.farm
     this._type = relations?.type
     this._register = relations?.register
@@ -29,7 +35,8 @@ export class Entry extends Entity<EntryProps> {
   static create(
     props: EntryProps,
     id?: string,
-    relations?: Relations
+    timeStamps?: Timestamps,
+    relations?: Relations,
   ): Either<Error, Entry> {
     const result = EntrySchema.safeParse(props)
 
@@ -37,7 +44,7 @@ export class Entry extends Entity<EntryProps> {
       return left(new ZodValidationError(result.error))
     }
 
-    return right(new Entry(result.data, id, relations))
+    return right(new Entry(result.data, id, timeStamps, relations))
   }
 
   get farm() {
@@ -48,5 +55,12 @@ export class Entry extends Entity<EntryProps> {
   }
   get register() {
     return this._register
+  }
+
+  get afterTax(): null | number {
+    if (this._type?.props.commission) {
+      return this.props.total * getPercentage(this._type.props.commission)
+    }
+    return null
   }
 }

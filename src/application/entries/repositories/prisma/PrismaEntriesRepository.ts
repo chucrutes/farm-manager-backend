@@ -23,7 +23,7 @@ export class PrismaEntriesRepository implements IEntriesRepository {
     const data = await EntryMapper.toPersistence(entry)
 
     await prismaClient.entry.create({
-      data
+      data,
     })
   }
   async update(entry: Entry): Promise<void> {
@@ -32,16 +32,16 @@ export class PrismaEntriesRepository implements IEntriesRepository {
     await prismaClient.entry.update({
       data,
       where: {
-        id: data.id
-      }
+        id: data.id,
+      },
     })
   }
 
   async findById(id: string): Promise<Entry | null> {
     const farm = await prismaClient.entry.findUnique({
       where: {
-        id
-      }
+        id,
+      },
     })
 
     if (!farm) return null
@@ -51,17 +51,17 @@ export class PrismaEntriesRepository implements IEntriesRepository {
 
   async getAllByFarmId(
     farmId: string,
-    includeRelations?: IncludeRelations
+    includeRelations?: IncludeRelations,
   ): Promise<Entry[]> {
     const include = this.buildInclude(includeRelations)
     const entries = await prismaClient.entry.findMany({
       where: {
-        farm_id: farmId
+        farm_id: farmId,
       },
       include,
       orderBy: {
-        updated_at: 'desc'
-      }
+        updated_at: 'desc',
+      },
     })
 
     return entries.map(EntryMapper.toDomain)
@@ -71,31 +71,35 @@ export class PrismaEntriesRepository implements IEntriesRepository {
     await prismaClient.entry.deleteMany({
       where: {
         id: {
-          in: ids
-        }
-      }
+          in: ids,
+        },
+      },
     })
   }
 
   async totalRevenueByFarm(farmId: string): Promise<number | null> {
     const totalSum = await prismaClient.entry.aggregate({
       _sum: {
-        total: true
+        total: true,
       },
       where: {
         farm_id: farmId,
-        category: { not: 'EXPENSE' }
-      }
+        type: {
+          category: { not: 'EXPENSE' },
+        },
+      },
     })
 
     const totalSubtract = await prismaClient.entry.aggregate({
       _sum: {
-        total: true
+        total: true,
       },
       where: {
         farm_id: farmId,
-        category: 'EXPENSE'
-      }
+        type: {
+          category: { not: 'EXPENSE' },
+        },
+      },
     })
 
     if (totalSum._sum.total === null || totalSubtract._sum.total === null)

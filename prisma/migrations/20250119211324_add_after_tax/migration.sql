@@ -1,0 +1,2 @@
+-- AlterTable
+ALTER TABLE "entries" ADD COLUMN     "after_tax" DOUBLE PRECISION NOT NULL DEFAULT 0;

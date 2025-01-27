@@ -1,6 +1,6 @@
 import { Generate } from '../logic/generate'
 
-type Timestamps = {
+export type Timestamps = {
   createdAt?: Date
   updatedAt?: Date
   deleteddAt?: Date
@@ -8,6 +8,10 @@ type Timestamps = {
 
 export type PartialIncludes<T extends object> = {
   [P in keyof T]?: boolean
+}
+
+export type ToResponseBody<T> = T & {
+  _id: string
 }
 
 export class Entity<T> {
@@ -42,15 +46,15 @@ export class Entity<T> {
       id: Generate.id(),
       versionNumber,
       entityId: this._id,
-      ...this.props
+      ...this.props,
     }
   }
 
-  public toResponseBody() {
+  public toResponseBody(): ToResponseBody<T> {
     return {
       _id: this._id,
       ...this.props,
-      ...this.timestamps
+      ...this.timestamps,
     }
   }
 }

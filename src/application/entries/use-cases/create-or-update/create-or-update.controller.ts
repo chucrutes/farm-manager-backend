@@ -4,11 +4,11 @@ import type { Validator } from '@/core/infra/validator'
 
 import type {
   CreateOrUpdateEntry,
-  CreateOrUpdateEntryRequest
+  CreateOrUpdateEntryRequest,
 } from './create-or-update'
 import { LANG_ENTITY } from '../../domain/entry'
 
-type CreateOrUpdateEntryControllerRequest = Omit<
+export type CreateOrUpdateEntryControllerRequest = Omit<
   CreateOrUpdateEntryRequest,
   'userId'
 > & {
@@ -18,11 +18,11 @@ type CreateOrUpdateEntryControllerRequest = Omit<
 export class CreateOrUpdateEntryController implements Controller {
   constructor(
     private readonly validator: Validator<CreateOrUpdateEntryControllerRequest>,
-    private createEntry: CreateOrUpdateEntry
+    private createEntry: CreateOrUpdateEntry,
   ) {}
 
   async handle(
-    request: CreateOrUpdateEntryControllerRequest
+    request: CreateOrUpdateEntryControllerRequest,
   ): Promise<HttpResponse> {
     const validated = this.validator.validate(request)
 
@@ -32,9 +32,9 @@ export class CreateOrUpdateEntryController implements Controller {
 
     const result = await this.createEntry.execute({
       userId: request.requesterId,
-      ...request
+      ...request,
     })
-
+    ;('')
     if (result.isLeft()) {
       const error = result.value
 
@@ -43,6 +43,15 @@ export class CreateOrUpdateEntryController implements Controller {
           return clientError(error)
       }
     }
-    return ok({ message: `${LANG_ENTITY}.created` })
+
+    const entry = result.value
+    return ok({
+      message: `${LANG_ENTITY}.created`,
+      dto: {
+        type: entry.type?.toResponseBody(),
+        farm: entry.farm?.toResponseBody(),
+        ...result.value.toResponseBody(),
+      },
+    })
   }
 }

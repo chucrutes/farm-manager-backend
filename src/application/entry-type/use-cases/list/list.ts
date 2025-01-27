@@ -1,6 +1,6 @@
-import { EntryType } from '../../domain/entry-type'
-import { IEntryTypesRepository } from '../../repositories/IEntryTypesRepository'
-import { IFarmsRepository } from '@/application/farms/repositories/IFarmsRepository'
+import type { EntryType } from '../../domain/entry-type'
+import type { IEntryTypesRepository } from '../../repositories/IEntryTypesRepository'
+import type { IFarmsRepository } from '@/application/farms/repositories/IFarmsRepository'
 
 export type ListEntryTypeRequest = {
   userId: string
@@ -22,14 +22,17 @@ export class ListEntryType {
   }
 
   async execute({
-    userId
+    userId,
   }: ListEntryTypeRequest): Promise<ListEntryTypeResponse> {
     const farm = await this.farmsRepository.getFarmByUserId(userId)
+
     if (!farm) {
       return []
     }
     const farmId = farm.id
-    const entryTypes = await this.entryTypesRepository.getAllByFarmId(farmId)
+    const entryTypes = await this.entryTypesRepository.getAllByFarmId(farmId, {
+      farm: true,
+    })
 
     return entryTypes
   }

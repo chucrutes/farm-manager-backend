@@ -1,6 +1,10 @@
 import { prismaClient } from '@/infra/prisma/client'
 import { type EntryType, LANG_ENTITY } from '../../domain/entry-type'
-import type { IEntryTypesRepository } from '../IEntryTypesRepository'
+import type {
+  DeleteByName,
+  IEntryTypesRepository,
+  IncludeRelations,
+} from '../IEntryTypesRepository'
 import { EntryTypeMapper } from '../../mappers/entry-type.mapper'
 import type { Prisma } from '@prisma/client'
 
@@ -26,7 +30,7 @@ export default class PrismaEntryTypesRepository
     const data = EntryTypeMapper.toPersistence(farm)
 
     await dbEntryTypeClient.create({
-      data
+      data,
     })
   }
 
@@ -37,8 +41,8 @@ export default class PrismaEntryTypesRepository
       .update({
         where: { id: farm.id },
         data: {
-          ...data
-        }
+          ...data,
+        },
       })
       .catch(() => {
         throw new Error(`Error on update ${LANG_ENTITY}`)
@@ -47,8 +51,8 @@ export default class PrismaEntryTypesRepository
   async findById(id: string): Promise<EntryType | null> {
     const farm = await dbEntryTypeClient.findUnique({
       where: {
-        id
-      }
+        id,
+      },
     })
 
     if (!farm) return null
@@ -59,19 +63,79 @@ export default class PrismaEntryTypesRepository
     await dbEntryTypeClient.deleteMany({
       where: {
         id: {
-          in: ids
-        }
-      }
+          in: ids,
+        },
+      },
     })
   }
 
-  async getAllByFarmId(farmId: string): Promise<EntryType[]> {
+  async getAllByFarmId(
+    farmId: string,
+    includeRelations?: IncludeRelations,
+  ): Promise<EntryType[]> {
+    const include = this.buildInclude(includeRelations)
     const data = await prismaClient.entryType.findMany({
       where: {
-        farm_id: farmId
-      }
+        farm_id: farmId,
+      },
+      include,
     })
 
     return data.map(EntryTypeMapper.toDomain)
+  }
+
+  async findByFarmAndName(
+    farmId: string,
+    name: string,
+  ): Promise<EntryType | null> {
+    const data = await prismaClient.entryType.findUnique({
+      where: {
+        name_farm_id: {
+          name,
+          farm_id: farmId,
+        },
+      },
+    })
+
+    if (!data) return null
+
+    return EntryTypeMapper.toDomain(data)
+  }
+
+  async deleteManyByName(items: DeleteByName[]): Promise<void> {
+    try {
+      const promises = items.map(({ farmId, name }) =>
+        prismaClient.entryType.delete({
+          where: {
+            name_farm_id: {
+              name,
+              farm_id: farmId,
+            },
+          },
+        }),
+      )
+      await Promise.all(promises)
+    } catch (e) {
+      // console.error(e)
+    }
+  }
+
+  buildInclude(includeRelations?: IncludeRelations) {
+    if (!includeRelations) return undefined
+    const include: EntryTypeInclude = {}
+
+    for (const key of Object.keys(
+      includeRelations,
+    ) as (keyof IncludeRelations)[]) {
+      switch (key) {
+        case 'farm':
+          include.farm = true
+          break
+        default:
+          break
+      }
+    }
+
+    return include
   }
 }

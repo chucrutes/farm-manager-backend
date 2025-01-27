@@ -8,8 +8,7 @@ export const adaptMiddleware = (middleware: Middleware) => {
       intercept: {
         jwt: request.headers.authorization,
       },
-      currentUserId: request.userId,
-      ...request.headers
+      ...request.headers,
     }
 
     const httpResponse = await middleware.handle(requestData, request.body)
@@ -29,7 +28,7 @@ export const adaptMiddleware = (middleware: Middleware) => {
 
     response.status(httpResponse.statusCode).json({
       type: httpResponse.body.type,
-      message: httpResponse.body.message
+      message: httpResponse.body.message,
     })
   }
 }
