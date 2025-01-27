@@ -1,17 +1,17 @@
 import { JWT } from '@/core/domain/jwt'
-import { Either, right } from '@/core/logic/either'
+import { type Either, right } from '@/core/logic/either'
 
 type RefreshTokenRequest = {
-  currentUserId: string
+  requesterId: string
 }
 
 type RefreshTokenResponse = Either<null, string>
 
 export class RefreshToken {
   async execute({
-    currentUserId
+    requesterId,
   }: RefreshTokenRequest): Promise<RefreshTokenResponse> {
-    const refreshToken = JWT.refreshToken(currentUserId)
+    const refreshToken = JWT.refreshToken(requesterId)
     return right(refreshToken.token)
   }
 }

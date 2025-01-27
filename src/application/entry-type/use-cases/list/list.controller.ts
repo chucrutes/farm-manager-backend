@@ -4,7 +4,7 @@ import type { Controller } from '@/core/infra/controller'
 import { type HttpResponse, clientError, ok } from '@/core/infra/http-response'
 
 export type ListEntryTypeControllerRequest = {
-  currentUserId: string
+  requesterId: string
 }
 
 export class ListEntryTypeController implements Controller {
@@ -19,9 +19,8 @@ export class ListEntryTypeController implements Controller {
     if (validated.isLeft()) {
       return clientError(validated.value)
     }
-
     const result = await this.listEntryType.execute({
-      userId: request.currentUserId,
+      userId: request.requesterId,
     })
 
     return ok({
