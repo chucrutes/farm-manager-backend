@@ -59,11 +59,19 @@ export class CreateOrUpdateEntry {
       }
     }
 
-    const entryOrError = Entry.create(props, _id, {
-      farm,
-      type,
-      register: entryExists?.register ?? null,
-    })
+    const entryOrError = Entry.create(
+      props,
+      _id,
+      {
+        createdAt: entryExists?.timestamps?.createdAt || new Date(),
+        updatedAt: entryExists?.timestamps?.updatedAt || new Date(),
+      },
+      {
+        farm,
+        type,
+        register: entryExists?.register ?? null,
+      },
+    )
 
     if (entryOrError.isLeft()) {
       return left(entryOrError.value)
