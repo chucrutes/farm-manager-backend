@@ -6,3 +6,6 @@
 - ```yarn run seed```
 - user: chucrutes
 - password: teste
+
+
+## This project was built using (Diego's projects)[https://github.com/diego3g] as reference 
