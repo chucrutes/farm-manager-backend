@@ -1,7 +1,7 @@
-import { User } from '../../domain/user'
+import type { User } from '../../domain/user'
 import { prismaClient } from '@/infra/prisma/client'
 import { UserMapper } from '../../mappers/user-mapper'
-import { IUsersRepository } from '../IUsersRepository'
+import type { IUsersRepository } from '../IUsersRepository'
 
 export class PrismaUsersRepository implements IUsersRepository {
   async findByEmail(email: string): Promise<User | null> {
@@ -83,7 +83,6 @@ export class PrismaUsersRepository implements IUsersRepository {
         },
       })
       .catch((error) => {
-        console.log(JSON.stringify(error))
         throw new Error('Error on update user')
       })
   }
