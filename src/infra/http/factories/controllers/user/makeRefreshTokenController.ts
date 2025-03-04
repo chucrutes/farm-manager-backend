@@ -1,4 +1,4 @@
-import { Controller } from '@/core/infra/controller'
+import type { Controller } from '@/core/infra/controller'
 import { RefreshToken } from '@/application/users/use-cases/refresh-token/refresh-token'
 import { RefreshTokenController } from '@/application/users/use-cases/refresh-token/refresh-token.controller'
 

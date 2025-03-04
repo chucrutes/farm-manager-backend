@@ -1,13 +1,13 @@
-import { IUsersRepository } from '@/application/users/repositories/IUsersRepository'
+import type { IUsersRepository } from '@/application/users/repositories/IUsersRepository'
 import { AccessDeniedError } from '@/core/domain/errors/AccessDeniedError'
 import {
-  HttpResponse,
+  type HttpResponse,
   fail,
   forbidden,
   ok,
   unauthorized,
 } from '@/core/infra/http-response'
-import { Middleware } from '@/core/infra/middleware'
+import type { Middleware } from '@/core/infra/middleware'
 import { decode } from 'jsonwebtoken'
 import { UserDoesNotExistsError } from './errors/UserDoesNotExistsError'
 

@@ -1,4 +1,4 @@
-import { Controller } from '@/core/infra/controller'
+import type { Controller } from '@/core/infra/controller'
 import { GetEntryType } from '@/application/entry-type/use-cases/get/get'
 import { ValidatorCompositor } from '@/infra/validation/ValidatorCompositor'
 import { GetEntryTypeController } from '@/application/entry-type/use-cases/get/get.controller'
@@ -8,7 +8,7 @@ export function makeGetEntryTypeController(): Controller {
   const entryTypesRepository = new PrismaEntryTypesRepository()
 
   const createEntryType = new GetEntryType({
-    entryTypesRepository
+    entryTypesRepository,
   })
 
   const validator = new ValidatorCompositor([])

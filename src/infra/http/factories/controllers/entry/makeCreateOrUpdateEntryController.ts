@@ -1,4 +1,4 @@
-import { Controller } from '@/core/infra/controller'
+import type { Controller } from '@/core/infra/controller'
 import { ValidatorCompositor } from '@/infra/validation/ValidatorCompositor'
 import PrismaFarmsRepository from '@/application/farms/repositories/prisma/PrismaFarmsRepository'
 import { CreateOrUpdateEntry } from '@/application/entries/use-cases/create-or-update/create-or-update'
@@ -13,7 +13,7 @@ export function makeCreateOrUpdateEntryController(): Controller {
   const createEntry = new CreateOrUpdateEntry({
     farmsRepository,
     entriesRepository,
-    entryTypesRepository
+    entryTypesRepository,
   })
 
   const validator = new ValidatorCompositor([])

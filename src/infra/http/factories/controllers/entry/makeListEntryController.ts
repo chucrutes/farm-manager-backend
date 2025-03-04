@@ -1,4 +1,4 @@
-import { Controller } from '@/core/infra/controller'
+import type { Controller } from '@/core/infra/controller'
 import { ValidatorCompositor } from '@/infra/validation/ValidatorCompositor'
 import { ListEntry } from '@/application/entries/use-cases/list-entry/list-entry'
 import { ListEntryController } from '@/application/entries/use-cases/list-entry/list-entry.controller'
