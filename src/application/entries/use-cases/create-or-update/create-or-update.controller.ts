@@ -34,7 +34,6 @@ export class CreateOrUpdateEntryController implements Controller {
       userId: request.requesterId,
       ...request,
     })
-    ;('')
     if (result.isLeft()) {
       const error = result.value
 
