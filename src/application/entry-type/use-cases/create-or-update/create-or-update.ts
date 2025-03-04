@@ -51,7 +51,7 @@ export class CreateOrUpdateEntryType {
       props.name,
     )
 
-    if (entryTypeByName?.id !== _id) {
+    if (entryTypeByName && entryTypeByName.id !== _id) {
       return left(new EntryTypeWithTheSameNameError())
     }
 
