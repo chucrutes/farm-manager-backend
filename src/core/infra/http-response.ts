@@ -3,23 +3,27 @@ import { StatusCodes } from 'http-status-codes'
 export type HttpResponse = {
   statusCode: number
   body: any
+  headers?: Record<string, string | number | boolean>
 }
 
 export type Response = {
   type?: 'info' | 'success' | 'warn' | 'error'
   message?: string
+  headers?: Record<string, string | number | boolean>
 }
 
 type DTO<T> = Response & T
 
 export function ok<T>(dto?: DTO<T>): HttpResponse {
+  const { headers, ...rest } = dto ?? {}
   return {
     statusCode: StatusCodes.OK,
     body: {
       type: dto?.type ?? 'success',
       message: dto?.message,
-      ...dto,
+      ...rest,
     },
+    headers,
   }
 }
 

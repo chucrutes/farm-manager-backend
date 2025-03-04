@@ -98,12 +98,12 @@ model EntryType {
 
   name       String
   category   Categories
-  commission Float?
+  commission Boolean    @default(false)
 
-  farm        Farm      @relation(fields: [farm_id], references: [id], onDelete: Cascade)
+  farm        Farm       @relation(fields: [farm_id], references: [id], onDelete: Cascade)
   farm_id     String
-  sub_type    EntryType @relation(fields: [sub_type_id], references: [id], onDelete: Cascade, name: "sub_type")
-  sub_type_id String
+  sub_type    EntryType? @relation(fields: [sub_type_id], references: [id], onDelete: Cascade, name: "sub_type")
+  sub_type_id String?
 
   created_at DateTime  @default(now())
   updated_at DateTime  @updatedAt
@@ -146,6 +146,7 @@ model Entry {
   quantity    Float
   total       Float
   after_tax   Float?
+  commission  Float?
 
   created_at DateTime  @default(now())
   updated_at DateTime  @updatedAt

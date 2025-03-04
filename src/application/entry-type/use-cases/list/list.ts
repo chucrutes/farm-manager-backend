@@ -1,12 +1,17 @@
+import type { ListResponse, PaginationMetadata } from '@/application/@types'
 import type { EntryType } from '../../domain/entry-type'
 import type { IEntryTypesRepository } from '../../repositories/IEntryTypesRepository'
 import type { IFarmsRepository } from '@/application/farms/repositories/IFarmsRepository'
+import { left, right, type Either } from '@/core/logic/either'
+import { FarmNotFoundError } from '@/application/farms/use-cases/@errors/FarmNotFoundError'
 
 export type ListEntryTypeRequest = {
   userId: string
 }
 
-type ListEntryTypeResponse = EntryType[]
+type RightResponse = ListResponse<EntryType>
+
+type ListEntryTypeResponse = Either<Error, RightResponse>
 
 type ListEntryTypeProps = {
   entryTypesRepository: IEntryTypesRepository
@@ -27,13 +32,13 @@ export class ListEntryType {
     const farm = await this.farmsRepository.getFarmByUserId(userId)
 
     if (!farm) {
-      return []
+      return left(new FarmNotFoundError())
     }
     const farmId = farm.id
     const entryTypes = await this.entryTypesRepository.getAllByFarmId(farmId, {
       farm: true,
     })
 
-    return entryTypes
+    return right(entryTypes)
   }
 }

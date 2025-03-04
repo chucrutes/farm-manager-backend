@@ -8,10 +8,12 @@ export const LANG_ENTITY = 'entry_type'
 
 export type Relations = {
   farm?: Farm
+  subType?: EntryType
 }
 
 export class EntryType extends Entity<EntryTypeProps> {
   private _farm?: Farm
+  private _subType?: EntryType
 
   private constructor(
     props: EntryTypeProps,
@@ -21,6 +23,7 @@ export class EntryType extends Entity<EntryTypeProps> {
   ) {
     super(props, id, timestamps)
     this._farm = relations?.farm
+    this._subType = relations?.subType
   }
 
   static create(
@@ -40,5 +43,8 @@ export class EntryType extends Entity<EntryTypeProps> {
 
   get farm() {
     return this._farm
+  }
+  get subType() {
+    return this._subType
   }
 }

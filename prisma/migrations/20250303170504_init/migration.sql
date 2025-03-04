@@ -55,8 +55,9 @@ CREATE TABLE "entry_types" (
     "id" TEXT NOT NULL,
     "name" TEXT NOT NULL,
     "category" "Categories" NOT NULL,
-    "commission" DOUBLE PRECISION,
+    "commission" BOOLEAN NOT NULL DEFAULT false,
     "farm_id" TEXT NOT NULL,
+    "sub_type_id" TEXT,
     "created_at" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
     "updated_at" TIMESTAMP(3) NOT NULL,
     "deleted_at" TIMESTAMP(3),
@@ -85,6 +86,8 @@ CREATE TABLE "entries" (
     "price" DOUBLE PRECISION NOT NULL,
     "quantity" DOUBLE PRECISION NOT NULL,
     "total" DOUBLE PRECISION NOT NULL,
+    "after_tax" DOUBLE PRECISION,
+    "commission" DOUBLE PRECISION,
     "created_at" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
     "updated_at" TIMESTAMP(3) NOT NULL,
     "deleted_at" TIMESTAMP(3),
@@ -117,6 +120,9 @@ ALTER TABLE "farm_plans" ADD CONSTRAINT "farm_plans_farm_id_fkey" FOREIGN KEY ("
 
 -- AddForeignKey
 ALTER TABLE "entry_types" ADD CONSTRAINT "entry_types_farm_id_fkey" FOREIGN KEY ("farm_id") REFERENCES "farms"("id") ON DELETE CASCADE ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE "entry_types" ADD CONSTRAINT "entry_types_sub_type_id_fkey" FOREIGN KEY ("sub_type_id") REFERENCES "entry_types"("id") ON DELETE CASCADE ON UPDATE CASCADE;
 
 -- AddForeignKey
 ALTER TABLE "farm_members" ADD CONSTRAINT "farm_members_user_id_fkey" FOREIGN KEY ("user_id") REFERENCES "users"("id") ON DELETE CASCADE ON UPDATE CASCADE;

@@ -7,6 +7,8 @@ import type {
 } from '../IEntryTypesRepository'
 import { EntryTypeMapper } from '../../mappers/entry-type.mapper'
 import type { Prisma } from '@prisma/client'
+import type { Pagination, PaginationMetadata } from '@/application/@types'
+import { buildMetadata, buildPagination } from '@/utils/pagination'
 
 const dbEntryTypeClient = prismaClient.entryType
 
@@ -72,16 +74,31 @@ export default class PrismaEntryTypesRepository
   async getAllByFarmId(
     farmId: string,
     includeRelations?: IncludeRelations,
-  ): Promise<EntryType[]> {
+    pagination?: Pagination,
+  ): Promise<{ data: EntryType[]; metadata: PaginationMetadata }> {
     const include = this.buildInclude(includeRelations)
-    const data = await prismaClient.entryType.findMany({
-      where: {
-        farm_id: farmId,
-      },
-      include,
-    })
+    const { skip, take, orderBy } = buildPagination(pagination)
 
-    return data.map(EntryTypeMapper.toDomain)
+    const [data, count] = await prismaClient.$transaction([
+      prismaClient.entryType.findMany({
+        where: {
+          farm_id: farmId,
+        },
+        include,
+        skip,
+        take,
+        orderBy,
+      }),
+      prismaClient.entryType.count({
+        where: {
+          farm_id: farmId,
+        },
+      }),
+    ])
+
+    const metadata = buildMetadata(count, data.length, pagination)
+
+    return { data: data.map(EntryTypeMapper.toDomain), metadata }
   }
 
   async findByFarmAndName(

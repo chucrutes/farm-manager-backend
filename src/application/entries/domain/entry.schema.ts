@@ -7,6 +7,7 @@ export const EntrySchema = z.object({
   price: z.number(),
   quantity: z.number(),
   total: z.number(),
+  commission: z.number().nullish(),
   afterTax: z.number().nullish(),
 })
 export const EntryRequestSchema = EntrySchema.merge(

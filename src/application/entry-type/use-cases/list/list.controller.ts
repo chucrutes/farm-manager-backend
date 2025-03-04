@@ -23,8 +23,20 @@ export class ListEntryTypeController implements Controller {
       userId: request.requesterId,
     })
 
+    if (result.isLeft()) {
+      const error = result.value
+
+      switch (error.constructor) {
+        default:
+          return clientError(error)
+      }
+    }
+
+    const { data, metadata } = result.value
+
     return ok({
-      dto: result.map((res) => ({
+      headers: metadata,
+      dto: data.map((res) => ({
         ...res.toResponseBody(),
         farm: res.farm?.toResponseBody(),
       })),

@@ -28,8 +28,9 @@ export class EntryTypeMapper {
   static toPersistence(
     entity: EntryType,
   ): Omit<PersistenceEntryType, 'created_at' | 'updated_at' | 'deleted_at'> {
-    const { id, props, farm } = entity
+    const { id, props, farm, subType } = entity
     const farmId = farm?.id
+    const subTypeId = subType?.id ?? null
 
     if (!farmId) {
       throw new Error('No farmId provided')
@@ -39,7 +40,8 @@ export class EntryTypeMapper {
       id: id,
       name: props.name,
       category: props.category,
-      commission: isNull(props.commission),
+      commission: props.commission,
+      sub_type_id: subTypeId,
       farm_id: farmId,
     }
   }
