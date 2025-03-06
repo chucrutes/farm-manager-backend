@@ -5,6 +5,7 @@ import { makeGetEntryTypeController } from '../factories/controllers/entry-type/
 import { makeListEntryTypeController } from '../factories/controllers/entry-type/makeListEntryTypeController'
 import { makeCreateOrUpdateEntryTypeController } from '../factories/controllers/entry-type/makeCreateOrUpdateEntryTypeController'
 import { adaptMiddleware } from '@/core/infra/adapters/express-middleware-adapter'
+import { makeDeleteEntryTypeController } from '../factories/controllers/entry-type/makeDeleteEntryTypeController'
 
 export const entryType = Router()
 
@@ -12,6 +13,11 @@ entryType.post(
   '/',
   adaptMiddleware(makeEnsureAuthenticated()),
   adaptRoute(makeCreateOrUpdateEntryTypeController())
+)
+entryType.delete(
+  '/',
+  adaptMiddleware(makeEnsureAuthenticated()),
+  adaptRoute(makeDeleteEntryTypeController())
 )
 entryType.get(
   '/',
