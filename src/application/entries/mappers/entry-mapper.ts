@@ -6,6 +6,9 @@ import type {
 } from '@prisma/client'
 import { EntryTypeMapper } from '@/application/entry-type/mappers/entry-type.mapper'
 import { RegisterMapper } from '@/application/register/mappers/register-mapper'
+import { Entity } from '@/core/domain/entity'
+import { EntityMapper } from '@/core/mappers/entity'
+import { isNull } from '@/infra/prisma/is-null'
 
 type Raw = PersistenceEntry & {
   type?: PersistenceEntryType
@@ -23,6 +26,7 @@ export class EntryMapper {
         afterTax: raw.after_tax,
       },
       raw.id,
+      EntityMapper.toTimestamps(raw),
       {
         type: raw.type && EntryTypeMapper.toDomain(raw.type),
         register: raw.register && RegisterMapper.toDomain(raw.register),
@@ -57,6 +61,7 @@ export class EntryMapper {
       farm_id: farmId,
       type_id: typeId,
       description: props.description,
+      commission: isNull( props.commission),
       price: props.price,
       quantity: props.quantity,
       total: props.total,

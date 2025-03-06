@@ -3,7 +3,7 @@ import { Generate } from '../logic/generate'
 export type Timestamps = {
   createdAt?: Date
   updatedAt?: Date
-  deleteddAt?: Date
+  deletedAt?: Date
 }
 
 export type PartialIncludes<T extends object> = {

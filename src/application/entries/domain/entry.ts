@@ -59,7 +59,7 @@ export class Entry extends Entity<EntryProps> {
 
   get afterTax(): null | number {
     if (this._type?.props.commission) {
-      return this.props.total * getPercentage(this._type.props.commission)
+      return this.props.total * getPercentage(this.props.commission ?? 0)
     }
     return null
   }

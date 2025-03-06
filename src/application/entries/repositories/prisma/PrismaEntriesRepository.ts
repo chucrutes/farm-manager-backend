@@ -4,6 +4,7 @@ import { prismaClient } from '@/infra/prisma/client'
 import { EntryMapper } from '../../mappers/entry-mapper'
 import type { IEntriesRepository } from '../IEntriesRepository'
 import type { IncludeRelations } from '@/application/entry-type/repositories/IEntryTypesRepository'
+import type { Register } from '@/application/register/domain/register'
 
 type EntryInclude = Prisma.EntryInclude
 
@@ -107,6 +108,40 @@ export class PrismaEntriesRepository implements IEntriesRepository {
     const result = totalSum._sum.total - totalSubtract._sum.total
 
     return result
+  }
+
+  async getOpenEntriesRangeByFarmId(farmId: string) {
+    const result = await prismaClient.entry.aggregate({
+      _min: {
+        created_at: true,
+      },
+      _max: {
+        created_at: true,
+      },
+      where: {
+        register_id: null,
+        farm_id: farmId
+      },
+    });
+
+    return {
+      min: result._min.created_at as Date,
+      max: result._max.created_at as Date,
+    }
+  }
+
+  async setClosedRegister(register: Register): Promise<void> {
+    if(!register.farm) return
+
+    await prismaClient.entry.updateMany({
+      where: {
+        register_id: null,
+        farm_id: register.farm.id,
+      },
+      data: {
+        register_id: register.id,
+      },
+    })
   }
 
   buildInclude(includeRelations?: IncludeRelations): EntryInclude {

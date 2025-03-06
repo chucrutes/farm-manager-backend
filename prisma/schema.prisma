@@ -59,6 +59,7 @@ model Farm {
   EntryType   EntryType[]
   FarmPlan    FarmPlan[]
   FarmMembers FarmMembers[]
+  Register Register[]
 
   @@map("farms")
 }
@@ -158,7 +159,11 @@ model Entry {
 model Register {
   id String @id
 
+  farm        Farm      @relation(fields: [farm_id], references: [id], onDelete: Cascade)
+  farm_id     String
   date DateTime
+  start_date DateTime
+  end_date DateTime
 
   created_at DateTime  @default(now())
   updated_at DateTime  @updatedAt

@@ -1,7 +1,7 @@
 import { Farm } from '../../domain/farm'
-import { Either, left, right } from '@/core/logic/either'
-import { FarmProps, Roles } from '../../domain/farm.schema'
-import { IFarmsRepository } from '../../repositories/IFarmsRepository'
+import { type Either, left, right } from '@/core/logic/either'
+import { type FarmProps, Roles } from '../../domain/farm.schema'
+import type { IFarmsRepository } from '../../repositories/IFarmsRepository'
 
 export type CreateOrUpdateFarmRequest = FarmProps & {
   _id?: string
