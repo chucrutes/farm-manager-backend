@@ -1,4 +1,4 @@
-import type { Prisma } from '@prisma/client'
+import { Categories, type Prisma } from '@prisma/client'
 import type { Entry, Relations } from '../../domain/entry'
 import { prismaClient } from '@/infra/prisma/client'
 import { EntryMapper } from '../../mappers/entry-mapper'
@@ -87,7 +87,7 @@ export class PrismaEntriesRepository implements IEntriesRepository {
       where: {
         farm_id: farmId,
         type: {
-          category: { not: 'EXPENSE' },
+          category: { not: Categories.EXPENSE },
         },
       },
     })
@@ -99,10 +99,13 @@ export class PrismaEntriesRepository implements IEntriesRepository {
       where: {
         farm_id: farmId,
         type: {
-          category: { not: 'EXPENSE' },
+          category:  Categories.EXPENSE ,
         },
       },
     })
+
+    console.log(totalSum)
+    console.log(totalSubtract)
 
     if (totalSum._sum.total === null || totalSubtract._sum.total === null)
       return null
