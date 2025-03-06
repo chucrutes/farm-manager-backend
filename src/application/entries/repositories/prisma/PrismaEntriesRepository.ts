@@ -2,9 +2,10 @@ import type { Prisma } from '@prisma/client'
 import type { Entry, Relations } from '../../domain/entry'
 import { prismaClient } from '@/infra/prisma/client'
 import { EntryMapper } from '../../mappers/entry-mapper'
-import type { IEntriesRepository } from '../IEntriesRepository'
+import type { DataByCategory, IEntriesRepository } from '../IEntriesRepository'
 import type { IncludeRelations } from '@/application/entry-type/repositories/IEntryTypesRepository'
 import type { Register } from '@/application/register/domain/register'
+import { stringifier } from '@/utils/stringifier'
 
 type EntryInclude = Prisma.EntryInclude
 
@@ -142,6 +143,20 @@ export class PrismaEntriesRepository implements IEntriesRepository {
         register_id: register.id,
       },
     })
+  }
+
+  async getDataByCategory(farmId: string, registerId: string | null): Promise<DataByCategory[]> {
+    const sumByCategory = await prismaClient.$queryRaw`
+      SELECT entry_types.category, SUM(entries.total) 
+      FROM entries
+      INNER JOIN entry_types ON entries.type_id = entry_types.id
+      WHERE entries.deleted_at IS NULL
+      AND entries.farm_id = ${farmId}
+      AND entries.deleted_at is NULL
+      GROUP BY entry_types.category;
+    `
+
+    return sumByCategory as DataByCategory[]
   }
 
   buildInclude(includeRelations?: IncludeRelations): EntryInclude {

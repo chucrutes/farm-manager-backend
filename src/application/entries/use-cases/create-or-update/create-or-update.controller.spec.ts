@@ -43,7 +43,7 @@ describe('Create or update entry(E2E)', async () => {
   test('should create an entry', async () => {
     const entryType = EntryFactory.create()
 
-    const data: Request = { typeId: type.id, ...entryType.props }
+    const data: Request = { type: {_id: type.id}, ...entryType.props }
 
     const response = await request(app)
       .post(ROUTE_ENTITY)

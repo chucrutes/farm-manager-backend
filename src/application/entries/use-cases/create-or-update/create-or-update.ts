@@ -6,10 +6,11 @@ import type { IEntriesRepository } from '../../repositories/IEntriesRepository'
 import type { IFarmsRepository } from '@/application/farms/repositories/IFarmsRepository'
 import type { IEntryTypesRepository } from '@/application/entry-type/repositories/IEntryTypesRepository'
 import { EntryTypeNotFoundError } from '@/application/entry-type/use-cases/@errors/EntryTypeNotFoundError'
+import type { Id } from '@/application/@types'
 
 export type CreateOrUpdateEntryRequest = EntryProps & {
   userId: string
-  typeId: string
+  type: Id
   _id?: string
 }
 
@@ -33,19 +34,19 @@ export class CreateOrUpdateEntry {
   }
 
   async execute({
-    typeId,
+    type,
     userId,
     _id,
     ...props
   }: CreateOrUpdateEntryRequest): Promise<CreateOrUpdateEntryResponse> {
     let entryExists: Entry | null = null
     const farm = await this.farmsRepository.getFarmByUserId(userId)
-    const type = await this.entryTypesRepository.findById(typeId)
+    const _type = await this.entryTypesRepository.findById(type._id)
 
     if (!farm) {
       throw new Error('no farm id')
     }
-    if (!type) {
+    if (!_type) {
       return left(new EntryTypeNotFoundError())
     }
 
@@ -68,7 +69,7 @@ export class CreateOrUpdateEntry {
       },
       {
         farm,
-        type,
+        type: _type,
         register: entryExists?.register ?? null,
       },
     )

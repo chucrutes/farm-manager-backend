@@ -4,7 +4,7 @@ export const NullishIdSchema = z.object({
   id: z.string().cuid2().nullish(),
 })
 export const IdSchema = z.object({
-  id: z.string().cuid2().nullish(),
+  _id: z.string().cuid2(),
 })
 
 export type Id = z.infer<typeof IdSchema>
