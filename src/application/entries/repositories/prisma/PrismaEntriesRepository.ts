@@ -5,7 +5,6 @@ import { EntryMapper } from '../../mappers/entry-mapper'
 import type { DataByCategory, IEntriesRepository } from '../IEntriesRepository'
 import type { IncludeRelations } from '@/application/entry-type/repositories/IEntryTypesRepository'
 import type { Register } from '@/application/register/domain/register'
-import { stringifier } from '@/utils/stringifier'
 
 type EntryInclude = Prisma.EntryInclude
 
@@ -99,7 +98,7 @@ export class PrismaEntriesRepository implements IEntriesRepository {
       where: {
         farm_id: farmId,
         type: {
-          category:  Categories.EXPENSE ,
+          category: Categories.EXPENSE,
         },
       },
     })
@@ -124,9 +123,9 @@ export class PrismaEntriesRepository implements IEntriesRepository {
       },
       where: {
         register_id: null,
-        farm_id: farmId
+        farm_id: farmId,
       },
-    });
+    })
 
     return {
       min: result._min.created_at as Date,
@@ -135,7 +134,7 @@ export class PrismaEntriesRepository implements IEntriesRepository {
   }
 
   async setClosedRegister(register: Register): Promise<void> {
-    if(!register.farm) return
+    if (!register.farm) return
 
     await prismaClient.entry.updateMany({
       where: {
@@ -144,11 +143,15 @@ export class PrismaEntriesRepository implements IEntriesRepository {
       },
       data: {
         register_id: register.id,
+        deleted_at: new Date(),
       },
     })
   }
 
-  async getDataByCategory(farmId: string, registerId: string | null): Promise<DataByCategory[]> {
+  async getDataByCategory(
+    farmId: string,
+    registerId: string | null,
+  ): Promise<DataByCategory[]> {
     const sumByCategory = await prismaClient.$queryRaw`
       SELECT entry_types.category, SUM(entries.total) 
       FROM entries

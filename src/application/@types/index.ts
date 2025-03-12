@@ -28,3 +28,7 @@ export const PaginationMetadataSchema = z.object({
 export type PaginationMetadata = z.infer<typeof PaginationMetadataSchema>
 
 export type ListResponse<T> = { data: T[]; metadata: PaginationMetadata }
+export type ListOptions<T> = {
+  includes?: T
+  pagination?: Pagination
+}
