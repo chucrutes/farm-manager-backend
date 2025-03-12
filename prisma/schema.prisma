@@ -42,9 +42,8 @@ enum Types {
 
 enum Categories {
   EXPENSE
-  PROFIT
+  INCOME
   ASSET
-  INVESTMENT
 }
 
 model Farm {
@@ -162,11 +161,12 @@ model Register {
   farm    Farm   @relation(fields: [farm_id], references: [id], onDelete: Cascade)
   farm_id String
 
+  name          String
   date          DateTime
   start_date    DateTime
   end_date      DateTime
-  total_income  Float    @default(0)
-  total_expense Float    @default(0)
+  total_income  Float
+  total_expense Float
 
   created_at DateTime  @default(now())
   updated_at DateTime  @updatedAt

@@ -2,7 +2,7 @@
 CREATE TYPE "Types" AS ENUM ('INVESTMENT_EXPENSE', 'CATTLE_SALE', 'BUY_CATTLE', 'MEDICINE', 'PESTICIDE', 'FEED', 'STAFF', 'INVESTMENT');
 
 -- CreateEnum
-CREATE TYPE "Categories" AS ENUM ('EXPENSE', 'PROFIT', 'ASSET', 'INVESTMENT');
+CREATE TYPE "Categories" AS ENUM ('EXPENSE', 'INCOME', 'ASSET');
 
 -- CreateEnum
 CREATE TYPE "FarmPlanStatuses" AS ENUM ('ACTIVE', 'INACTIVE');
@@ -98,7 +98,13 @@ CREATE TABLE "entries" (
 -- CreateTable
 CREATE TABLE "registers" (
     "id" TEXT NOT NULL,
+    "farm_id" TEXT NOT NULL,
+    "name" TEXT NOT NULL,
     "date" TIMESTAMP(3) NOT NULL,
+    "start_date" TIMESTAMP(3) NOT NULL,
+    "end_date" TIMESTAMP(3) NOT NULL,
+    "total_income" DOUBLE PRECISION NOT NULL,
+    "total_expense" DOUBLE PRECISION NOT NULL,
     "created_at" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
     "updated_at" TIMESTAMP(3) NOT NULL,
     "deleted_at" TIMESTAMP(3),
@@ -138,3 +144,6 @@ ALTER TABLE "entries" ADD CONSTRAINT "entries_type_id_fkey" FOREIGN KEY ("type_i
 
 -- AddForeignKey
 ALTER TABLE "entries" ADD CONSTRAINT "entries_register_id_fkey" FOREIGN KEY ("register_id") REFERENCES "registers"("id") ON DELETE SET NULL ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE "registers" ADD CONSTRAINT "registers_farm_id_fkey" FOREIGN KEY ("farm_id") REFERENCES "farms"("id") ON DELETE CASCADE ON UPDATE CASCADE;

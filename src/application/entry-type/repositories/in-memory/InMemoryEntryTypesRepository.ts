@@ -1,11 +1,19 @@
+import type { PaginationMetadata } from '@/application/@types'
 import type { EntryType } from '../../domain/entry-type'
 import type {
+  DeleteByName,
   IEntryTypesRepository,
-  IncludeRelations
+  IncludeRelations,
 } from '../IEntryTypesRepository'
 
 export class InMemoryEntryTypesRepository implements IEntryTypesRepository {
   constructor(public entryTypes: EntryType[] = []) {}
+  findByFarmAndName(farmId: string, name: string): Promise<EntryType | null> {
+    throw new Error('Method not implemented.')
+  }
+  deleteManyByName(items: DeleteByName[]): Promise<void> {
+    throw new Error('Method not implemented.')
+  }
   async createOrUpdate(entity: EntryType): Promise<void> {
     const entityFound = await this.findById(entity.id)
 
@@ -22,7 +30,7 @@ export class InMemoryEntryTypesRepository implements IEntryTypesRepository {
   }
   async update(workspace: EntryType): Promise<void> {
     const index = this.entryTypes.findIndex(
-      (entryTypeItem) => entryTypeItem.id === workspace.id
+      (entryTypeItem) => entryTypeItem.id === workspace.id,
     )
 
     this.entryTypes[index] = workspace
@@ -37,8 +45,7 @@ export class InMemoryEntryTypesRepository implements IEntryTypesRepository {
   async deleteMany(_ids: string[]): Promise<void> {}
   getAllByFarmId(
     farmId: string,
-    includeRelations?: IncludeRelations
-  ): Promise<EntryType[]> {
+  ): Promise<{ data: EntryType[]; metadata: PaginationMetadata }> {
     throw new Error('Method not implemented.')
   }
 }

@@ -2,7 +2,7 @@ import { z } from 'zod'
 
 export enum Categories {
   EXPENSE = 'EXPENSE',
-  PROFIT = 'PROFIT',
+  INCOME = 'INCOME',
   ASSET = 'ASSET',
 }
 

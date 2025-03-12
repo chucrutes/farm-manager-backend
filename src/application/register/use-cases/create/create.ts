@@ -1,8 +1,12 @@
 import { Register } from '../../domain/register'
 import { type Either, left, right } from '@/core/logic/either'
 import type { IRegistersRepository } from '../../repositories/IRegistersRepository'
-import type { IEntriesRepository } from '@/application/entries/repositories/IEntriesRepository'
+import type {
+  DataByCategory,
+  IEntriesRepository,
+} from '@/application/entries/repositories/IEntriesRepository'
 import type { Farm } from '@/application/farms/domain/farm'
+import { Categories } from '@/application/entries/domain/@types/categories.enum'
 
 export type CreateRegisterRequest = {
   farm: Farm
@@ -18,21 +22,35 @@ type CreateOrUpdateEntryProps = {
 export class CreateRegister {
   private entriesRepository: IEntriesRepository
   private registersRepository: IRegistersRepository
-  
+
   constructor(props: CreateOrUpdateEntryProps) {
     this.entriesRepository = props.entriesRepository
     this.registersRepository = props.registersRepository
   }
 
-  async execute({farm}: CreateRegisterRequest): Promise<CreateRegisterResponse> {
+  async execute({
+    farm,
+  }: CreateRegisterRequest): Promise<CreateRegisterResponse> {
+    const range = await this.entriesRepository.getOpenEntriesRangeByFarmId(
+      farm.id,
+    )
+    const data = await this.entriesRepository.getDataByCategory(farm.id, null)
+    const { income: totalIncome, expense: totalExpense } =
+      this.getCategoriesSum(data)
 
-    const range = await this.entriesRepository.getOpenEntriesRangeByFarmId(farm.id)
-
-    const registerOrError = Register.create({
-      date: new Date(),
-      startDate: range.min,
-      endDate: range.max
-    })
+    const registerOrError = Register.create(
+      {
+        name: `Caixa ${range.min.toString()}-${range.max.toString()}`,
+        date: new Date(),
+        startDate: range.min,
+        endDate: range.max,
+        totalExpense,
+        totalIncome,
+      },
+      undefined,
+      undefined,
+      { farm },
+    )
 
     if (registerOrError.isLeft()) {
       return left(registerOrError.value)
@@ -40,7 +58,21 @@ export class CreateRegister {
 
     const register = registerOrError.value
     await this.registersRepository.createOrUpdate(register)
-    await this.entriesRepository.setClosedRegister(register)
     return right(register)
+  }
+
+  getCategoriesSum(data: DataByCategory[]): {
+    income: number
+    expense: number
+  } {
+    const expense =
+      data.find((item) => item.category === Categories.EXPENSE)?.sum ?? 0
+    const income =
+      data.find((item) => item.category === Categories.INCOME)?.sum ?? 0
+
+    return {
+      income,
+      expense,
+    }
   }
 }

@@ -55,23 +55,8 @@ describe('Create or update entry type(E2E)', async () => {
     )
   })
 
-  test('should create a type without commission', async () => {
-    const { commission, ...entryType } = EntryTypeFactory.create().props
-
-    const data: Request = entryType
-
-    const response = await request(app)
-      .post(ROUTE_ENTITY)
-      .auth(jwt.token, { type: 'bearer' })
-      .send(data)
-
-    expect(
-      (response.body.dto as ToResponseBody<EntryTypeProps>).commission,
-    ).toBeUndefined()
-  })
-
   test('should not create a type with the same name as a existing type', async () => {
-    const { commission, ...rest } = EntryTypeFactory.create({
+    const rest = EntryTypeFactory.create({
       name: entryType.props.name,
     }).props
 
@@ -85,7 +70,7 @@ describe('Create or update entry type(E2E)', async () => {
     expect(response.status).toEqual(StatusCodes.CONFLICT)
   })
   test('should update a type', async () => {
-    const { commission, ...rest } = EntryTypeFactory.create({
+    const rest = EntryTypeFactory.create({
       name: entryType.props.name,
       id: entryType.id,
     }).props

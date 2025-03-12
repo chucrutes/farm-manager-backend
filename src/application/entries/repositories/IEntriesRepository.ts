@@ -24,7 +24,6 @@ export interface IEntriesRepository extends ICrudRepository<Entry, Relations> {
   ): Promise<Entry[]>
   getOpenEntriesRangeByFarmId(farmId: string): Promise<Range>
   totalRevenueByFarm(farmId: string): Promise<number | null>
-  setClosedRegister(register: Register): Promise<void>
   getDataByCategory(
     farmId: string,
     registerId: string | null,

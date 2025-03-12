@@ -12,8 +12,7 @@ export class EntryTypeFactory {
           overrides?.name ||
           `${faker.lorem.word()}-${faker.number.float({ fractionDigits: 2 })}`,
         category: overrides?.category || Categories.ASSET,
-        commission:
-          overrides?.commission || faker.number.float({ fractionDigits: 2 }),
+        commission: overrides?.commission || faker.datatype.boolean(),
       },
       overrides?.id,
       undefined,

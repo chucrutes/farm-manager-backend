@@ -5,9 +5,14 @@ export class RegisterMapper {
   static toDomain(raw: PersistenceRegister) {
     const registerOrError = Register.create(
       {
-        date: raw.date
+        name: raw.name,
+        date: raw.date,
+        totalExpense: raw.total_expense,
+        totalIncome: raw.total_income,
+        endDate: raw.end_date,
+        startDate: raw.start_date,
       },
-      raw.id
+      raw.id,
     )
 
     if (registerOrError.isLeft()) {
@@ -18,13 +23,24 @@ export class RegisterMapper {
   }
 
   static toPersistence(
-    register: Register
+    register: Register,
   ): Omit<PersistenceRegister, 'created_at' | 'updated_at' | 'deleted_at'> {
-    const { id, props } = register
+    const { id, props, farm } = register
+    const farmId = farm?.id
+
+    if (!farmId) {
+      throw new Error('No farm provided')
+    }
 
     return {
       id: id,
-      date: props.date
+      name: props.name,
+      total_expense: props.totalExpense,
+      total_income: props.totalIncome,
+      farm_id: farmId,
+      date: props.date,
+      start_date: props.startDate,
+      end_date: props.endDate,
     }
   }
 }

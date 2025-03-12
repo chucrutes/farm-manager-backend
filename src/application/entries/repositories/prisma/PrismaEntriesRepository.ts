@@ -158,7 +158,6 @@ export class PrismaEntriesRepository implements IEntriesRepository {
       INNER JOIN entry_types ON entries.type_id = entry_types.id
       WHERE entries.deleted_at IS NULL
       AND entries.farm_id = ${farmId}
-      AND entries.deleted_at is NULL
       GROUP BY entry_types.category;
     `
 

@@ -1,8 +1,19 @@
 import type { PartialIncludes } from '@/core/domain/entity'
 import type { Entry, Relations } from '../../domain/entry'
-import type { IEntriesRepository } from '../IEntriesRepository'
+import type { DataByCategory, IEntriesRepository } from '../IEntriesRepository'
 
 export class InMemoryEntriesRepository implements IEntriesRepository {
+  getOpenEntriesRangeByFarmId(
+    farmId: string,
+  ): Promise<{ min: Date; max: Date }> {
+    throw new Error('Method not implemented.')
+  }
+  getDataByCategory(
+    farmId: string,
+    registerId: string | null,
+  ): Promise<DataByCategory[]> {
+    throw new Error('Method not implemented.')
+  }
   public entries: Entry[] = []
 
   createOrUpdate(entity: Entry): Promise<void> {
@@ -13,7 +24,7 @@ export class InMemoryEntriesRepository implements IEntriesRepository {
   }
   findById(
     id: string,
-    includeRelations?: PartialIncludes<Relations> | undefined
+    includeRelations?: PartialIncludes<Relations> | undefined,
   ): Promise<Entry | null> {
     throw new Error('Method not implemented.')
   }
