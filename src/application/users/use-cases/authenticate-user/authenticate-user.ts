@@ -1,5 +1,5 @@
-import { Either, left, right } from '@/core/logic/either'
-import { IUsersRepository } from '../../repositories/IUsersRepository'
+import { type Either, left, right } from '@/core/logic/either'
+import type { IUsersRepository } from '../../repositories/IUsersRepository'
 import { InvalidEmailOrPasswordError } from './errors/InvalidEmailOrPasswordError'
 import { JWT } from '../../../../core/domain/jwt'
 import { compare } from 'bcryptjs'
@@ -23,7 +23,7 @@ export class AuthenticateUser {
 
   async execute({
     user,
-    password
+    password,
   }: AuthenticateUserRequest): Promise<AuthenticateUserResponse> {
     const userExists = await this.usersRepository.findByEmailOrUsername(user)
 
