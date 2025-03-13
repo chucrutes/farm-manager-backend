@@ -103,12 +103,10 @@ export class PrismaEntriesRepository implements IEntriesRepository {
       },
     })
 
-    console.log(totalSum)
-    console.log(totalSubtract)
+    const totalSubtractParsed = totalSubtract?._sum.total ?? 0
+    const totalSumParsed = totalSum?._sum.total ?? 0
 
-    if (totalSum._sum.total === null || totalSubtract._sum.total === null)
-      return null
-    const result = totalSum._sum.total - totalSubtract._sum.total
+    const result = totalSumParsed - totalSubtractParsed
 
     return result
   }

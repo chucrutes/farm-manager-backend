@@ -7,10 +7,10 @@ export default defineConfig({
       '@': path.resolve(__dirname, './src'),
       '@application': path.resolve(__dirname, './src/application'),
       '@core': path.resolve(__dirname, './src/core'),
-      '@infra': path.resolve(__dirname, './src/infra')
-    }
+      '@infra': path.resolve(__dirname, './src/infra'),
+    },
   },
   test: {
-    exclude: ['./src/application', './src/core', './src/infra']
-  }
+    exclude: ['./src/application', './src/core', './src/infra', './dist'],
+  },
 })

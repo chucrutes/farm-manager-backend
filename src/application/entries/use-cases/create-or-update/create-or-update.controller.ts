@@ -1,5 +1,10 @@
 import type { Controller } from '@/core/infra/controller'
-import { type HttpResponse, clientError, ok } from '@/core/infra/http-response'
+import {
+  type HttpResponse,
+  clientError,
+  ok,
+  created,
+} from '@/core/infra/http-response'
 import type { Validator } from '@/core/infra/validator'
 
 import type {
@@ -44,13 +49,23 @@ export class CreateOrUpdateEntryController implements Controller {
     }
 
     const entry = result.value
-    return ok({
-      message: `${LANG_ENTITY}.created`,
-      dto: {
-        type: entry.type?.toResponseBody(),
-        farm: entry.farm?.toResponseBody(),
-        ...result.value.toResponseBody(),
-      },
+    const dto = {
+      type: entry.type?.toResponseBody(),
+      farm: entry.farm?.toResponseBody(),
+      ...result.value.toResponseBody(),
+    }
+
+    if (request._id) {
+      return ok({
+        key: `${LANG_ENTITY}.created`,
+        message: 'Item atualizado com sucesso',
+        dto,
+      })
+    }
+    return created({
+      key: `${LANG_ENTITY}.created`,
+      message: 'Item criado com sucesso',
+      dto,
     })
   }
 }
