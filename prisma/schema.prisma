@@ -25,19 +25,9 @@ model User {
   updated_at DateTime @updatedAt
 
   FarmMembers FarmMembers[]
+  UserPlan    UserPlan[]
 
   @@map("users")
-}
-
-enum Types {
-  INVESTMENT_EXPENSE
-  CATTLE_SALE
-  BUY_CATTLE
-  MEDICINE
-  PESTICIDE
-  FEED
-  STAFF
-  INVESTMENT
 }
 
 enum Categories {
@@ -56,36 +46,36 @@ model Farm {
 
   Entry       Entry[]
   EntryType   EntryType[]
-  FarmPlan    FarmPlan[]
   FarmMembers FarmMembers[]
   Register    Register[]
 
   @@map("farms")
 }
 
-enum FarmPlanStatuses {
+enum PlanStatuses {
   ACTIVE
   INACTIVE
 }
 
-enum FarmPlans {
+enum Plans {
   FREE
   BASIC
   PREMIUM
+  FREEMIUM
 }
 
-model FarmPlan {
-  farm_id String
-  farm    Farm   @relation(fields: [farm_id], references: [id])
+model UserPlan {
+  user_id String
+  user    User   @relation(fields: [user_id], references: [id])
 
-  status FarmPlanStatuses
-  plan   FarmPlanStatuses
+  status PlanStatuses
+  plan   Plans
 
   created_at DateTime @default(now())
   updated_at DateTime @updatedAt
 
-  @@id([farm_id])
-  @@map("farm_plans")
+  @@id([user_id])
+  @@map("user_plans")
 }
 
 enum Roles {
