@@ -80,8 +80,6 @@ export class CreateOrUpdateEntry {
 
     const entry = entryOrError.value
 
-    entry.setAfterTax(entry.getAfterTax)
-    entry.setTotal(entry.getTotal)
     await this.entriesRepository.createOrUpdate(entry)
 
     return right(entry)

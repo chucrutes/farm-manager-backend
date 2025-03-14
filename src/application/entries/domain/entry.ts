@@ -63,27 +63,35 @@ export class Entry extends Entity<EntryProps> {
   }
 
   get getTotal() {
-    return this.props.price * this.props.quantity
+    const total = this.props.price * this.props.quantity
+    this.setTotal(total)
+    return total
   }
 
   get getAfterTax(): number {
     const total = this.getTotal
 
     if (!this._type?.props.commission) {
+      this.setAfterTax(total)
       return total
     }
 
     const commission = this.props.commission ?? 0
     const percentage = calculatePercentage(commission)
 
-    return calculateTotalAfterCommission(total, percentage)
+    const valueAfterCommission = calculateTotalAfterCommission(
+      total,
+      percentage,
+    )
+    this.setAfterTax(valueAfterCommission)
+    return valueAfterCommission
   }
 
-  setTotal(value: number) {
+  private setTotal(value: number) {
     this.props.total = value
   }
 
-  setAfterTax(value: number) {
+  private setAfterTax(value: number) {
     this.props.afterTax = value
   }
 }
