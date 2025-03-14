@@ -4,8 +4,7 @@ export const calculatePercentage = (value: number): number => {
 
 export const calculateTotalAfterCommission = (
   total: number,
-  commission: number,
+  percentage: number,
 ): number => {
-  const percentage = calculatePercentage(commission)
   return total * (1 - percentage)
 }
