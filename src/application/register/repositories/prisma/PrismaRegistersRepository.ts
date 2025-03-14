@@ -2,10 +2,11 @@ import { prismaClient } from '@/infra/prisma/client'
 import { LANG_ENTITY, type Register } from '../../domain/register'
 import { RegisterMapper } from '../../mappers/register-mapper'
 import type { IRegistersRepository } from '../IRegistersRepository'
-import type {
-  Prisma,
-  PrismaPromise,
-  Register as PrismaRegister,
+import {
+  Categories,
+  type Prisma,
+  type PrismaPromise,
+  type Register as PrismaRegister,
 } from '@prisma/client'
 import type { Pagination, PaginationMetadata } from '@/application/@types'
 import { buildMetadata, buildPagination } from '@/utils/pagination'
@@ -99,6 +100,11 @@ export default class PrismaRegistersRepository implements IRegistersRepository {
     return prismaClient.entry.updateMany({
       where: {
         register_id: null,
+        type: {
+          category: {
+            not: Categories.ASSET,
+          },
+        },
       },
       data: {
         register_id: registerId,

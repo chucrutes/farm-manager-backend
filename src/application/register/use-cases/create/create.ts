@@ -7,6 +7,7 @@ import type {
 } from '@/application/entries/repositories/IEntriesRepository'
 import type { Farm } from '@/application/farms/domain/farm'
 import { Categories } from '@/application/entries/domain/@types/categories.enum'
+import { NothingToCloseError } from '../@errors/NothingToCloseError'
 
 export type CreateRegisterRequest = {
   farm: Farm
@@ -37,6 +38,10 @@ export class CreateRegister {
     const data = await this.entriesRepository.getDataByCategory(farm.id, null)
     const { income: totalIncome, expense: totalExpense } =
       this.getCategoriesSum(data)
+
+    if (totalIncome === 0 && totalExpense === 0) {
+      return left(new NothingToCloseError())
+    }
 
     const registerOrError = Register.create(
       {
