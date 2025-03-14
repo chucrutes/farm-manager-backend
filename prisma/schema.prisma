@@ -135,7 +135,7 @@ model Entry {
   price       Float
   quantity    Float
   total       Float
-  after_tax   Float?
+  after_tax   Float  @default(0)
   commission  Float?
 
   created_at DateTime  @default(now())

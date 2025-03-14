@@ -13,4 +13,5 @@ pnpm-lock.yaml
 
 .vercel
 
-.vscode
+.vscode/*
+!.vscode/tasks.json

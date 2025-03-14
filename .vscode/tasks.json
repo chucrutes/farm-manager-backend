@@ -1,0 +1,35 @@
+{
+	"version": "2.0.0",
+	"tasks": [
+		{
+			"label": "Start db",
+			"command": "docker compose up -d",
+			"type": "shell",
+			"runOptions": {
+				"runOn": "folderOpen"
+			}
+		},
+		{
+			"label": "Open prisma studio",
+			"command": "yarn prisma:studio",
+			"type": "shell"
+		},
+		{
+			"label": "Seed db",
+			"command": "yarn run seed",
+			"type": "shell",
+			"problemMatcher": []
+		},
+		{
+			"label": "Start server",
+			"command": "yarn run start:dev",
+			"type": "shell",
+			"dependsOn": {
+				"type": "Start db"
+			},
+			"runOptions": {
+				"runOn": "folderOpen"
+			}
+		}
+	]
+}

@@ -1,11 +1,11 @@
-import { Entity, type Timestamps } from '@/core/domain/entity'
 import type { Farm } from '@/application/farms/domain/farm'
 import { type EntryProps, EntrySchema } from './entry.schema'
+import { Entity, type Timestamps } from '@/core/domain/entity'
 import { type Either, left, right } from '@/core/logic/either'
+import type { Register } from '@/application/register/domain/register'
 import type { EntryType } from '@/application/entry-type/domain/entry-type'
 import { ZodValidationError } from '@/core/domain/errors/ZodValidationError'
-import type { Register } from '@/application/register/domain/register'
-import { getPercentage } from '../@utils/get-percentage'
+import { valueToPercentage } from '@/utils/number.utils'
 
 export const LANG_ENTITY = 'entry'
 
@@ -57,10 +57,12 @@ export class Entry extends Entity<EntryProps> {
     return this._register
   }
 
-  get afterTax(): null | number {
-    if (this._type?.props.commission) {
-      return this.props.total * getPercentage(this.props.commission ?? 0)
+  get afterTax(): number {
+    if (!this._type?.props.commission) {
+      return this.props.total
     }
-    return null
+
+    const commission = this.props.commission ?? 0
+    return this.props.total * (1 - valueToPercentage(commission))
   }
 }

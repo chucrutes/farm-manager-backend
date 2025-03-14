@@ -81,7 +81,7 @@ export class PrismaEntriesRepository implements IEntriesRepository {
   async totalRevenueByFarm(farmId: string): Promise<number | null> {
     const totalSum = await prismaClient.entry.aggregate({
       _sum: {
-        total: true,
+        after_tax: true,
       },
       where: {
         farm_id: farmId,
@@ -93,7 +93,7 @@ export class PrismaEntriesRepository implements IEntriesRepository {
 
     const totalSubtract = await prismaClient.entry.aggregate({
       _sum: {
-        total: true,
+        after_tax: true,
       },
       where: {
         farm_id: farmId,
@@ -103,8 +103,8 @@ export class PrismaEntriesRepository implements IEntriesRepository {
       },
     })
 
-    const totalSubtractParsed = totalSubtract?._sum.total ?? 0
-    const totalSumParsed = totalSum?._sum.total ?? 0
+    const totalSubtractParsed = totalSubtract?._sum.after_tax ?? 0
+    const totalSumParsed = totalSum?._sum.after_tax ?? 0
 
     const result = totalSumParsed - totalSubtractParsed
 
@@ -151,7 +151,7 @@ export class PrismaEntriesRepository implements IEntriesRepository {
     registerId: string | null,
   ): Promise<DataByCategory[]> {
     const sumByCategory = await prismaClient.$queryRaw`
-      SELECT entry_types.category, SUM(entries.total) 
+      SELECT entry_types.category, SUM(entries.after_tax) 
       FROM entries
       INNER JOIN entry_types ON entries.type_id = entry_types.id
       WHERE entries.deleted_at IS NULL

@@ -1,10 +1,11 @@
 import { EntryType } from '../../domain/entry-type'
 import { type Either, left, right } from '@/core/logic/either'
-import type { EntryTypeProps } from '../../domain/entry-type.schema'
+import { Categories, type EntryTypeProps } from '../../domain/entry-type.schema'
 import type { IEntryTypesRepository } from '../../repositories/IEntryTypesRepository'
 import type { IFarmsRepository } from '@/application/farms/repositories/IFarmsRepository'
 import { EntryTypeWithTheSameNameError } from '../@errors/EntryTypeWithTheSameNameError'
 import { EntryNotFoundError } from '@/application/entries/use-cases/EntryNotFoundError'
+import { ExpenseShouldNotHaveCommissionError } from '../@errors/ExpenseShouldNotHaveCommissionError'
 
 export type CreateOrUpdateEntryTypeRequest = EntryTypeProps & {
   _id?: string
@@ -53,6 +54,10 @@ export class CreateOrUpdateEntryType {
 
     if (entryTypeByName && entryTypeByName.id !== _id) {
       return left(new EntryTypeWithTheSameNameError())
+    }
+
+    if (props.category === Categories.EXPENSE && props.commission) {
+      return left(new ExpenseShouldNotHaveCommissionError())
     }
 
     const entryTypeOrError = EntryType.create(
