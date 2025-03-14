@@ -8,7 +8,7 @@ import type { IEntryTypesRepository } from '@/application/entry-type/repositorie
 import { EntryTypeNotFoundError } from '@/application/entry-type/use-cases/@errors/EntryTypeNotFoundError'
 import type { Id } from '@/application/@types'
 
-export type CreateOrUpdateEntryRequest = EntryProps & {
+export type CreateOrUpdateEntryRequest = Omit<EntryProps, 'afterTax'> & {
   userId: string
   type: Id
   _id?: string
@@ -79,6 +79,9 @@ export class CreateOrUpdateEntry {
     }
 
     const entry = entryOrError.value
+
+    entry.setAfterTax(entry.getAfterTax)
+    entry.setTotal(entry.getTotal)
     await this.entriesRepository.createOrUpdate(entry)
 
     return right(entry)

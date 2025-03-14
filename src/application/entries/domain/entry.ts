@@ -5,7 +5,11 @@ import { type Either, left, right } from '@/core/logic/either'
 import type { Register } from '@/application/register/domain/register'
 import type { EntryType } from '@/application/entry-type/domain/entry-type'
 import { ZodValidationError } from '@/core/domain/errors/ZodValidationError'
-import { valueToPercentage } from '@/utils/number.utils'
+import {
+  calculatePercentage,
+  calculateTotalAfterCommission,
+} from '@/utils/number.utils'
+import { stringifier } from '@/utils/stringifier'
 
 export const LANG_ENTITY = 'entry'
 
@@ -39,6 +43,7 @@ export class Entry extends Entity<EntryProps> {
     relations?: Relations,
   ): Either<Error, Entry> {
     const result = EntrySchema.safeParse(props)
+    stringifier(relations)
 
     if (!result.success) {
       return left(new ZodValidationError(result.error))
@@ -57,12 +62,28 @@ export class Entry extends Entity<EntryProps> {
     return this._register
   }
 
-  get afterTax(): number {
+  get getTotal() {
+    return this.props.price * this.props.quantity
+  }
+
+  get getAfterTax(): number {
+    const total = this.getTotal
+
     if (!this._type?.props.commission) {
-      return this.props.total
+      return total
     }
 
     const commission = this.props.commission ?? 0
-    return this.props.total * (1 - valueToPercentage(commission))
+    const percentage = calculatePercentage(commission)
+
+    return calculateTotalAfterCommission(total, percentage)
+  }
+
+  setTotal(value: number) {
+    this.props.total = value
+  }
+
+  setAfterTax(value: number) {
+    this.props.afterTax = value
   }
 }

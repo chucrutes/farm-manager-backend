@@ -1,15 +1,20 @@
-import type { IFarmsRepository } from '@/application/farms/repositories/IFarmsRepository'
 import type { Entry } from '../../domain/entry'
+import type { EntryListOptions } from '../../@types'
+import type { ListResponse } from '@/application/@types'
+import { left, right, type Either } from '@/core/logic/either'
 import type { IEntriesRepository } from '../../repositories/IEntriesRepository'
+import type { IFarmsRepository } from '@/application/farms/repositories/IFarmsRepository'
+import { FarmNotFoundError } from '@/application/farms/use-cases/@errors/FarmNotFoundError'
 
-export type ListEntryRequest = {
+export type ListEntryRequest = EntryListOptions & {
   userId: string
 }
 
-type ListEntryResponse = {
-  entries: Entry[]
-  total?: number | null
+type RightResponse = ListResponse<Entry> & {
+  total: number | null
 }
+
+type ListEntryResponse = Either<Error, RightResponse>
 
 type ListEntryProps = {
   entriesRepository: IEntriesRepository
@@ -24,21 +29,29 @@ export class ListEntry {
     this.farmsRepository = props.farmsRepository
   }
 
-  async execute({ userId }: ListEntryRequest): Promise<ListEntryResponse> {
+  async execute({
+    userId,
+    pagination,
+    includes,
+    removeDeletedAt,
+  }: ListEntryRequest): Promise<ListEntryResponse> {
     const farm = await this.farmsRepository.getFarmByUserId(userId)
-    if (!farm)
-      return {
-        entries: [],
-        total: 0
-      }
+    if (!farm) {
+      return left(new FarmNotFoundError())
+    }
     const farmId = farm.id
-    const entries = await this.entriesRepository.getAllByFarmId(farmId, {type: true, farm: true})
+
+    const data = await this.entriesRepository.getAllByFarmId(farmId, {
+      includes,
+      pagination,
+      removeDeletedAt,
+    })
 
     let total: number | null = null
     if (farm) {
       total = await this.entriesRepository.totalRevenueByFarm(farmId)
     }
 
-    return { entries, total }
+    return right({ ...data, total })
   }
 }

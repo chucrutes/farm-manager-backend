@@ -102,6 +102,7 @@ export default class PrismaRegistersRepository implements IRegistersRepository {
       },
       data: {
         register_id: registerId,
+        deleted_at: new Date(),
       },
     })
   }
