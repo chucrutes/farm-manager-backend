@@ -107,6 +107,7 @@ export class PrismaEntriesRepository implements IEntriesRepository {
       },
       where: {
         farm_id: farmId,
+        deleted_at: null,
         type: {
           category: { not: Categories.EXPENSE },
         },
@@ -119,6 +120,7 @@ export class PrismaEntriesRepository implements IEntriesRepository {
       },
       where: {
         farm_id: farmId,
+        deleted_at: null,
         type: {
           category: Categories.EXPENSE,
         },
