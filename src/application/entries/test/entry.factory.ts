@@ -14,6 +14,7 @@ export class EntryFactory {
         price: overrides?.price || faker.number.int({ max: 10 }),
         quantity: overrides?.quantity || faker.number.int({ max: 10 }),
         total: overrides?.total || faker.number.int({ max: 10 }),
+        commission: overrides?.commission || null,
       },
       overrides?.id,
       undefined,

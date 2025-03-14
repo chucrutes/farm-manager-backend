@@ -5,6 +5,9 @@ import { type HttpResponse, clientError, ok } from '@/core/infra/http-response'
 
 type ListEntryControllerRequest = {
   requesterId: string
+  type: string
+  farm: string
+  removeDeletedAt: string
 }
 
 export class ListEntryController implements Controller {
@@ -13,8 +16,12 @@ export class ListEntryController implements Controller {
     private listEntry: ListEntry,
   ) {}
 
-  async handle(request: ListEntryControllerRequest): Promise<HttpResponse> {
-    const validated = this.validator.validate(request)
+  async handle({
+    type,
+    farm,
+    ...request
+  }: ListEntryControllerRequest): Promise<HttpResponse> {
+    const validated = this.validator.validate({ type, farm, ...request })
 
     if (validated.isLeft()) {
       return clientError(validated.value)
@@ -22,16 +29,28 @@ export class ListEntryController implements Controller {
 
     const result = await this.listEntry.execute({
       userId: request.requesterId,
+      includes: {
+        type: !!type,
+        farm: !!farm,
+      },
+      removeDeletedAt: !!request.removeDeletedAt,
     })
 
+    if (result.isLeft()) {
+      return clientError(result.value)
+    }
+
+    const { metadata, data, total } = result.value
+
     return ok({
+      headers: metadata,
       dto: {
-        total: result.total,
-        entries: result.entries.map((item) => ({
-          ...item.toResponseBody(),
-          type: item.type?.toResponseBody(),
-          farm: item.farm?.toResponseBody(),
+        entries: data.map((res) => ({
+          ...res.toResponseBody(),
+          type: res.type?.toResponseBody(),
+          farm: res.farm?.toResponseBody(),
         })),
+        total,
       },
     })
   }

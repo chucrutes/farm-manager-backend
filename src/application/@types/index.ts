@@ -31,4 +31,5 @@ export type ListResponse<T> = { data: T[]; metadata: PaginationMetadata }
 export type ListOptions<T> = {
   includes?: T
   pagination?: Pagination
+  removeDeletedAt?: boolean
 }

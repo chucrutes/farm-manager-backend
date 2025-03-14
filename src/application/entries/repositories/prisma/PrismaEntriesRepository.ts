@@ -5,6 +5,9 @@ import { EntryMapper } from '../../mappers/entry-mapper'
 import type { DataByCategory, IEntriesRepository } from '../IEntriesRepository'
 import type { IncludeRelations } from '@/application/entry-type/repositories/IEntryTypesRepository'
 import type { Register } from '@/application/register/domain/register'
+import type { EntryListOptions, EntryListResponse } from '../../@types'
+import type { PaginationMetadata } from '@/application/@types'
+import { buildMetadata, buildPagination } from '@/utils/pagination'
 
 type EntryInclude = Prisma.EntryInclude
 
@@ -52,20 +55,39 @@ export class PrismaEntriesRepository implements IEntriesRepository {
 
   async getAllByFarmId(
     farmId: string,
-    includeRelations?: IncludeRelations,
-  ): Promise<Entry[]> {
-    const include = this.buildInclude(includeRelations)
-    const entries = await prismaClient.entry.findMany({
-      where: {
-        farm_id: farmId,
-      },
-      include,
-      orderBy: {
-        updated_at: 'desc',
-      },
-    })
+    options?: EntryListOptions,
+  ): Promise<EntryListResponse> {
+    const include = this.buildInclude(options?.includes)
+    const { skip, take, orderBy } = buildPagination(options?.pagination)
 
-    return entries.map(EntryMapper.toDomain)
+    const where: Prisma.EntryWhereInput = {
+      farm_id: farmId,
+      deleted_at: {
+        not: null,
+      },
+    }
+    if (options?.removeDeletedAt) {
+      where.deleted_at = null
+    }
+
+    const [data, count] = await prismaClient.$transaction([
+      prismaClient.entry.findMany({
+        where,
+        include,
+        skip,
+        take,
+        orderBy,
+      }),
+      prismaClient.entry.count({
+        where: {
+          farm_id: farmId,
+        },
+      }),
+    ])
+
+    const metadata = buildMetadata(count, data.length, options?.pagination)
+
+    return { data: data.map(EntryMapper.toDomain), metadata }
   }
 
   async deleteMany(ids: string[]): Promise<void> {

@@ -30,6 +30,12 @@
 			"runOptions": {
 				"runOn": "folderOpen"
 			}
+		},
+		{
+			"label": "Run tests",
+			"command": "yarn run test",
+			"type": "shell",
+			"problemMatcher": []
 		}
 	]
 }

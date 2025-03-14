@@ -6,7 +6,6 @@ import type {
 } from '@prisma/client'
 import { EntryTypeMapper } from '@/application/entry-type/mappers/entry-type.mapper'
 import { RegisterMapper } from '@/application/register/mappers/register-mapper'
-import { Entity } from '@/core/domain/entity'
 import { EntityMapper } from '@/core/mappers/entity'
 import { isNull } from '@/infra/prisma/is-null'
 
@@ -24,6 +23,7 @@ export class EntryMapper {
         quantity: raw.quantity,
         total: raw.total,
         afterTax: raw.after_tax,
+        commission: raw.commission,
       },
       raw.id,
       EntityMapper.toTimestamps(raw),
@@ -61,11 +61,11 @@ export class EntryMapper {
       farm_id: farmId,
       type_id: typeId,
       description: props.description,
-      commission: isNull( props.commission),
+      commission: isNull(props.commission),
       price: props.price,
       quantity: props.quantity,
-      total: props.total,
-      after_tax: entry.afterTax,
+      total: entry.getTotal,
+      after_tax: entry.getAfterTax,
       register_id: register ? register.id : null,
     }
   }
