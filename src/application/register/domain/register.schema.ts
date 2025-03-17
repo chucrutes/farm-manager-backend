@@ -1,7 +1,7 @@
 import { z } from 'zod'
 
 export const RegisterSchema = z.object({
-  name: z.string(),
+  name: z.string().nullish(),
   date: z.date(),
   startDate: z.date(),
   endDate: z.date(),

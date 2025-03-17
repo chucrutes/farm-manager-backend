@@ -1,6 +1,6 @@
 export const isStartDateGreaterThanEndDate = (
   startDate: Date,
-  endDate: Date
+  endDate: Date,
 ): boolean => {
   return startDate.getTime() > endDate.getTime()
 }

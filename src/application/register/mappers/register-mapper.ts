@@ -34,7 +34,7 @@ export class RegisterMapper {
 
     return {
       id: id,
-      name: props.name,
+      name: register.name,
       total_expense: props.totalExpense,
       total_income: props.totalIncome,
       farm_id: farmId,

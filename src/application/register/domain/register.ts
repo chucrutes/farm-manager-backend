@@ -11,18 +11,22 @@ export type Relations = {
 }
 
 export class Register extends Entity<RegisterProps> {
-    private _farm?: Farm
-  private constructor(props: RegisterProps, id?: string, 
-        timeStamps?: Timestamps,
-        relations?: Relations,
+  private _farm?: Farm
+  private constructor(
+    props: RegisterProps,
+    id?: string,
+    timeStamps?: Timestamps,
+    relations?: Relations,
   ) {
     super(props, id, timeStamps)
     this._farm = relations?.farm
   }
 
-  static create(props: RegisterProps, id?: string,
-        timeStamps?: Timestamps,
-        relations?: Relations,
+  static create(
+    props: RegisterProps,
+    id?: string,
+    timeStamps?: Timestamps,
+    relations?: Relations,
   ): Either<Error, Register> {
     const result = RegisterSchema.safeParse(props)
 
@@ -35,5 +39,32 @@ export class Register extends Entity<RegisterProps> {
 
   get farm() {
     return this._farm
+  }
+
+  get name() {
+    const name = this.formatDateRange(this.props.startDate, this.props.endDate)
+    this.setName(name)
+    return name
+  }
+
+  private setName(name: string) {
+    this.props.name = name
+  }
+
+  private formatDateRange(minDate: Date, maxDate: Date) {
+    const minYear = minDate.getFullYear()
+    const maxYear = maxDate.getFullYear()
+
+    const minMonth = minDate
+      .toLocaleDateString('pt-BR', { month: 'short' })
+      .replace('.', '')
+    const maxMonth = maxDate
+      .toLocaleDateString('pt-BR', { month: 'short' })
+      .replace('.', '')
+
+    let minDay = minDate.getDate()
+    let maxDay = maxDate.getDate()
+
+    return `Caixa ${minDay}/${minMonth}/${minYear}-${maxDay}/${maxMonth}/${maxYear}`
   }
 }
