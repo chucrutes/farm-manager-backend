@@ -3,11 +3,17 @@ import { adaptRoute } from '@/core/infra/adapters/express-route-adapter'
 import { adaptMiddleware } from '@/core/infra/adapters/express-middleware-adapter'
 import { makeEnsureAuthenticated } from '../factories/middlewares/makeEnsureAuthenticated'
 import { makeCloseRegisterController } from '../factories/controllers/register/makeCloseRegisterController'
+import { makeListRegisterController } from '../factories/controllers/register/makeListController'
 
 export const register = Router()
 
 register.post(
   '/',
   adaptMiddleware(makeEnsureAuthenticated()),
-  adaptRoute(makeCloseRegisterController())
+  adaptRoute(makeCloseRegisterController()),
+)
+register.get(
+  '/',
+  adaptMiddleware(makeEnsureAuthenticated()),
+  adaptRoute(makeListRegisterController()),
 )
