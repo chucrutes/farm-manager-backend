@@ -1,6 +1,7 @@
 import type { PartialIncludes } from '@/core/domain/entity'
 import type { Entry, Relations } from '../../domain/entry'
 import type { DataByCategory, IEntriesRepository } from '../IEntriesRepository'
+import { EntryListResponse } from '../../@types'
 
 export class InMemoryEntriesRepository implements IEntriesRepository {
   getOpenEntriesRangeByFarmId(
@@ -31,7 +32,7 @@ export class InMemoryEntriesRepository implements IEntriesRepository {
   deleteMany(ids: string[]): Promise<void> {
     throw new Error('Method not implemented.')
   }
-  getAllByFarmId(userId: string): Promise<Entry[]> {
+  getAllByFarmId(farmId: string): Promise<EntryListResponse> {
     throw new Error('Method not implemented.')
   }
   getAllByUserId(userId: string): Promise<Entry[]> {
