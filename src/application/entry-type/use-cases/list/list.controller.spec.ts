@@ -18,7 +18,7 @@ describe('List entry types (E2E)', async () => {
   const {
     farm,
     manyEntryTypes,
-    userWithJwt: { user, jwt },
+    userWithJwt: { user, jwt }
   } = initEntities()
 
   beforeAll(async () => {
@@ -27,11 +27,11 @@ describe('List entry types (E2E)', async () => {
     entryTypesRepository = new PrismaEntryTypesRepository()
 
     await usersRepository.create(user)
-    await farmsRepository.createOrUpdate(farm)
+    await farmsRepository.upsert(farm)
     await farmsRepository.addMember(user.id, farm.id, Roles.OWNER)
 
     const promises = manyEntryTypes.map((item) =>
-      entryTypesRepository.createOrUpdate(item),
+      entryTypesRepository.upsert(item)
     )
     await Promise.all(promises)
   })
@@ -42,7 +42,7 @@ describe('List entry types (E2E)', async () => {
       .auth(jwt.token, { type: 'bearer' })
 
     expect((response.body.dto as Array<unknown>).length).toEqual(
-      manyEntryTypes.length,
+      manyEntryTypes.length
     )
   })
 

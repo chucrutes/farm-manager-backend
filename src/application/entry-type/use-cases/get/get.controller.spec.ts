@@ -20,7 +20,7 @@ describe('Get entry type(E2E)', async () => {
   const {
     farm,
     userWithJwt: { user, jwt },
-    entryType,
+    entryType
   } = initEntities()
 
   beforeAll(async () => {
@@ -29,9 +29,9 @@ describe('Get entry type(E2E)', async () => {
     entryTypesRepository = new PrismaEntryTypesRepository()
 
     await usersRepository.create(user)
-    await farmsRepository.createOrUpdate(farm)
+    await farmsRepository.upsert(farm)
     await farmsRepository.addMember(user.id, farm.id, Roles.OWNER)
-    await entryTypesRepository.createOrUpdate(entryType)
+    await entryTypesRepository.upsert(entryType)
   })
 
   test('should get a type', async () => {
@@ -40,7 +40,7 @@ describe('Get entry type(E2E)', async () => {
       .auth(jwt.token, { type: 'bearer' })
 
     expect((response.body.dto as ToResponseBody<EntryTypeProps>).name).toEqual(
-      entryType.props.name,
+      entryType.props.name
     )
   })
 

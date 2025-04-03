@@ -14,11 +14,11 @@ export class EntryFactory {
         price: overrides?.price || faker.number.int({ max: 10 }),
         quantity: overrides?.quantity || faker.number.int({ max: 10 }),
         total: overrides?.total || faker.number.int({ max: 10 }),
-        commission: overrides?.commission || null,
+        commission: overrides?.commission || null
       },
       overrides?.id,
       undefined,
-      relations,
+      relations
     )
 
     return entity.value as Entry
@@ -27,7 +27,7 @@ export class EntryFactory {
   static createMany(overrides?: CreateOverrides[], relations?: Relations) {
     return (
       overrides?.map((override) =>
-        EntryFactory.create(override, relations),
+        EntryFactory.create(override, relations)
       ) || [EntryFactory.create({}, relations)]
     )
   }

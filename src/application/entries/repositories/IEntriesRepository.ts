@@ -16,12 +16,12 @@ export type DataByCategory = {
 export interface IEntriesRepository extends ICrudRepository<Entry, Relations> {
   getAllByFarmId(
     farmId: string,
-    options?: EntryListOptions,
+    options?: EntryListOptions
   ): Promise<EntryListResponse>
   getOpenEntriesRangeByFarmId(farmId: string): Promise<Range>
   totalRevenueByFarm(farmId: string): Promise<number | null>
   getDataByCategory(
     farmId: string,
-    registerId: string | null,
+    registerId: string | null
   ): Promise<DataByCategory[]>
 }

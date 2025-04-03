@@ -52,7 +52,7 @@ export class CreateOrUpdateEntry {
 
     if (_id) {
       entryExists = await this.entriesRepository.findById(_id, {
-        register: true,
+        register: true
       })
 
       if (!entryExists) {
@@ -65,13 +65,13 @@ export class CreateOrUpdateEntry {
       _id,
       {
         createdAt: entryExists?.timestamps?.createdAt || new Date(),
-        updatedAt: entryExists?.timestamps?.updatedAt || new Date(),
+        updatedAt: entryExists?.timestamps?.updatedAt || new Date()
       },
       {
         farm,
         type: _type,
-        register: entryExists?.register ?? null,
-      },
+        register: entryExists?.relations?.register ?? null
+      }
     )
 
     if (entryOrError.isLeft()) {
@@ -80,7 +80,7 @@ export class CreateOrUpdateEntry {
 
     const entry = entryOrError.value
 
-    await this.entriesRepository.createOrUpdate(entry)
+    await this.entriesRepository.upsert(entry)
 
     return right(entry)
   }

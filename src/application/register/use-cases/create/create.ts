@@ -3,7 +3,7 @@ import { type Either, left, right } from '@/core/logic/either'
 import type { IRegistersRepository } from '../../repositories/IRegistersRepository'
 import type {
   DataByCategory,
-  IEntriesRepository,
+  IEntriesRepository
 } from '@/application/entries/repositories/IEntriesRepository'
 import type { Farm } from '@/application/farms/domain/farm'
 import { Categories } from '@/application/entries/domain/@types/categories.enum'
@@ -30,10 +30,10 @@ export class CreateRegister {
   }
 
   async execute({
-    farm,
+    farm
   }: CreateRegisterRequest): Promise<CreateRegisterResponse> {
     const range = await this.entriesRepository.getOpenEntriesRangeByFarmId(
-      farm.id,
+      farm.id
     )
     const data = await this.entriesRepository.getDataByCategory(farm.id, null)
     const { income: totalIncome, expense: totalExpense } =
@@ -50,11 +50,11 @@ export class CreateRegister {
         startDate: range.min,
         endDate: range.max,
         totalExpense,
-        totalIncome,
+        totalIncome
       },
       undefined,
       undefined,
-      { farm },
+      { farm }
     )
 
     if (registerOrError.isLeft()) {
@@ -62,7 +62,7 @@ export class CreateRegister {
     }
 
     const register = registerOrError.value
-    await this.registersRepository.createOrUpdate(register)
+    await this.registersRepository.upsert(register)
     return right(register)
   }
 
@@ -77,7 +77,7 @@ export class CreateRegister {
 
     return {
       income,
-      expense,
+      expense
     }
   }
 }

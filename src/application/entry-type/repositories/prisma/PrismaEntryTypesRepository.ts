@@ -1,9 +1,9 @@
-import { prismaClient } from '@/infra/prisma/client'
+import { prismaClient } from '@/infra/db/prisma/client'
 import { type EntryType, LANG_ENTITY } from '../../domain/entry-type'
 import type {
   DeleteByName,
   IEntryTypesRepository,
-  IncludeRelations,
+  IncludeRelations
 } from '../IEntryTypesRepository'
 import { EntryTypeMapper } from '../../mappers/entry-type.mapper'
 import type { Prisma } from '@prisma/client'
@@ -17,7 +17,7 @@ type EntryTypeInclude = Prisma.EntryTypeInclude
 export default class PrismaEntryTypesRepository
   implements IEntryTypesRepository
 {
-  async createOrUpdate(entity: EntryType): Promise<void> {
+  async upsert(entity: EntryType): Promise<void> {
     const entityFound = await this.findById(entity.id)
 
     if (entityFound) {
@@ -32,7 +32,7 @@ export default class PrismaEntryTypesRepository
     const data = EntryTypeMapper.toPersistence(farm)
 
     await dbEntryTypeClient.create({
-      data,
+      data
     })
   }
 
@@ -43,8 +43,8 @@ export default class PrismaEntryTypesRepository
       .update({
         where: { id: farm.id },
         data: {
-          ...data,
-        },
+          ...data
+        }
       })
       .catch(() => {
         throw new Error(`Error on update ${LANG_ENTITY}`)
@@ -53,8 +53,8 @@ export default class PrismaEntryTypesRepository
   async findById(id: string): Promise<EntryType | null> {
     const farm = await dbEntryTypeClient.findUnique({
       where: {
-        id,
-      },
+        id
+      }
     })
 
     if (!farm) return null
@@ -65,16 +65,16 @@ export default class PrismaEntryTypesRepository
     await dbEntryTypeClient.deleteMany({
       where: {
         id: {
-          in: ids,
-        },
-      },
+          in: ids
+        }
+      }
     })
   }
 
   async getAllByFarmId(
     farmId: string,
     includeRelations?: IncludeRelations,
-    pagination?: Pagination,
+    pagination?: Pagination
   ): Promise<{ data: EntryType[]; metadata: PaginationMetadata }> {
     const include = this.buildInclude(includeRelations)
     const { skip, take, orderBy } = buildPagination(pagination)
@@ -82,18 +82,18 @@ export default class PrismaEntryTypesRepository
     const [data, count] = await prismaClient.$transaction([
       prismaClient.entryType.findMany({
         where: {
-          farm_id: farmId,
+          farm_id: farmId
         },
         include,
         skip,
         take,
-        orderBy,
+        orderBy
       }),
       prismaClient.entryType.count({
         where: {
-          farm_id: farmId,
-        },
-      }),
+          farm_id: farmId
+        }
+      })
     ])
 
     const metadata = buildMetadata(count, data.length, pagination)
@@ -103,15 +103,15 @@ export default class PrismaEntryTypesRepository
 
   async findByFarmAndName(
     farmId: string,
-    name: string,
+    name: string
   ): Promise<EntryType | null> {
     const data = await prismaClient.entryType.findUnique({
       where: {
         name_farm_id: {
           name,
-          farm_id: farmId,
-        },
-      },
+          farm_id: farmId
+        }
+      }
     })
 
     if (!data) return null
@@ -126,10 +126,10 @@ export default class PrismaEntryTypesRepository
           where: {
             name_farm_id: {
               name,
-              farm_id: farmId,
-            },
-          },
-        }),
+              farm_id: farmId
+            }
+          }
+        })
       )
       await Promise.all(promises)
     } catch (e) {
@@ -142,7 +142,7 @@ export default class PrismaEntryTypesRepository
     const include: EntryTypeInclude = {}
 
     for (const key of Object.keys(
-      includeRelations,
+      includeRelations
     ) as (keyof IncludeRelations)[]) {
       switch (key) {
         case 'farm':

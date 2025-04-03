@@ -2,8 +2,7 @@ import type { PaginationMetadata } from '@/application/@types'
 import type { EntryType } from '../../domain/entry-type'
 import type {
   DeleteByName,
-  IEntryTypesRepository,
-  IncludeRelations,
+  IEntryTypesRepository
 } from '../IEntryTypesRepository'
 
 export class InMemoryEntryTypesRepository implements IEntryTypesRepository {
@@ -14,7 +13,7 @@ export class InMemoryEntryTypesRepository implements IEntryTypesRepository {
   deleteManyByName(items: DeleteByName[]): Promise<void> {
     throw new Error('Method not implemented.')
   }
-  async createOrUpdate(entity: EntryType): Promise<void> {
+  async upsert(entity: EntryType): Promise<void> {
     const entityFound = await this.findById(entity.id)
 
     if (entityFound) {
@@ -30,7 +29,7 @@ export class InMemoryEntryTypesRepository implements IEntryTypesRepository {
   }
   async update(workspace: EntryType): Promise<void> {
     const index = this.entryTypes.findIndex(
-      (entryTypeItem) => entryTypeItem.id === workspace.id,
+      (entryTypeItem) => entryTypeItem.id === workspace.id
     )
 
     this.entryTypes[index] = workspace
@@ -44,7 +43,7 @@ export class InMemoryEntryTypesRepository implements IEntryTypesRepository {
   }
   async deleteMany(_ids: string[]): Promise<void> {}
   getAllByFarmId(
-    farmId: string,
+    farmId: string
   ): Promise<{ data: EntryType[]; metadata: PaginationMetadata }> {
     throw new Error('Method not implemented.')
   }

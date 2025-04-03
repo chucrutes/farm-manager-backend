@@ -2,6 +2,7 @@ import { Farm } from '../../domain/farm'
 import { type Either, left, right } from '@/core/logic/either'
 import { type FarmProps, Roles } from '../../domain/farm.schema'
 import type { IFarmsRepository } from '../../repositories/IFarmsRepository'
+import { FarmNotFoundError } from '../@errors/FarmNotFoundError'
 
 export type CreateOrUpdateFarmRequest = FarmProps & {
   _id?: string
@@ -24,6 +25,10 @@ export class CreateOrUpdateFarm {
       farmExists = await this.farmsRepository.findById(_id)
     }
 
+    if (_id && !farmExists) {
+      return left(new FarmNotFoundError())
+    }
+
     const farmOrError = Farm.create(
       {
         name
@@ -36,7 +41,7 @@ export class CreateOrUpdateFarm {
     }
 
     const farm = farmOrError.value
-    await this.farmsRepository.createOrUpdate(farm)
+    await this.farmsRepository.upsert(farm)
     await this.farmsRepository.addMember(userId, farm.id, Roles.OWNER)
     return right(farm)
   }

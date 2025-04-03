@@ -8,11 +8,11 @@ export const EntrySchema = z.object({
   quantity: z.number(),
   total: z.number().nullish(),
   commission: z.number().nullish(),
-  afterTax: z.number().nullish(),
+  afterTax: z.number().nullish()
 })
 export const EntryRequestSchema = EntrySchema.merge(
   z.object({
-    type: EntryTypeSchema.merge(IdSchema),
-  }),
+    type: EntryTypeSchema.merge(IdSchema)
+  })
 )
 export type EntryProps = z.infer<typeof EntrySchema>

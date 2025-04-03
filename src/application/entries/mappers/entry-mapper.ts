@@ -2,12 +2,12 @@ import { Entry } from '../domain/entry'
 import type {
   Entry as PersistenceEntry,
   EntryType as PersistenceEntryType,
-  Register,
+  Register
 } from '@prisma/client'
 import { EntryTypeMapper } from '@/application/entry-type/mappers/entry-type.mapper'
 import { RegisterMapper } from '@/application/register/mappers/register-mapper'
 import { EntityMapper } from '@/core/mappers/entity'
-import { isNull } from '@/infra/prisma/is-null'
+import { isNull } from '@/infra/db/prisma/is-null'
 
 type Raw = PersistenceEntry & {
   type?: PersistenceEntryType
@@ -23,14 +23,14 @@ export class EntryMapper {
         quantity: raw.quantity,
         total: raw.total,
         afterTax: raw.after_tax,
-        commission: raw.commission,
+        commission: raw.commission
       },
       raw.id,
       EntityMapper.toTimestamps(raw),
       {
         type: raw.type && EntryTypeMapper.toDomain(raw.type),
-        register: raw.register && RegisterMapper.toDomain(raw.register),
-      },
+        register: raw.register && RegisterMapper.toDomain(raw.register)
+      }
     )
 
     if (entryOrError.isLeft()) {
@@ -41,17 +41,18 @@ export class EntryMapper {
   }
 
   static async toPersistence(
-    entry: Entry,
+    entry: Entry
   ): Promise<
     Omit<PersistenceEntry, 'created_at' | 'updated_at' | 'deleted_at'>
   > {
     const { id, props, farm, type, register } = entry
-
     const farmId = farm?.id
+    const typeId = type?.id
+
     if (!farmId) {
       throw new Error('no farmId provided')
     }
-    const typeId = type?.id
+
     if (!typeId) {
       throw new Error('no typeId provided')
     }
@@ -64,9 +65,9 @@ export class EntryMapper {
       commission: isNull(props.commission),
       price: props.price,
       quantity: props.quantity,
-      total: entry.getTotal,
-      after_tax: entry.getAfterTax,
-      register_id: register ? register.id : null,
+      total: entry.total,
+      after_tax: entry.afterTax,
+      register_id: isNull(register?.id)
     }
   }
 }

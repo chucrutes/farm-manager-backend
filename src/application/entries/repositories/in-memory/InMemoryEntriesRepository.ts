@@ -1,23 +1,23 @@
 import type { PartialIncludes } from '@/core/domain/entity'
 import type { Entry, Relations } from '../../domain/entry'
 import type { DataByCategory, IEntriesRepository } from '../IEntriesRepository'
-import { EntryListResponse } from '../../@types'
+import type { EntryListResponse } from '../../@types'
 
 export class InMemoryEntriesRepository implements IEntriesRepository {
   getOpenEntriesRangeByFarmId(
-    farmId: string,
+    farmId: string
   ): Promise<{ min: Date; max: Date }> {
     throw new Error('Method not implemented.')
   }
   getDataByCategory(
     farmId: string,
-    registerId: string | null,
+    registerId: string | null
   ): Promise<DataByCategory[]> {
     throw new Error('Method not implemented.')
   }
   public entries: Entry[] = []
 
-  createOrUpdate(entity: Entry): Promise<void> {
+  upsert(entity: Entry): Promise<void> {
     throw new Error('Method not implemented.')
   }
   async create(user: Entry): Promise<void> {
@@ -25,7 +25,7 @@ export class InMemoryEntriesRepository implements IEntriesRepository {
   }
   findById(
     id: string,
-    includeRelations?: PartialIncludes<Relations> | undefined,
+    includeRelations?: PartialIncludes<Relations> | undefined
   ): Promise<Entry | null> {
     throw new Error('Method not implemented.')
   }

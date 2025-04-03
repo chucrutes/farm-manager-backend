@@ -6,7 +6,7 @@ export interface IRegistersRepository
   extends ICrudRepository<Register, Relations> {
   getAllByFarmId(
     farmId: string,
-    options?: RegisterListOptions,
+    options?: RegisterListOptions
   ): Promise<RegisterListResponse>
   restoreEntriesByRegister(register: Register): Promise<void>
 }

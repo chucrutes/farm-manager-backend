@@ -1,5 +1,5 @@
 import type { Roles } from '../../domain/farm.schema'
-import { prismaClient } from '@/infra/prisma/client'
+import { prismaClient } from '@/infra/db/prisma/client'
 import { type Farm, LANG_ENTITY } from '../../domain/farm'
 import type { IFarmsRepository } from '../IFarmsRepository'
 import { FarmMapper } from '../../mappers/farm-mapper'
@@ -7,7 +7,7 @@ import { FarmMapper } from '../../mappers/farm-mapper'
 const dbFarmClient = prismaClient.farm
 
 export default class PrismaFarmsRepository implements IFarmsRepository {
-  async createOrUpdate(entity: Farm): Promise<void> {
+  async upsert(entity: Farm): Promise<void> {
     const entityFound = await this.findById(entity.id)
 
     if (entityFound) {
@@ -22,7 +22,7 @@ export default class PrismaFarmsRepository implements IFarmsRepository {
     const data = FarmMapper.toPersistence(farm)
 
     await dbFarmClient.create({
-      data,
+      data
     })
   }
 
@@ -33,8 +33,8 @@ export default class PrismaFarmsRepository implements IFarmsRepository {
       .update({
         where: { id: farm.id },
         data: {
-          ...data,
-        },
+          ...data
+        }
       })
       .catch(() => {
         throw new Error(`Error on update ${LANG_ENTITY}`)
@@ -43,8 +43,8 @@ export default class PrismaFarmsRepository implements IFarmsRepository {
   async findById(id: string): Promise<Farm | null> {
     const farm = await dbFarmClient.findUnique({
       where: {
-        id,
-      },
+        id
+      }
     })
 
     if (!farm) return null
@@ -55,9 +55,9 @@ export default class PrismaFarmsRepository implements IFarmsRepository {
     await dbFarmClient.deleteMany({
       where: {
         id: {
-          in: ids,
-        },
-      },
+          in: ids
+        }
+      }
     })
   }
 
@@ -66,19 +66,19 @@ export default class PrismaFarmsRepository implements IFarmsRepository {
       data: {
         user_id: userId,
         farm_id: farmId,
-        role,
-      },
+        role
+      }
     })
   }
 
   async getFarmByUserId(userId: string): Promise<Farm | null> {
     const farm = await prismaClient.farmMembers.findFirst({
       where: {
-        user_id: userId,
+        user_id: userId
       },
       include: {
-        farm: true,
-      },
+        farm: true
+      }
     })
 
     if (!farm) return null

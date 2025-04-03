@@ -1,22 +1,18 @@
 import type { Controller } from '@/core/infra/controller'
 import { ValidatorCompositor } from '@/infra/validation/ValidatorCompositor'
-import PrismaFarmsRepository from '@/application/farms/repositories/prisma/PrismaFarmsRepository'
-import { PrismaEntriesRepository } from '@/application/entries/repositories/prisma/PrismaEntriesRepository'
-import PrismaRegistersRepository from '@/application/register/repositories/prisma/PrismaRegistersRepository'
 import { CreateRegister } from '@/application/register/use-cases/create/create'
-import { CloseRegisterController } from '@/application/register/use-cases/close-register/close-register.controller'
+import { makeFarmRepository } from '@/infra/db/prisma/factories/make-farm-repository'
+import { makeEntryRepository } from '@/infra/db/prisma/factories/make-entry-repository'
+import { makeRegisterRepository } from '@/infra/db/prisma/factories/make-register-repository'
 import { GetFarmByUser } from '@/application/farms/use-cases/get-farm-by-user-id/get-farm-by-user-id'
-
-
-
+import { CloseRegisterController } from '@/application/register/use-cases/close-register/close-register.controller'
 
 export function makeCloseRegisterController(): Controller {
-  const entriesRepository = new PrismaEntriesRepository()
-  const farmsRepository = new PrismaFarmsRepository()
-  const registersRepository = new PrismaRegistersRepository()
-
-  const getFarmByUserId = new GetFarmByUser(farmsRepository)
-  const createRegister = new CreateRegister({registersRepository, entriesRepository})
+  const getFarmByUserId = new GetFarmByUser(makeFarmRepository())
+  const createRegister = new CreateRegister({
+    registersRepository: makeRegisterRepository(),
+    entriesRepository: makeEntryRepository()
+  })
 
   const validator = new ValidatorCompositor([])
 

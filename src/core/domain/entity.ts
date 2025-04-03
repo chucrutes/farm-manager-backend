@@ -10,9 +10,18 @@ export type PartialIncludes<T extends object> = {
   [P in keyof T]?: boolean
 }
 
-export type ToResponseBody<T> = T & {
-  _id: string
+export type ControllerIncludes<T extends object> = {
+  [P in keyof T]?: string
 }
+
+export type Relations = Record<string, Entity<any>>
+
+// biome-ignore lint/complexity/noBannedTypes: @TODO
+export type ToResponseBody<T, U extends Relations = {}> = T &
+  Timestamps &
+  U & {
+    _id: string
+  }
 
 export class Entity<T> {
   protected readonly _id: string
@@ -46,7 +55,7 @@ export class Entity<T> {
       id: Generate.id(),
       versionNumber,
       entityId: this._id,
-      ...this.props,
+      ...this.props
     }
   }
 
@@ -54,7 +63,16 @@ export class Entity<T> {
     return {
       _id: this._id,
       ...this.props,
-      ...this.timestamps,
+      ...this.timestamps
     }
+  }
+
+  public composeRelations(relations: Relations) {
+    const relationKeys = Object.keys(relations)
+    const relationsDto: Record<string, object> = {}
+
+    return relationKeys.map((key) => {
+      relationsDto[key] = relations[key].toResponseBody()
+    })
   }
 }

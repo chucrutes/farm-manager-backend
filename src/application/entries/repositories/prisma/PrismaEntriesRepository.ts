@@ -1,18 +1,17 @@
 import { Categories, type Prisma } from '@prisma/client'
 import type { Entry, Relations } from '../../domain/entry'
-import { prismaClient } from '@/infra/prisma/client'
+import { prismaClient } from '@/infra/db/prisma/client'
 import { EntryMapper } from '../../mappers/entry-mapper'
 import type { DataByCategory, IEntriesRepository } from '../IEntriesRepository'
 import type { IncludeRelations } from '@/application/entry-type/repositories/IEntryTypesRepository'
 import type { Register } from '@/application/register/domain/register'
 import type { EntryListOptions, EntryListResponse } from '../../@types'
-import type { PaginationMetadata } from '@/application/@types'
 import { buildMetadata, buildPagination } from '@/utils/pagination'
 
 type EntryInclude = Prisma.EntryInclude
 
 export class PrismaEntriesRepository implements IEntriesRepository {
-  async createOrUpdate(entity: Entry): Promise<void> {
+  async upsert(entity: Entry): Promise<void> {
     const entityFound = await this.findById(entity.id)
 
     if (entityFound) {
@@ -27,7 +26,7 @@ export class PrismaEntriesRepository implements IEntriesRepository {
     const data = await EntryMapper.toPersistence(entry)
 
     await prismaClient.entry.create({
-      data,
+      data
     })
   }
   async update(entry: Entry): Promise<void> {
@@ -36,16 +35,16 @@ export class PrismaEntriesRepository implements IEntriesRepository {
     await prismaClient.entry.update({
       data,
       where: {
-        id: data.id,
-      },
+        id: data.id
+      }
     })
   }
 
   async findById(id: string): Promise<Entry | null> {
     const farm = await prismaClient.entry.findUnique({
       where: {
-        id,
-      },
+        id
+      }
     })
 
     if (!farm) return null
@@ -55,7 +54,7 @@ export class PrismaEntriesRepository implements IEntriesRepository {
 
   async getAllByFarmId(
     farmId: string,
-    options?: EntryListOptions,
+    options?: EntryListOptions
   ): Promise<EntryListResponse> {
     const include = this.buildInclude(options?.includes)
     const { skip, take, orderBy } = buildPagination(options?.pagination)
@@ -63,8 +62,8 @@ export class PrismaEntriesRepository implements IEntriesRepository {
     const where: Prisma.EntryWhereInput = {
       farm_id: farmId,
       deleted_at: {
-        not: null,
-      },
+        not: null
+      }
     }
     if (options?.removeDeletedAt) {
       where.deleted_at = null
@@ -76,13 +75,13 @@ export class PrismaEntriesRepository implements IEntriesRepository {
         include,
         skip,
         take,
-        orderBy,
+        orderBy
       }),
       prismaClient.entry.count({
         where: {
-          farm_id: farmId,
-        },
-      }),
+          farm_id: farmId
+        }
+      })
     ])
 
     const metadata = buildMetadata(count, data.length, options?.pagination)
@@ -94,37 +93,37 @@ export class PrismaEntriesRepository implements IEntriesRepository {
     await prismaClient.entry.deleteMany({
       where: {
         id: {
-          in: ids,
-        },
-      },
+          in: ids
+        }
+      }
     })
   }
 
   async totalRevenueByFarm(farmId: string): Promise<number | null> {
     const totalSum = await prismaClient.entry.aggregate({
       _sum: {
-        after_tax: true,
+        after_tax: true
       },
       where: {
         farm_id: farmId,
         deleted_at: null,
         type: {
-          category: { not: Categories.EXPENSE },
-        },
-      },
+          category: { not: Categories.EXPENSE }
+        }
+      }
     })
 
     const totalSubtract = await prismaClient.entry.aggregate({
       _sum: {
-        after_tax: true,
+        after_tax: true
       },
       where: {
         farm_id: farmId,
         deleted_at: null,
         type: {
-          category: Categories.EXPENSE,
-        },
-      },
+          category: Categories.EXPENSE
+        }
+      }
     })
 
     const totalSubtractParsed = totalSubtract?._sum.after_tax ?? 0
@@ -138,20 +137,20 @@ export class PrismaEntriesRepository implements IEntriesRepository {
   async getOpenEntriesRangeByFarmId(farmId: string) {
     const result = await prismaClient.entry.aggregate({
       _min: {
-        created_at: true,
+        created_at: true
       },
       _max: {
-        created_at: true,
+        created_at: true
       },
       where: {
         register_id: null,
-        farm_id: farmId,
-      },
+        farm_id: farmId
+      }
     })
 
     return {
       min: result._min.created_at as Date,
-      max: result._max.created_at as Date,
+      max: result._max.created_at as Date
     }
   }
 
@@ -161,18 +160,18 @@ export class PrismaEntriesRepository implements IEntriesRepository {
     await prismaClient.entry.updateMany({
       where: {
         register_id: null,
-        farm_id: register.farm.id,
+        farm_id: register.farm.id
       },
       data: {
         register_id: register.id,
-        deleted_at: new Date(),
-      },
+        deleted_at: new Date()
+      }
     })
   }
 
   async getDataByCategory(
     farmId: string,
-    registerId: string | null,
+    registerId: string | null
   ): Promise<DataByCategory[]> {
     const sumByCategory = await prismaClient.$queryRaw`
       SELECT entry_types.category, SUM(entries.after_tax) 

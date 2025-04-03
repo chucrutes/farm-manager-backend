@@ -10,7 +10,7 @@ export type ListEntryTypeControllerRequest = {
 export class ListEntryTypeController implements Controller {
   constructor(
     private readonly validator: Validator<ListEntryTypeControllerRequest>,
-    private listEntryType: ListEntryType,
+    private listEntryType: ListEntryType
   ) {}
 
   async handle(request: ListEntryTypeControllerRequest): Promise<HttpResponse> {
@@ -20,7 +20,7 @@ export class ListEntryTypeController implements Controller {
       return clientError(validated.value)
     }
     const result = await this.listEntryType.execute({
-      userId: request.requesterId,
+      userId: request.requesterId
     })
 
     if (result.isLeft()) {
@@ -36,10 +36,7 @@ export class ListEntryTypeController implements Controller {
 
     return ok({
       headers: metadata,
-      dto: data.map((res) => ({
-        ...res.toResponseBody(),
-        farm: res.farm?.toResponseBody(),
-      })),
+      dto: data.map((item) => item.toResponseBody())
     })
   }
 }

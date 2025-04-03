@@ -22,29 +22,29 @@ describe('Create seeds (end-to-end)', async () => {
         name: 'Matheus Boeira',
         email: 'matheusboeira.aluno@unipampa.edu.br',
         password: 'teste',
-        username: 'matheusboeira',
+        username: 'matheusboeira'
       },
       {
         name: 'Thiago Melo',
         email: 'tmelo387@gmail.com',
         password: 'teste',
-        username: 'chucrutes',
-      },
+        username: 'chucrutes'
+      }
     ])
     await usersRepository.create(user1)
     await usersRepository.create(user2)
 
     const [farm1, farm2] = FarmFactory.createMany([
       {
-        name: 'farm1',
+        name: 'farm1'
       },
       {
-        name: 'farm2',
-      },
+        name: 'farm2'
+      }
     ])
 
-    await farmsRepository.createOrUpdate(farm1)
-    await farmsRepository.createOrUpdate(farm2)
+    await farmsRepository.upsert(farm1)
+    await farmsRepository.upsert(farm2)
     await farmsRepository.addMember(user1.id, farm1.id, Roles.OWNER)
     await farmsRepository.addMember(user2.id, farm2.id, Roles.OWNER)
 

@@ -9,23 +9,7 @@ import { makeDeleteEntryTypeController } from '../factories/controllers/entry-ty
 
 export const entryType = Router()
 
-entryType.post(
-  '/',
-  adaptMiddleware(makeEnsureAuthenticated()),
-  adaptRoute(makeCreateOrUpdateEntryTypeController())
-)
-entryType.delete(
-  '/',
-  adaptMiddleware(makeEnsureAuthenticated()),
-  adaptRoute(makeDeleteEntryTypeController())
-)
-entryType.get(
-  '/',
-  adaptMiddleware(makeEnsureAuthenticated()),
-  adaptRoute(makeListEntryTypeController())
-)
-entryType.get(
-  '/:id',
-  adaptMiddleware(makeEnsureAuthenticated()),
-  adaptRoute(makeGetEntryTypeController())
-)
+entryType.post('/', adaptRoute(makeCreateOrUpdateEntryTypeController()))
+entryType.delete('/', adaptRoute(makeDeleteEntryTypeController()))
+entryType.get('/', adaptRoute(makeListEntryTypeController()))
+entryType.get('/:id', adaptRoute(makeGetEntryTypeController()))
