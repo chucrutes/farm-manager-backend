@@ -10,6 +10,7 @@ import {
 import type { Middleware } from '@/core/infra/middleware'
 import { decode } from 'jsonwebtoken'
 import { UserDoesNotExistsError } from './errors/UserDoesNotExistsError'
+import { VerifyYourEmail } from './errors/VerifyYourEmail'
 
 type EnsureAuthenticationMiddlewareRequest = {
   intercept: {
@@ -44,6 +45,11 @@ export class EnsureAuthenticatedMiddleware implements Middleware {
 
         if (!userExists) {
           return unauthorized(new UserDoesNotExistsError())
+        }
+        
+        if(!userExists.props.emailVerified){
+          return forbidden(new VerifyYourEmail())
+
         }
 
         return ok({
