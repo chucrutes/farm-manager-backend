@@ -3,7 +3,6 @@ import cors from 'cors'
 import express from 'express'
 import 'express-async-errors'
 import { router } from './routes'
-import { Server } from 'socket.io'
 import { green } from 'console-log-colors'
 import { interceptErrors } from './middlewares/intercept-errors'
 
