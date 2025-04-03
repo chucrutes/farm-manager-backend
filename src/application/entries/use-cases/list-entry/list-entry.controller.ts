@@ -13,7 +13,7 @@ type ListEntryControllerRequest = {
 export class ListEntryController implements Controller {
   constructor(
     private readonly validator: Validator<ListEntryControllerRequest>,
-    private listEntry: ListEntry,
+    private listEntry: ListEntry
   ) {}
 
   async handle({
@@ -31,9 +31,9 @@ export class ListEntryController implements Controller {
       userId: request.requesterId,
       includes: {
         type: !!type,
-        farm: !!farm,
+        farm: !!farm
       },
-      removeDeletedAt: !!request.removeDeletedAt,
+      removeDeletedAt: !!request.removeDeletedAt
     })
 
     if (result.isLeft()) {
@@ -45,13 +45,9 @@ export class ListEntryController implements Controller {
     return ok({
       headers: metadata,
       dto: {
-        entries: data.map((res) => ({
-          ...res.toResponseBody(),
-          type: res.type?.toResponseBody(),
-          farm: res.farm?.toResponseBody(),
-        })),
-        total,
-      },
+        entries: data.map((item) => item.toResponseBody()),
+        total
+      }
     })
   }
 }

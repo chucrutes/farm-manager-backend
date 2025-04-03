@@ -7,22 +7,23 @@
 			"type": "shell",
 			"runOptions": {
 				"runOn": "folderOpen"
-			}
+			},
+			"problemMatcher": []
 		},
 		{
 			"label": "Open prisma studio",
-			"command": "yarn prisma:studio",
+			"command": "pnpm prisma:studio",
 			"type": "shell"
 		},
 		{
 			"label": "Seed db",
-			"command": "yarn run seed",
+			"command": "pnpm run seed",
 			"type": "shell",
 			"problemMatcher": []
 		},
 		{
 			"label": "Start server",
-			"command": "yarn run start:dev",
+			"command": "pnpm run start:dev",
 			"type": "shell",
 			"dependsOn": {
 				"type": "Start db"
@@ -33,7 +34,7 @@
 		},
 		{
 			"label": "Run tests",
-			"command": "yarn run test",
+			"command": "pnpm run tests",
 			"type": "shell",
 			"problemMatcher": []
 		}

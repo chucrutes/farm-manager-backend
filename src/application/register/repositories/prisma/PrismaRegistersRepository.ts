@@ -1,14 +1,9 @@
-import { prismaClient } from '@/infra/prisma/client'
+import { prismaClient } from '@/infra/db/prisma/client'
 import { LANG_ENTITY, type Register } from '../../domain/register'
 import { RegisterMapper } from '../../mappers/register-mapper'
 import type { IRegistersRepository } from '../IRegistersRepository'
-import {
-  Categories,
-  type Prisma,
-  type PrismaPromise,
-  type Register as PrismaRegister,
-} from '@prisma/client'
-import type { Pagination, PaginationMetadata } from '@/application/@types'
+import { Categories, type Prisma } from '@prisma/client'
+import type { PaginationMetadata } from '@/application/@types'
 import { buildMetadata, buildPagination } from '@/utils/pagination'
 import type { IncludeRelations, RegisterListOptions } from '../../@types'
 
@@ -16,7 +11,7 @@ const dbRegisterClient = prismaClient.register
 type RegisterInclude = Prisma.RegisterInclude
 
 export default class PrismaRegistersRepository implements IRegistersRepository {
-  async createOrUpdate(entity: Register): Promise<void> {
+  async upsert(entity: Register): Promise<void> {
     const entityFound = await this.findById(entity.id)
 
     if (entityFound) {
@@ -30,7 +25,7 @@ export default class PrismaRegistersRepository implements IRegistersRepository {
   async create(register: Register): Promise<void> {
     await prismaClient.$transaction([
       this.createRegister(register),
-      this.updateEntries(register.id),
+      this.updateEntries(register.id)
     ])
   }
 
@@ -41,8 +36,8 @@ export default class PrismaRegistersRepository implements IRegistersRepository {
       .update({
         where: { id: register.id },
         data: {
-          ...data,
-        },
+          ...data
+        }
       })
       .catch(() => {
         throw new Error(`Error on update ${LANG_ENTITY}`)
@@ -51,8 +46,8 @@ export default class PrismaRegistersRepository implements IRegistersRepository {
   async findById(id: string): Promise<Register | null> {
     const register = await dbRegisterClient.findUnique({
       where: {
-        id,
-      },
+        id
+      }
     })
 
     if (!register) return null
@@ -62,7 +57,7 @@ export default class PrismaRegistersRepository implements IRegistersRepository {
 
   async getAllByFarmId(
     farmId: string,
-    options?: RegisterListOptions,
+    options?: RegisterListOptions
   ): Promise<{ data: Register[]; metadata: PaginationMetadata }> {
     const include = this.buildInclude(options?.includes)
     const { skip, take, orderBy } = buildPagination(options?.pagination)
@@ -70,18 +65,18 @@ export default class PrismaRegistersRepository implements IRegistersRepository {
     const [data, count] = await prismaClient.$transaction([
       prismaClient.register.findMany({
         where: {
-          farm_id: farmId,
+          farm_id: farmId
         },
         include,
         skip,
         take,
-        orderBy,
+        orderBy
       }),
       prismaClient.register.count({
         where: {
-          farm_id: farmId,
-        },
-      }),
+          farm_id: farmId
+        }
+      })
     ])
 
     const metadata = buildMetadata(count, data.length, options?.pagination)
@@ -93,7 +88,7 @@ export default class PrismaRegistersRepository implements IRegistersRepository {
     const data = RegisterMapper.toPersistence(register)
 
     return dbRegisterClient.create({
-      data,
+      data
     })
   }
   updateEntries(registerId: string) {
@@ -102,14 +97,14 @@ export default class PrismaRegistersRepository implements IRegistersRepository {
         register_id: null,
         type: {
           category: {
-            not: Categories.ASSET,
-          },
-        },
+            not: Categories.ASSET
+          }
+        }
       },
       data: {
         register_id: registerId,
-        deleted_at: new Date(),
-      },
+        deleted_at: new Date()
+      }
     })
   }
 
@@ -117,9 +112,9 @@ export default class PrismaRegistersRepository implements IRegistersRepository {
     await dbRegisterClient.deleteMany({
       where: {
         id: {
-          in: ids,
-        },
-      },
+          in: ids
+        }
+      }
     })
   }
 
@@ -127,18 +122,18 @@ export default class PrismaRegistersRepository implements IRegistersRepository {
     await prismaClient.$transaction([
       prismaClient.entry.updateMany({
         where: {
-          register_id: register.id,
+          register_id: register.id
         },
         data: {
           register_id: null,
-          deleted_at: null,
-        },
+          deleted_at: null
+        }
       }),
       prismaClient.register.delete({
         where: {
-          id: register.id,
-        },
-      }),
+          id: register.id
+        }
+      })
     ])
   }
 
@@ -149,7 +144,7 @@ export default class PrismaRegistersRepository implements IRegistersRepository {
     }
 
     for (const key of Object.keys(
-      includeRelations,
+      includeRelations
     ) as (keyof IncludeRelations)[]) {
       switch (key) {
         case 'farm':

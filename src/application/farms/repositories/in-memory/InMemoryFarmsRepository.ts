@@ -4,10 +4,10 @@ import type { IFarmsRepository } from '../IFarmsRepository'
 
 export class InMemoryFarmsRepository implements IFarmsRepository {
   constructor(public farms: Farm[] = []) {}
-  getFarmByUserId(userId: string): Promise<Farm | null> {
+  getFarmByUserId(_: string): Promise<Farm | null> {
     throw new Error('Method not implemented.')
   }
-  async createOrUpdate(entity: Farm): Promise<void> {
+  async upsert(entity: Farm): Promise<void> {
     const entityFound = await this.findById(entity.id)
 
     if (entityFound) {

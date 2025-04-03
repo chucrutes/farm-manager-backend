@@ -13,7 +13,6 @@ import type { IEntryTypesRepository } from '../../repositories/IEntryTypesReposi
 import PrismaEntryTypesRepository from '../../repositories/prisma/PrismaEntryTypesRepository'
 import type { ToResponseBody } from '@/core/domain/entity'
 import type { EntryTypeProps } from '../../domain/entry-type.schema'
-import { entryType } from '@/infra/http/routes/entry-types.routes'
 import { StatusCodes } from 'http-status-codes'
 
 let usersRepository: IUsersRepository
@@ -26,7 +25,7 @@ describe('Create or update entry type(E2E)', async () => {
   const {
     farm,
     entryType,
-    userWithJwt: { user, jwt },
+    userWithJwt: { user, jwt }
   } = initEntities()
 
   beforeAll(async () => {
@@ -35,9 +34,9 @@ describe('Create or update entry type(E2E)', async () => {
     entryTypesRepository = new PrismaEntryTypesRepository()
 
     await usersRepository.create(user)
-    await farmsRepository.createOrUpdate(farm)
+    await farmsRepository.upsert(farm)
     await farmsRepository.addMember(user.id, farm.id, Roles.OWNER)
-    await entryTypesRepository.createOrUpdate(entryType)
+    await entryTypesRepository.upsert(entryType)
   })
 
   test('should create a type', async () => {
@@ -51,13 +50,13 @@ describe('Create or update entry type(E2E)', async () => {
       .send(data)
 
     expect((response.body.dto as ToResponseBody<EntryTypeProps>).name).toEqual(
-      entryType.props.name,
+      entryType.props.name
     )
   })
 
   test('should not create a type with the same name as a existing type', async () => {
     const rest = EntryTypeFactory.create({
-      name: entryType.props.name,
+      name: entryType.props.name
     }).props
 
     const data: Request = rest
@@ -72,7 +71,7 @@ describe('Create or update entry type(E2E)', async () => {
   test('should update a type', async () => {
     const rest = EntryTypeFactory.create({
       name: entryType.props.name,
-      id: entryType.id,
+      id: entryType.id
     }).props
 
     const data: Request = { _id: entryType.id, ...rest }
@@ -83,7 +82,7 @@ describe('Create or update entry type(E2E)', async () => {
       .send(data)
 
     expect((response.body.dto as ToResponseBody<EntryTypeProps>)._id).toEqual(
-      entryType.id,
+      entryType.id
     )
   })
 

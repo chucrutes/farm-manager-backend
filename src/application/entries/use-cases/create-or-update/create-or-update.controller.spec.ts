@@ -13,7 +13,7 @@ import type { IEntryTypesRepository } from '@/application/entry-type/repositorie
 import {
   globalEntryTypesRepository,
   globalFarmsRepository,
-  globalUsersRepository,
+  globalUsersRepository
 } from '@/tests/vitest.setup'
 
 let usersRepository: IUsersRepository
@@ -26,7 +26,8 @@ describe('Create or update entry(E2E)', async () => {
   const {
     farm,
     type,
-    userWithJwt: { user, jwt },
+
+    userWithJwt: { user, jwt }
   } = initEntities()
 
   beforeAll(async () => {
@@ -35,15 +36,15 @@ describe('Create or update entry(E2E)', async () => {
     entryTypesRepository = globalEntryTypesRepository
 
     await usersRepository.create(user)
-    await farmsRepository.createOrUpdate(farm)
+    await farmsRepository.upsert(farm)
     await farmsRepository.addMember(user.id, farm.id, Roles.OWNER)
-    await entryTypesRepository.createOrUpdate(type)
+    await entryTypesRepository.upsert(type)
   })
 
   test('should create an entry', async () => {
-    const entryType = EntryFactory.create()
+    const entry = EntryFactory.create()
 
-    const data: Request = { type: {_id: type.id}, ...entryType.props }
+    const data: Request = { type: { _id: type.id }, ...entry.props }
 
     const response = await request(app)
       .post(ROUTE_ENTITY)
@@ -51,8 +52,8 @@ describe('Create or update entry(E2E)', async () => {
       .send(data)
 
     expect(
-      (response.body.dto as ToResponseBody<EntryProps>).description,
-    ).toEqual(entryType.props.description)
+      (response.body.dto as ToResponseBody<EntryProps>).description
+    ).toEqual(entry.props.description)
   })
 
   afterAll(async () => {

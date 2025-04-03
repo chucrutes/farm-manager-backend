@@ -49,7 +49,7 @@ export class CreateOrUpdateEntryType {
 
     const entryTypeByName = await this.entryTypesRepository.findByFarmAndName(
       farm.id,
-      props.name,
+      props.name
     )
 
     if (entryTypeByName && entryTypeByName.id !== _id) {
@@ -65,9 +65,9 @@ export class CreateOrUpdateEntryType {
       _id,
       {
         createdAt: entryTypeExists?.timestamps?.createdAt || new Date(),
-        updatedAt: entryTypeExists?.timestamps?.updatedAt || new Date(),
+        updatedAt: entryTypeExists?.timestamps?.updatedAt || new Date()
       },
-      { farm },
+      { farm }
     )
 
     if (entryTypeOrError.isLeft()) {
@@ -75,7 +75,7 @@ export class CreateOrUpdateEntryType {
     }
 
     const entryType = entryTypeOrError.value
-    await this.entryTypesRepository.createOrUpdate(entryType)
+    await this.entryTypesRepository.upsert(entryType)
     return right(entryType)
   }
 }
