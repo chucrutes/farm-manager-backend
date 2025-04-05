@@ -56,10 +56,6 @@ export class CreateOrUpdateEntryType {
       return left(new EntryTypeWithTheSameNameError())
     }
 
-    if (props.category === Categories.EXPENSE && props.commission) {
-      return left(new ExpenseShouldNotHaveCommissionError())
-    }
-
     const entryTypeOrError = EntryType.create(
       props,
       _id,
