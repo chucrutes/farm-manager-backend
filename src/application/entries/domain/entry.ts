@@ -1,6 +1,10 @@
 import type { Farm } from '@/application/farms/domain/farm'
 import { type EntryProps, EntrySchema } from './entry.schema'
-import { Entity, type Timestamps } from '@/core/domain/entity'
+import {
+  Entity,
+  type ToResponseBody,
+  type Timestamps
+} from '@/core/domain/entity'
 import { type Either, left, right } from '@/core/logic/either'
 import type { Register } from '@/application/register/domain/register'
 import type { EntryType } from '@/application/entry-type/domain/entry-type'
@@ -15,8 +19,7 @@ export type Relations = {
 }
 
 export class Entry extends Entity<EntryProps> {
-  public readonly relations?: Relations
-
+  public readonly relations: Relations = {}
   private constructor(
     props: EntryProps,
     id?: string,
@@ -24,7 +27,7 @@ export class Entry extends Entity<EntryProps> {
     relations?: Relations
   ) {
     super(props, id, timeStamps)
-    this.relations = relations
+    this.relations = relations ? relations : this.relations
   }
 
   static create(
@@ -91,5 +94,16 @@ export class Entry extends Entity<EntryProps> {
 
     const commission = this.props.commission ?? 0
     this.props.afterTax = total - commission
+  }
+
+  public toResponseBody(): ToResponseBody<EntryProps> {
+    const relations = this.composeRelations(this.relations)
+
+    return {
+      _id: this._id,
+      ...this.props,
+      ...this.timestamps,
+      ...relations
+    }
   }
 }

@@ -14,7 +14,7 @@ export type ControllerIncludes<T extends object> = {
   [P in keyof T]?: string
 }
 
-export type Relations = Record<string, Entity<any>>
+export type Relations = Record<string, Entity<any> | null>
 
 // biome-ignore lint/complexity/noBannedTypes: @TODO
 export type ToResponseBody<T, U extends Relations = {}> = T &
@@ -67,12 +67,17 @@ export class Entity<T> {
     }
   }
 
-  public composeRelations(relations: Relations) {
+  public composeRelations(relations: Relations = {}) {
     const relationKeys = Object.keys(relations)
     const relationsDto: Record<string, object> = {}
 
-    return relationKeys.map((key) => {
-      relationsDto[key] = relations[key].toResponseBody()
+    relationKeys.map((key) => {
+      const relation = relations[key]
+      if (!relation) return
+
+      relationsDto[key] = relation.toResponseBody()
     })
+
+    return relationsDto
   }
 }
