@@ -9,6 +9,7 @@ import { type Either, left, right } from '@/core/logic/either'
 import type { Register } from '@/application/register/domain/register'
 import type { EntryType } from '@/application/entry-type/domain/entry-type'
 import { ZodValidationError } from '@/core/domain/errors/ZodValidationError'
+import { Categories } from '@/application/entry-type/domain/entry-type.schema'
 
 export const LANG_ENTITY = 'entry'
 
@@ -93,7 +94,17 @@ export class Entry extends Entity<EntryProps> {
     }
 
     const commission = this.props.commission ?? 0
-    this.props.afterTax = total - commission
+
+    switch (type.props.category) {
+      case Categories.EXPENSE:
+        this.props.afterTax = total + commission
+        break
+      case Categories.INCOME:
+        this.props.afterTax = total - commission
+        break
+      default:
+        total
+    }
   }
 
   public toResponseBody(): ToResponseBody<EntryProps> {
