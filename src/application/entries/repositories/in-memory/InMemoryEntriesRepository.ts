@@ -17,17 +17,15 @@ export class InMemoryEntriesRepository implements IEntriesRepository {
   }
   public entries: Entry[] = []
 
-  upsert(entity: Entry): Promise<void> {
-    throw new Error('Method not implemented.')
-  }
+  async upsert(_entity: Entry): Promise<void> {}
   async create(user: Entry): Promise<void> {
     this.entries.push(user)
   }
-  findById(
+  async findById(
     id: string,
     includeRelations?: PartialIncludes<Relations> | undefined
   ): Promise<Entry | null> {
-    throw new Error('Method not implemented.')
+    return null
   }
   deleteMany(ids: string[]): Promise<void> {
     throw new Error('Method not implemented.')

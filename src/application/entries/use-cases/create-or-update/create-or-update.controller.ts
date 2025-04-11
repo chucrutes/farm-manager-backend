@@ -3,13 +3,13 @@ import {
   type HttpResponse,
   clientError,
   ok,
-  created,
+  created
 } from '@/core/infra/http-response'
 import type { Validator } from '@/core/infra/validator'
 
 import type {
   CreateOrUpdateEntry,
-  CreateOrUpdateEntryRequest,
+  CreateOrUpdateEntryRequest
 } from './create-or-update'
 import { LANG_ENTITY } from '../../domain/entry'
 
@@ -23,11 +23,11 @@ export type CreateOrUpdateEntryControllerRequest = Omit<
 export class CreateOrUpdateEntryController implements Controller {
   constructor(
     private readonly validator: Validator<CreateOrUpdateEntryControllerRequest>,
-    private createEntry: CreateOrUpdateEntry,
+    private createEntry: CreateOrUpdateEntry
   ) {}
 
   async handle(
-    request: CreateOrUpdateEntryControllerRequest,
+    request: CreateOrUpdateEntryControllerRequest
   ): Promise<HttpResponse> {
     const validated = this.validator.validate(request)
 
@@ -37,7 +37,7 @@ export class CreateOrUpdateEntryController implements Controller {
 
     const result = await this.createEntry.execute({
       userId: request.requesterId,
-      ...request,
+      ...request
     })
     if (result.isLeft()) {
       const error = result.value
@@ -52,20 +52,19 @@ export class CreateOrUpdateEntryController implements Controller {
     const dto = {
       type: entry.type?.toResponseBody(),
       farm: entry.farm?.toResponseBody(),
-      ...result.value.toResponseBody(),
+      ...result.value.toResponseBody()
     }
-
     if (request._id) {
       return ok({
         key: `${LANG_ENTITY}.created`,
         message: 'Item atualizado com sucesso',
-        dto,
+        dto
       })
     }
     return created({
       key: `${LANG_ENTITY}.created`,
       message: 'Item criado com sucesso',
-      dto,
+      dto
     })
   }
 }

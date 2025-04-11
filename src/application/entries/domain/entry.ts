@@ -103,7 +103,6 @@ export class Entry extends Entity<EntryProps> {
         this.props.afterTax = total - commission
         break
       default:
-        total
     }
   }
 
