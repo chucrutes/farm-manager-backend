@@ -7,6 +7,7 @@ import type { IFarmsRepository } from '@/application/farms/repositories/IFarmsRe
 import type { IEntryTypesRepository } from '@/application/entry-type/repositories/IEntryTypesRepository'
 import { EntryTypeNotFoundError } from '@/application/entry-type/use-cases/@errors/EntryTypeNotFoundError'
 import type { Id } from '@/application/@types'
+import { stringifier } from '@/utils/stringifier'
 
 export type CreateOrUpdateEntryRequest = Omit<EntryProps, 'afterTax'> & {
   userId: string
@@ -77,11 +78,9 @@ export class CreateOrUpdateEntry {
     if (entryOrError.isLeft()) {
       return left(entryOrError.value)
     }
-
     const entry = entryOrError.value
 
     await this.entriesRepository.upsert(entry)
-
     return right(entry)
   }
 }

@@ -1,7 +1,7 @@
 import { User } from '../../domain/user'
-import { Either, left, right } from '@/core/logic/either'
-import { IUsersRepository } from '../../repositories/IUsersRepository'
+import { type Either, left, right } from '@/core/logic/either'
 import { UserAlreadyExistsError } from './errors/UserAlreadyExistsError'
+import type { IUsersRepository } from '../../repositories/IUsersRepository'
 
 type CreateUserRequest = {
   email: string
@@ -46,8 +46,8 @@ export class CreateUser {
     if (userOrError.isLeft()) {
       return left(userOrError.value)
     }
-
     const user = userOrError.value
+
     await this.usersRepository.create(user)
     return right(user)
   }

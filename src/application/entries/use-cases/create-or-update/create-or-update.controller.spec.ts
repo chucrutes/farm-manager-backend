@@ -15,6 +15,7 @@ import {
   globalFarmsRepository,
   globalUsersRepository
 } from '@/tests/vitest.setup'
+import { stringifier } from '@/utils/stringifier'
 
 let usersRepository: IUsersRepository
 let farmsRepository: IFarmsRepository
@@ -26,7 +27,7 @@ describe('Create or update entry(E2E)', async () => {
   const {
     farm,
     type,
-
+    expense,
     userWithJwt: { user, jwt }
   } = initEntities()
 
@@ -39,6 +40,7 @@ describe('Create or update entry(E2E)', async () => {
     await farmsRepository.upsert(farm)
     await farmsRepository.addMember(user.id, farm.id, Roles.OWNER)
     await entryTypesRepository.upsert(type)
+    await entryTypesRepository.upsert(expense)
   })
 
   test('should create an entry', async () => {
@@ -54,6 +56,22 @@ describe('Create or update entry(E2E)', async () => {
     expect(
       (response.body.dto as ToResponseBody<EntryProps>).description
     ).toEqual(entry.props.description)
+  })
+
+  test('should return expense with sum of commission', async () => {
+    const reqBody = { commission: 50, price: 50, quantity: 2 }
+    const entry = EntryFactory.create(reqBody, { type: expense })
+
+    const data: Request = { type: { _id: expense.id }, ...entry.props }
+
+    const response = await request(app)
+      .post(ROUTE_ENTITY)
+      .auth(jwt.token, { type: 'bearer' })
+      .send(data)
+
+    expect((response.body.dto as ToResponseBody<EntryProps>).afterTax).toEqual(
+      reqBody.quantity * reqBody.price + reqBody.commission
+    )
   })
 
   afterAll(async () => {
