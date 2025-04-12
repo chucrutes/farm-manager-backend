@@ -4,6 +4,8 @@ import { CompareFieldsValidator } from '@/infra/validation/CompareFieldsValidato
 import { CreateUser } from '@/application/users/use-cases/create-user/create-user'
 import { PrismaUsersRepository } from '@/application/users/repositories/prisma/PrismaUsersRepository'
 import { CreateUserController } from '@/application/users/use-cases/create-user/create-user.controller'
+import { makeFarmRepository } from '@/infra/db/prisma/factories/make-farm-repository'
+import { CreateOrUpdateFarm } from '@/application/farms/use-cases/create-or-update/create-or-update'
 
 type ComparableFields = {
   password: string
@@ -12,7 +14,9 @@ type ComparableFields = {
 
 export function makeCreateUserController(): Controller {
   const prismaUsersRepository = new PrismaUsersRepository()
-  const createUser = new CreateUser(prismaUsersRepository)
+  const farmsRepository = makeFarmRepository()
+  const upsertFarm = new CreateOrUpdateFarm(farmsRepository)
+  const createUser = new CreateUser(prismaUsersRepository, upsertFarm)
 
   const validator = new ValidatorCompositor<ComparableFields>([
     new CompareFieldsValidator({

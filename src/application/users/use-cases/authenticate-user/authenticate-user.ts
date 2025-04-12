@@ -23,11 +23,14 @@ export class AuthenticateUser {
 
   async execute({
     user,
-    password,
+    password
   }: AuthenticateUserRequest): Promise<AuthenticateUserResponse> {
     const userExists = await this.usersRepository.findByEmailOrUsername(user)
 
     if (!userExists) {
+      return left(new InvalidEmailOrPasswordError())
+    }
+    if (!userExists.props.emailVerified) {
       return left(new InvalidEmailOrPasswordError())
     }
 
