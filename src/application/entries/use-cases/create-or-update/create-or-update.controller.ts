@@ -1,13 +1,19 @@
-import { Controller } from '@/core/infra/controller'
-import { HttpResponse, clientError, ok } from '@/core/infra/http-response'
-import { Validator } from '@/core/infra/validator'
-import { t } from 'i18next'
+import type { Controller } from '@/core/infra/controller'
 import {
+  type HttpResponse,
+  clientError,
+  ok,
+  created
+} from '@/core/infra/http-response'
+import type { Validator } from '@/core/infra/validator'
+
+import type {
   CreateOrUpdateEntry,
   CreateOrUpdateEntryRequest
 } from './create-or-update'
+import { LANG_ENTITY } from '../../domain/entry'
 
-type CreateOrUpdateEntryControllerRequest = Omit<
+export type CreateOrUpdateEntryControllerRequest = Omit<
   CreateOrUpdateEntryRequest,
   'userId'
 > & {
@@ -33,7 +39,6 @@ export class CreateOrUpdateEntryController implements Controller {
       userId: request.requesterId,
       ...request
     })
-
     if (result.isLeft()) {
       const error = result.value
 
@@ -42,6 +47,24 @@ export class CreateOrUpdateEntryController implements Controller {
           return clientError(error)
       }
     }
-    return ok({ message: t('entry.created') })
+
+    const entry = result.value
+    const dto = {
+      type: entry.type?.toResponseBody(),
+      farm: entry.farm?.toResponseBody(),
+      ...result.value.toResponseBody()
+    }
+    if (request._id) {
+      return ok({
+        key: `${LANG_ENTITY}.created`,
+        message: 'Item atualizado com sucesso',
+        dto
+      })
+    }
+    return created({
+      key: `${LANG_ENTITY}.created`,
+      message: 'Item criado com sucesso',
+      dto
+    })
   }
 }

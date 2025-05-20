@@ -1,10 +1,27 @@
 import { Generate } from '../logic/generate'
 
-type Timestamps = {
+export type Timestamps = {
   createdAt?: Date
   updatedAt?: Date
-  deleteddAt?: Date
+  deletedAt?: Date
 }
+
+export type PartialIncludes<T extends object> = {
+  [P in keyof T]?: boolean
+}
+
+export type ControllerIncludes<T extends object> = {
+  [P in keyof T]?: string
+}
+
+export type Relations = Record<string, Entity<any> | null>
+
+// biome-ignore lint/complexity/noBannedTypes: @TODO
+export type ToResponseBody<T, U extends Relations = {}> = T &
+  Timestamps &
+  U & {
+    _id: string
+  }
 
 export class Entity<T> {
   protected readonly _id: string
@@ -42,11 +59,25 @@ export class Entity<T> {
     }
   }
 
-  public toResponseBody() {
+  public toResponseBody(): ToResponseBody<T> {
     return {
       _id: this._id,
       ...this.props,
       ...this.timestamps
     }
+  }
+
+  public composeRelations(relations: Relations = {}) {
+    const relationKeys = Object.keys(relations)
+    const relationsDto: Record<string, object> = {}
+
+    relationKeys.map((key) => {
+      const relation = relations[key]
+      if (!relation) return
+
+      relationsDto[key] = relation.toResponseBody()
+    })
+
+    return relationsDto
   }
 }

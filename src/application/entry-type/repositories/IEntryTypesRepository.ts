@@ -1,4 +1,17 @@
-import { ICrudRepository } from '@/core/domain/ICrudRepository'
-import { EntryType } from '../domain/entry-type'
+import type { ICrudRepository } from '@/core/domain/ICrudRepository'
+import type { EntryType, Relations } from '../domain/entry-type'
+import type { PartialIncludes } from '@/core/domain/entity'
+import type { Pagination, PaginationMetadata } from '@/application/@types'
 
-export interface IEntryTypesRepository extends ICrudRepository<EntryType> {}
+export type IncludeRelations = PartialIncludes<Relations>
+export type DeleteByName = { name: string; farmId: string }
+export interface IEntryTypesRepository
+  extends ICrudRepository<EntryType, Relations> {
+  getAllByFarmId(
+    farmId: string,
+    includeRelations?: IncludeRelations,
+    pagination?: Pagination,
+  ): Promise<{ data: EntryType[]; metadata: PaginationMetadata }>
+  findByFarmAndName(farmId: string, name: string): Promise<EntryType | null>
+  deleteManyByName(items: DeleteByName[]): Promise<void>
+}

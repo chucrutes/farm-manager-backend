@@ -1,7 +1,7 @@
 import { env } from '@/config'
-import { Either, left, right } from '@/core/logic/either'
+import { type Either, left, right } from '@/core/logic/either'
 import { sign, verify } from 'jsonwebtoken'
-import { User } from '../../application/users/domain/user'
+import type { User } from '../../application/users/domain/user'
 import { InvalidJWTTokenError } from './errors/InvalidJWTTokenError'
 
 interface JWTData {

@@ -1,8 +1,8 @@
-import { HttpResponse, ok } from '@/core/infra/http-response'
-import { RefreshToken } from './refresh-token'
+import { type HttpResponse, ok } from '@/core/infra/http-response'
+import type { RefreshToken } from './refresh-token'
 
 type RefreshTokenControllerRequest = {
-  currentUserId: string
+  requesterId: string
 }
 
 export class RefreshTokenController {

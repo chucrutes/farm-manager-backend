@@ -1,5 +1,5 @@
-import { Either, left, right } from '@/core/logic/either'
-import { IUsersRepository } from '../../repositories/IUsersRepository'
+import { type Either, left, right } from '@/core/logic/either'
+import type { IUsersRepository } from '../../repositories/IUsersRepository'
 import { UserDoesNotExistError } from './errors/UserDoesNotExistError'
 import { User } from '../../domain/user'
 
@@ -16,7 +16,7 @@ export class ResetPassword {
 
   async execute({
     userId,
-    password
+    password,
   }: ResetPasswordRequest): Promise<ResetPassWordResponse> {
     const userExists = await this.usersRepository.findById(userId)
 
@@ -26,7 +26,7 @@ export class ResetPassword {
 
     const userOrError = User.create(
       { ...userExists.props, password },
-      userExists.id
+      userExists.id,
     )
 
     if (userOrError.isLeft()) {

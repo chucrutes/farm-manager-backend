@@ -1,12 +1,11 @@
-import { t } from 'i18next'
-import { ResetPassword } from './reset-password'
-import { Validator } from '@/core/infra/validator'
-import { Controller } from '@/core/infra/controller'
-import { UserDoesNotExistError } from './errors/UserDoesNotExistError'
-import { HttpResponse, clientError, ok } from '@/core/infra/http-response'
+import type { Validator } from '@/core/infra/validator'
+import type { Controller } from '@/core/infra/controller'
+import * as UserDoesNotExistError from './errors/UserDoesNotExistError'
+import { type HttpResponse, clientError, ok } from '@/core/infra/http-response'
+import type { ResetPassword } from './reset-password'
 
-type ResetPasswordControllerRequest = {
-  currentUserId: string
+export type ResetPasswordControllerRequest = {
+  requesterId: string
   password: string
   confirmPassword: string
 }
@@ -14,34 +13,34 @@ type ResetPasswordControllerRequest = {
 export class ResetPasswordController implements Controller {
   constructor(
     private readonly validator: Validator<ResetPasswordControllerRequest>,
-    private resetPassword: ResetPassword
+    private resetPassword: ResetPassword,
   ) {}
   async handle({
-    currentUserId,
+    requesterId,
     ...request
   }: ResetPasswordControllerRequest): Promise<HttpResponse> {
-    const validated = this.validator.validate({ currentUserId, ...request })
+    const validated = this.validator.validate({ requesterId, ...request })
 
     if (validated.isLeft()) {
       return clientError(validated.value)
     }
 
     const result = await this.resetPassword.execute({
-      userId: currentUserId,
-      ...request
+      userId: requesterId,
+      ...request,
     })
 
     if (result.isLeft()) {
       const error = result.value
 
       switch (error.constructor) {
-        case UserDoesNotExistError:
+        case UserDoesNotExistError.UserDoesNotExistError:
           return clientError(error)
         default:
           return clientError(error)
       }
     }
 
-    return ok({ message: t('user.password_reset') })
+    return ok({ message: 'user.password_reset' })
   }
 }

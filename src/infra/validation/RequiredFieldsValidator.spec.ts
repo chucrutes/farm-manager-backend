@@ -14,7 +14,7 @@ describe('Required Fields Validator', () => {
     const err = validator.validate({
       field1: '12345',
       field2: 999,
-      field3: true,
+      field3: true
     })
     expect(err.isRight()).toBeTruthy()
   })
@@ -23,14 +23,14 @@ describe('Required Fields Validator', () => {
     let err = validator.validate({
       field1: null,
       field2: 3,
-      field3: false,
+      field3: false
     } as any)
     expect(err.isLeft()).toBeTruthy()
 
     err = validator.validate({
       field1: undefined,
       field2: 3,
-      field3: false,
+      field3: false
     } as any)
     expect(err.isLeft()).toBeTruthy()
 

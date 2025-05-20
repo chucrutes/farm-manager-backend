@@ -1,21 +1,20 @@
-import { IUsersRepository } from '@/application/users/repositories/IUsersRepository'
+import type { IUsersRepository } from '@/application/users/repositories/IUsersRepository'
 import { AccessDeniedError } from '@/core/domain/errors/AccessDeniedError'
 import {
-  HttpResponse,
+  type HttpResponse,
   fail,
   forbidden,
   ok,
-  unauthorized
+  unauthorized,
 } from '@/core/infra/http-response'
-import { Middleware } from '@/core/infra/middleware'
+import type { Middleware } from '@/core/infra/middleware'
 import { decode } from 'jsonwebtoken'
 import { UserDoesNotExistsError } from './errors/UserDoesNotExistsError'
+import { VerifyYourEmail } from './errors/VerifyYourEmail'
 
 type EnsureAuthenticationMiddlewareRequest = {
   intercept: {
     jwt: string
-    wid: string
-    pid: string
   }
 }
 
@@ -27,11 +26,11 @@ export class EnsureAuthenticatedMiddleware implements Middleware {
   constructor(private readonly usersRepository: IUsersRepository) {}
 
   async handle(
-    request: EnsureAuthenticationMiddlewareRequest
+    request: EnsureAuthenticationMiddlewareRequest,
   ): Promise<HttpResponse> {
     try {
       const {
-        intercept: { jwt, wid, pid }
+        intercept: { jwt },
       } = request
 
       if (!jwt) {
@@ -42,16 +41,19 @@ export class EnsureAuthenticatedMiddleware implements Middleware {
 
       try {
         const decoded = decode(token) as DecodedJwt
-        const isUserValid = await this.usersRepository.findById(decoded.sub)
+        const userExists = await this.usersRepository.findById(decoded.sub)
 
-        if (!isUserValid) {
+        if (!userExists) {
           return unauthorized(new UserDoesNotExistsError())
+        }
+        
+        if(!userExists.props.emailVerified){
+          return forbidden(new VerifyYourEmail())
+
         }
 
         return ok({
-          userId: decoded.sub,
-          workspaceId: wid,
-          projectId: pid
+          requesterId: decoded.sub,
         })
       } catch (err) {
         return forbidden(new AccessDeniedError())

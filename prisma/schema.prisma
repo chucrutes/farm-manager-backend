@@ -12,40 +12,33 @@ datasource db {
 }
 
 model User {
-  id             String        @id
+  id String @id
+
   name           String
-  username       String?       @unique
-  email          String        @unique
+  username       String?  @unique
+  email          String   @unique
   password       String
   phone          String?
   email_verified Boolean?
-  created_at     DateTime      @default(now())
-  updated_at     DateTime      @updatedAt
-  FarmMembers    FarmMembers[]
+
+  created_at DateTime @default(now())
+  updated_at DateTime @updatedAt
+
+  FarmMembers FarmMembers[]
+  UserPlan    UserPlan[]
 
   @@map("users")
 }
 
-enum Types {
-  INVESTMENT_EXPENSE
-  CATTLE_SALE
-  BUY_CATTLE
-  MEDICINE
-  PESTICIDE
-  FEED
-  STAFF
-  INVESTMENT
-}
-
 enum Categories {
   EXPENSE
-  PROFIT
+  INCOME
   ASSET
-  INVESTMENT
 }
 
 model Farm {
-  id   String @id
+  id String @id
+
   name String
 
   created_at DateTime  @default(now())
@@ -54,35 +47,36 @@ model Farm {
 
   Entry       Entry[]
   EntryType   EntryType[]
-  FarmPlan    FarmPlan[]
   FarmMembers FarmMembers[]
+  Register    Register[]
 
   @@map("farms")
 }
 
-enum FarmPlanStatuses {
+enum PlanStatuses {
   ACTIVE
   INACTIVE
 }
 
-enum FarmPlans {
+enum Plans {
   FREE
   BASIC
   PREMIUM
+  FREEMIUM
 }
 
-model FarmPlan {
-  farm_id String
-  farm    Farm   @relation(fields: [farm_id], references: [id])
+model UserPlan {
+  user_id String
+  user    User   @relation(fields: [user_id], references: [id])
 
-  status FarmPlanStatuses
-  plan   FarmPlanStatuses
+  status PlanStatuses
+  plan   Plans
 
   created_at DateTime @default(now())
   updated_at DateTime @updatedAt
 
-  @@id([farm_id])
-  @@map("farm_plans")
+  @@id([user_id])
+  @@map("user_plans")
 }
 
 enum Roles {
@@ -93,26 +87,34 @@ enum Roles {
 model EntryType {
   id String @id
 
-  name     String
-  category Categories
+  name       String
+  category   Categories
+  commission Boolean    @default(false)
 
-  farm    Farm   @relation(fields: [farm_id], references: [id], onDelete: Cascade)
-  farm_id String
+  farm        Farm       @relation(fields: [farm_id], references: [id], onDelete: Cascade)
+  farm_id     String
+  sub_type    EntryType? @relation(fields: [sub_type_id], references: [id], onDelete: Cascade, name: "sub_type")
+  sub_type_id String?
 
   created_at DateTime  @default(now())
   updated_at DateTime  @updatedAt
   deleted_at DateTime?
-  Entry      Entry[]
 
+  entries   Entry[]
+  sub_types EntryType[] @relation(name: "sub_type")
+
+  @@unique([name, farm_id])
   @@map("entry_types")
 }
 
 model FarmMembers {
-  user_id    String
-  user       User     @relation(fields: [user_id], references: [id], onDelete: Cascade)
-  farm_id    String
-  farm       Farm     @relation(fields: [farm_id], references: [id], onDelete: Cascade)
-  role       Roles
+  user_id String
+  user    User   @relation(fields: [user_id], references: [id], onDelete: Cascade)
+  farm_id String
+  farm    Farm   @relation(fields: [farm_id], references: [id], onDelete: Cascade)
+
+  role Roles
+
   created_at DateTime @default(now())
   updated_at DateTime @updatedAt
 
@@ -123,20 +125,45 @@ model FarmMembers {
 model Entry {
   id String @id
 
-  farm    Farm      @relation(fields: [farm_id], references: [id], onDelete: Cascade)
-  farm_id String
-  type    EntryType @relation(fields: [type_id], references: [id], onDelete: Cascade)
-  type_id String
+  farm        Farm      @relation(fields: [farm_id], references: [id], onDelete: Cascade)
+  farm_id     String
+  type        EntryType @relation(fields: [type_id], references: [id], onDelete: Cascade)
+  type_id     String
+  register    Register? @relation(fields: [register_id], references: [id])
+  register_id String?
 
   description String
   price       Float
   quantity    Float
   total       Float
-  category    Categories
+  after_tax   Float  @default(0)
+  commission  Float?
 
   created_at DateTime  @default(now())
   updated_at DateTime  @updatedAt
   deleted_at DateTime?
 
   @@map("entries")
+}
+
+model Register {
+  id String @id
+
+  farm    Farm   @relation(fields: [farm_id], references: [id], onDelete: Cascade)
+  farm_id String
+
+  name          String
+  date          DateTime
+  start_date    DateTime
+  end_date      DateTime
+  total_income  Float
+  total_expense Float
+
+  created_at DateTime  @default(now())
+  updated_at DateTime  @updatedAt
+  deleted_at DateTime?
+
+  entries Entry[]
+
+  @@map("registers")
 }

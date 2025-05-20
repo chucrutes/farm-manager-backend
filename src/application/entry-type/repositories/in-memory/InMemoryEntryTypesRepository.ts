@@ -1,9 +1,19 @@
-import { EntryType } from '../../domain/entry-type'
-import { IEntryTypesRepository } from '../IEntryTypesRepository'
+import type { PaginationMetadata } from '@/application/@types'
+import type { EntryType } from '../../domain/entry-type'
+import type {
+  DeleteByName,
+  IEntryTypesRepository
+} from '../IEntryTypesRepository'
 
 export class InMemoryEntryTypesRepository implements IEntryTypesRepository {
   constructor(public entryTypes: EntryType[] = []) {}
-  async createOrUpdate(entity: EntryType): Promise<void> {
+  findByFarmAndName(farmId: string, name: string): Promise<EntryType | null> {
+    throw new Error('Method not implemented.')
+  }
+  deleteManyByName(items: DeleteByName[]): Promise<void> {
+    throw new Error('Method not implemented.')
+  }
+  async upsert(entity: EntryType): Promise<void> {
     const entityFound = await this.findById(entity.id)
 
     if (entityFound) {
@@ -32,4 +42,9 @@ export class InMemoryEntryTypesRepository implements IEntryTypesRepository {
     return entryType
   }
   async deleteMany(_ids: string[]): Promise<void> {}
+  getAllByFarmId(
+    farmId: string
+  ): Promise<{ data: EntryType[]; metadata: PaginationMetadata }> {
+    throw new Error('Method not implemented.')
+  }
 }

@@ -1,11 +1,11 @@
-import { Controller } from '@/core/infra/controller'
-import { Validator } from '@/core/infra/validator'
-import { AuthenticateUser } from './authenticate-user'
+import type { Controller } from '@/core/infra/controller'
+import type { Validator } from '@/core/infra/validator'
+import type { AuthenticateUser } from './authenticate-user'
 import {
-  HttpResponse,
+  type HttpResponse,
   clientError,
   ok,
-  unauthorized
+  unauthorized,
 } from '@/core/infra/http-response'
 
 type AuthenticateUserControllerRequest = {
@@ -16,11 +16,11 @@ type AuthenticateUserControllerRequest = {
 export class AuthenticateUserController implements Controller {
   constructor(
     private readonly validator: Validator<AuthenticateUserControllerRequest>,
-    private authenticateUser: AuthenticateUser
+    private authenticateUser: AuthenticateUser,
   ) {}
 
   async handle(
-    request: AuthenticateUserControllerRequest
+    request: AuthenticateUserControllerRequest,
   ): Promise<HttpResponse> {
     const validated = this.validator.validate(request)
 

@@ -1,31 +1,36 @@
-import { Entity } from '@/core/domain/entity'
-import { Farm } from '@/application/farms/domain/farm'
-import { Either, left, right } from '@/core/logic/either'
-import { EntryTypeProps, EntryTypeSchema } from './entry-type.schema'
+import { Entity, type Timestamps } from '@/core/domain/entity'
+import type { Farm } from '@/application/farms/domain/farm'
+import { type Either, left, right } from '@/core/logic/either'
+import { type EntryTypeProps, EntryTypeSchema } from './entry-type.schema'
 import { ZodValidationError } from '@/core/domain/errors/ZodValidationError'
 
 export const LANG_ENTITY = 'entry_type'
 
 export type Relations = {
   farm?: Farm
+  subType?: EntryType
 }
 
 export class EntryType extends Entity<EntryTypeProps> {
   private _farm?: Farm
+  private _subType?: EntryType
 
   private constructor(
     props: EntryTypeProps,
     id?: string,
-    relations?: Relations
+    timestamps?: Timestamps,
+    relations?: Relations,
   ) {
-    super(props, id)
+    super(props, id, timestamps)
     this._farm = relations?.farm
+    this._subType = relations?.subType
   }
 
   static create(
     props: EntryTypeProps,
     id?: string,
-    relations?: Relations
+    timestamps?: Timestamps,
+    relations?: Relations,
   ): Either<Error, EntryType> {
     const result = EntryTypeSchema.safeParse(props)
 
@@ -33,10 +38,13 @@ export class EntryType extends Entity<EntryTypeProps> {
       return left(new ZodValidationError(result.error))
     }
 
-    return right(new EntryType(result.data, id, relations))
+    return right(new EntryType(result.data, id, timestamps, relations))
   }
 
   get farm() {
     return this._farm
+  }
+  get subType() {
+    return this._subType
   }
 }

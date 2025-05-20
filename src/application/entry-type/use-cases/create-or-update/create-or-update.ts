@@ -1,11 +1,14 @@
 import { EntryType } from '../../domain/entry-type'
-import { Either, left, right } from '@/core/logic/either'
-import { EntryTypeProps } from '../../domain/entry-type.schema'
-import { IEntryTypesRepository } from '../../repositories/IEntryTypesRepository'
-import { IFarmsRepository } from '@/application/farms/repositories/IFarmsRepository'
+import { type Either, left, right } from '@/core/logic/either'
+import { Categories, type EntryTypeProps } from '../../domain/entry-type.schema'
+import type { IEntryTypesRepository } from '../../repositories/IEntryTypesRepository'
+import type { IFarmsRepository } from '@/application/farms/repositories/IFarmsRepository'
+import { EntryTypeWithTheSameNameError } from '../@errors/EntryTypeWithTheSameNameError'
+import { EntryNotFoundError } from '@/application/entries/use-cases/EntryNotFoundError'
+import { ExpenseShouldNotHaveCommissionError } from '../@errors/ExpenseShouldNotHaveCommissionError'
 
 export type CreateOrUpdateEntryTypeRequest = EntryTypeProps & {
-  id?: string
+  _id?: string
   userId: string
 }
 
@@ -25,7 +28,7 @@ export class CreateOrUpdateEntryType {
   }
 
   async execute({
-    id,
+    _id,
     userId,
     ...props
   }: CreateOrUpdateEntryTypeRequest): Promise<CreateOrUpdateEntryTypeResponse> {
@@ -37,18 +40,38 @@ export class CreateOrUpdateEntryType {
       throw new Error('no farm id')
     }
 
-    if (id) {
-      entryTypeExists = await this.entryTypesRepository.findById(id)
+    if (_id) {
+      entryTypeExists = await this.entryTypesRepository.findById(_id)
+      if (!entryTypeExists) {
+        return left(new EntryNotFoundError())
+      }
     }
 
-    const entryTypeOrError = EntryType.create(props, id, { farm })
+    const entryTypeByName = await this.entryTypesRepository.findByFarmAndName(
+      farm.id,
+      props.name
+    )
+
+    if (entryTypeByName && entryTypeByName.id !== _id) {
+      return left(new EntryTypeWithTheSameNameError())
+    }
+
+    const entryTypeOrError = EntryType.create(
+      props,
+      _id,
+      {
+        createdAt: entryTypeExists?.timestamps?.createdAt || new Date(),
+        updatedAt: entryTypeExists?.timestamps?.updatedAt || new Date()
+      },
+      { farm }
+    )
 
     if (entryTypeOrError.isLeft()) {
       return left(entryTypeOrError.value)
     }
 
     const entryType = entryTypeOrError.value
-    await this.entryTypesRepository.createOrUpdate(entryType)
+    await this.entryTypesRepository.upsert(entryType)
     return right(entryType)
   }
 }

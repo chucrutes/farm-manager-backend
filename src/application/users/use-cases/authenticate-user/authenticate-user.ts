@@ -1,5 +1,5 @@
-import { Either, left, right } from '@/core/logic/either'
-import { IUsersRepository } from '../../repositories/IUsersRepository'
+import { type Either, left, right } from '@/core/logic/either'
+import type { IUsersRepository } from '../../repositories/IUsersRepository'
 import { InvalidEmailOrPasswordError } from './errors/InvalidEmailOrPasswordError'
 import { JWT } from '../../../../core/domain/jwt'
 import { compare } from 'bcryptjs'
@@ -28,6 +28,9 @@ export class AuthenticateUser {
     const userExists = await this.usersRepository.findByEmailOrUsername(user)
 
     if (!userExists) {
+      return left(new InvalidEmailOrPasswordError())
+    }
+    if (!userExists.props.emailVerified) {
       return left(new InvalidEmailOrPasswordError())
     }
 

@@ -10,7 +10,7 @@ export class InMemoryUsersRepository implements IUsersRepository {
 
   async update(workspace: User): Promise<void> {
     const index = this.users.findIndex(
-      (userItem) => userItem.id === workspace.id
+      (userItem) => userItem.id === workspace.id,
     )
 
     this.users[index] = workspace
@@ -28,7 +28,7 @@ export class InMemoryUsersRepository implements IUsersRepository {
   async findByEmailOrUsername(identifier: string): Promise<User | null> {
     const user = this.users.find(
       (user) =>
-        user.props.email === identifier || user.props.username === identifier
+        user.props.email === identifier || user.props.username === identifier,
     )
 
     if (!user) {
@@ -54,5 +54,8 @@ export class InMemoryUsersRepository implements IUsersRepository {
   async existsByUsername(username: string): Promise<boolean> {
     const user = this.users.some((user) => user.props.username === username)
     return !!user
+  }
+  delete(id: string): Promise<void> {
+    throw new Error('Method not implemented.')
   }
 }

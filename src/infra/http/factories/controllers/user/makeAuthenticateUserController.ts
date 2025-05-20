@@ -1,4 +1,4 @@
-import { Controller } from '@/core/infra/controller'
+import type { Controller } from '@/core/infra/controller'
 import { ValidatorCompositor } from '@/infra/validation/ValidatorCompositor'
 import { AuthenticateUser } from '@/application/users/use-cases/authenticate-user/authenticate-user'
 import { PrismaUsersRepository } from '@/application/users/repositories/prisma/PrismaUsersRepository'

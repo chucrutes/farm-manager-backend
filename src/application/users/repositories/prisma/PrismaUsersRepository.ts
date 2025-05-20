@@ -1,7 +1,7 @@
-import { User } from '../../domain/user'
-import { prismaClient } from '@/infra/prisma/client'
+import type { User } from '../../domain/user'
+import { prismaClient } from '@/infra/db/prisma/client'
 import { UserMapper } from '../../mappers/user-mapper'
-import { IUsersRepository } from '../IUsersRepository'
+import type { IUsersRepository } from '../IUsersRepository'
 
 export class PrismaUsersRepository implements IUsersRepository {
   async findByEmail(email: string): Promise<User | null> {
@@ -82,8 +82,16 @@ export class PrismaUsersRepository implements IUsersRepository {
           ...data
         }
       })
-      .catch(() => {
+      .catch((error) => {
         throw new Error('Error on update user')
       })
+  }
+
+  async delete(id: string): Promise<void> {
+    await prismaClient.user.delete({
+      where: {
+        id
+      }
+    })
   }
 }

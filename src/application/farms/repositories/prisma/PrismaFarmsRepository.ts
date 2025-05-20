@@ -1,13 +1,13 @@
-import { Roles } from '../../domain/farm.schema'
-import { prismaClient } from '@/infra/prisma/client'
-import { Farm, LANG_ENTITY } from '../../domain/farm'
-import { IFarmsRepository } from '../IFarmsRepository'
+import type { Roles } from '../../domain/farm.schema'
+import { prismaClient } from '@/infra/db/prisma/client'
+import { type Farm, LANG_ENTITY } from '../../domain/farm'
+import type { IFarmsRepository } from '../IFarmsRepository'
 import { FarmMapper } from '../../mappers/farm-mapper'
 
 const dbFarmClient = prismaClient.farm
 
 export default class PrismaFarmsRepository implements IFarmsRepository {
-  async createOrUpdate(entity: Farm): Promise<void> {
+  async upsert(entity: Farm): Promise<void> {
     const entityFound = await this.findById(entity.id)
 
     if (entityFound) {

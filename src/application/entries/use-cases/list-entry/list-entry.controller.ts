@@ -1,36 +1,53 @@
-import { Controller } from '@/core/infra/controller'
-import { HttpResponse, clientError, ok } from '@/core/infra/http-response'
-import { Validator } from '@/core/infra/validator'
-import { ListEntry } from './list-entry'
-import { findTypeByType } from '../../domain/@types/types.enum'
+import type { ListEntry } from './list-entry'
+import type { Validator } from '@/core/infra/validator'
+import type { Controller } from '@/core/infra/controller'
+import { type HttpResponse, clientError, ok } from '@/core/infra/http-response'
 
 type ListEntryControllerRequest = {
-  currentUserId: string
+  requesterId: string
+  type: string
+  farm: string
+  removeDeletedAt: string
 }
 
 export class ListEntryController implements Controller {
   constructor(
     private readonly validator: Validator<ListEntryControllerRequest>,
-    private listEntry: ListEntry,
+    private listEntry: ListEntry
   ) {}
 
-  async handle(request: ListEntryControllerRequest): Promise<HttpResponse> {
-    const validated = this.validator.validate(request)
+  async handle({
+    type,
+    farm,
+    ...request
+  }: ListEntryControllerRequest): Promise<HttpResponse> {
+    const validated = this.validator.validate({ type, farm, ...request })
 
     if (validated.isLeft()) {
       return clientError(validated.value)
     }
 
     const result = await this.listEntry.execute({
-      userId: request.currentUserId,
+      userId: request.requesterId,
+      includes: {
+        type: !!type,
+        farm: !!farm
+      },
+      removeDeletedAt: !!request.removeDeletedAt
     })
 
+    if (result.isLeft()) {
+      return clientError(result.value)
+    }
+
+    const { metadata, data, total } = result.value
+
     return ok({
-      dto: result.entries.map((res) => ({
-        ...res.toResponseBody(),
-        key: findTypeByType(res.props.type)?.key,
-      })),
-      total: result.total,
+      headers: metadata,
+      dto: {
+        entries: data.map((item) => item.toResponseBody()),
+        total
+      }
     })
   }
 }
